@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/05 11:16:09 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/04/16 17:56:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "libft/libft.h"
 
-int	ft_first_fork(t_lst *elem, t_struct *var, char **envp)
+int	ft_first_fork(t_cmd *elem, t_struct *var, char **envp)
 {
 	pid_t	pid;
 
@@ -24,7 +25,7 @@ int	ft_first_fork(t_lst *elem, t_struct *var, char **envp)
 	if (pid == 0)
 	{
 		//prend dans fd_infile en prioriter sinon dans stdin
-		if (elem->redirection && elem->fd_infile > 0)// < f1
+		if (elem->redirecter && elem->fd_infile > 0)// < f1
 		{
 			if (dup2(elem->fd_infile, STDIN_FILENO) == -1)
 			{
@@ -33,7 +34,7 @@ int	ft_first_fork(t_lst *elem, t_struct *var, char **envp)
 			}
 		}
 		//envoi dans fd_outfile en prioriter s'il y en a un
-		if (elem->redirection && elem->fd_outfile > 0)// > f2
+		if (elem->redirecter && elem->fd_outfile > 0)// > f2
 		{
 			if (dup2(elem->fd_outfile, STDOUT_FILENO) == -1)
 			{
@@ -57,13 +58,13 @@ int	ft_first_fork(t_lst *elem, t_struct *var, char **envp)
 	else if (pid > 0)
 	{
 		int	status;
-		wait(&status);ft_printf("status de l'enfant first %d\n", status);
-		//ft_printf("je suis dans le processus du parent du 1er fork, le pid de l'enfant est %d\n", pid);
+		wait(&status);printf("status de l'enfant first %d\n", status);
+		//printf("je suis dans le processus du parent du 1er fork, le pid de l'enfant est %d\n", pid);
 	}
 	return (0);
 }
 
-int	ft_middle_fork(t_lst *elem, t_struct *var, char **envp)
+int	ft_middle_fork(t_cmd *elem, t_struct *var, char **envp)
 {
 	pid_t	pid;
 
@@ -76,9 +77,9 @@ int	ft_middle_fork(t_lst *elem, t_struct *var, char **envp)
 	else if (pid == 0)
 	{
 		//prend soit dans fd_infile en prioriter sil y en a un
-		if (elem->redirection && elem->fd_infile > 0)
+		if (elem->redirecter && elem->fd_infile > 0)
 		{
-			ft_printf("IN0\n");
+			printf("IN0\n");
 			if (dup2(elem->fd_infile, STDIN_FILENO))
 			{
 				perror("dup2 middle fd_indile failed :");
@@ -95,7 +96,7 @@ int	ft_middle_fork(t_lst *elem, t_struct *var, char **envp)
 			}
 		}
 		//envoi dans fd_outfile en prioriter sil y en a un
-		if (elem->redirection && elem->fd_outfile > 0)
+		if (elem->redirecter && elem->fd_outfile > 0)
 		{
 			if (dup2(elem->fd_outfile, STDOUT_FILENO))
 			{
@@ -106,7 +107,7 @@ int	ft_middle_fork(t_lst *elem, t_struct *var, char **envp)
 		//sinon dans pipe[1]
 		else if (elem->next)
 		{
-			ft_printf("PI1\n");
+			printf("PI1\n");
 			if (dup2(var->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
 				perror("dup2 middle pipe[1] failed :");
@@ -121,12 +122,12 @@ int	ft_middle_fork(t_lst *elem, t_struct *var, char **envp)
 	else
 	{
 		int	status;
-		wait(&status);ft_printf("status de l'enfant midlle %d\n", status);
+		wait(&status);printf("status de l'enfant midlle %d\n", status);
 	}
 	return (0);
 }
 
-int	ft_last_fork(t_lst *elem, t_struct *var, char **envp)
+int	ft_last_fork(t_cmd *elem, t_struct *var, char **envp)
 {
 	pid_t	pid;
 
@@ -138,7 +139,7 @@ int	ft_last_fork(t_lst *elem, t_struct *var, char **envp)
 	if (pid == 0)
 	{
 		//prend soit dans infile en prioriter sil y en a un
-		if (elem->redirection && elem->fd_infile > 0)// < f1
+		if (elem->redirecter && elem->fd_infile > 0)// < f1
 		{
 			if (dup2(elem->fd_infile, STDIN_FILENO) == -1)
 			{
@@ -156,7 +157,7 @@ int	ft_last_fork(t_lst *elem, t_struct *var, char **envp)
 			}
 		}
 		//envoi soit dans fd_outfile s'il y en a un soit dans stdout qui reste inchange (pas de dup2)
-		if (elem->redirection && elem->fd_outfile > 0)// > f2
+		if (elem->redirecter && elem->fd_outfile > 0)// > f2
 		{
 			if (dup2(elem->fd_outfile, STDOUT_FILENO) == -1)
 			{
@@ -171,8 +172,8 @@ int	ft_last_fork(t_lst *elem, t_struct *var, char **envp)
 	else if (pid > 0)
 	{
 		int	status;
-		wait(&status);ft_printf("status de l'enfant last %d\n", status);
-		//ft_printf("je suis dans le processus du parent du dernier fork, le pid de l'enfant est %d\n", pid);
+		wait(&status);printf("status de l'enfant last %d\n", status);
+		//printf("je suis dans le processus du parent du dernier fork, le pid de l'enfant est %d\n", pid);
 		close(var->pipe_fd[0]);
 	}
 	return (0);

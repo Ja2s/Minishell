@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirection.c                                      :+:      :+:    :+:   */
+/*   redirecter.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 18:09:29 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/04 13:17:55 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/04/16 17:02:39 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "libft/libft.h"
 
 
 
-void	ft_close(t_lst *elem)
+void	ft_close(t_cmd *elem)
 {
-	if (elem->redirection && elem->fd_infile != -1)//s'il n'y a pas de redirection les elem->fd ne sont pas initaliser
+	if (elem->redirecter && elem->fd_infile != -1)//s'il n'y a pas de redirecter les elem->fd ne sont pas initaliser
 	{
 		close(elem->fd_infile);
 		elem->fd_infile = -1;
 	}
-	if (elem->redirection && elem->fd_outfile != -1)
+	if (elem->redirecter && elem->fd_outfile != -1)
 	{
 		close(elem->fd_outfile);
 		elem->fd_outfile = -1;
@@ -29,7 +30,7 @@ void	ft_close(t_lst *elem)
 }
 
 
-void	ft_redirection(t_lst *elem)
+void	ft_redirecter(t_cmd *elem)
 {
 	int	i;
 	int	j;
@@ -37,18 +38,18 @@ void	ft_redirection(t_lst *elem)
 	elem->fd_infile = -1;
 	elem->fd_outfile = -1;	
 	i = 0;
-	while (elem->redirection[i])
+	while (elem->redirecter[i])
 	{
 		j = 0;
-		while (elem->redirection[i][j])
+		while (elem->redirecter[i][j])
 		{
-			if (elem->redirection[i][j] == '>' && elem->redirection[i][j + 1] == '>') // >> 
+			if (elem->redirecter[i][j] == '>' && elem->redirecter[i][j + 1] == '>') // >> 
 			{
 				j += 2;
-				while (elem->redirection[i][j] == ' ')//skip space
+				while (elem->redirecter[i][j] == ' ')//skip space
 					j++;
-				//check si je dois close l'ancien en cas de redirection multiple
-				elem->fd_outfile = open(elem->redirection[i] + j, O_CREAT | O_WRONLY | O_APPEND, 0777);
+				//check si je dois close l'ancien en cas de redirecter multiple
+				elem->fd_outfile = open(elem->redirecter[i] + j, O_CREAT | O_WRONLY | O_APPEND, 0777);
 				if (elem->fd_outfile == -1)
 				{
                     perror("Erreur lors de l'ouverture du fichier de sortie (>>)");
@@ -58,13 +59,13 @@ void	ft_redirection(t_lst *elem)
                 }
 				break;
 			}
-			else if (elem->redirection[i][j] == '>')// > 
+			else if (elem->redirecter[i][j] == '>')// > 
 			{
 				j++;
-				while (elem->redirection[i][j] == ' ')
+				while (elem->redirecter[i][j] == ' ')
 					j++;
-				//check si je dois close l'ancien en cas de redirection multiple
-				elem->fd_outfile = open(elem->redirection[i] + j, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+				//check si je dois close l'ancien en cas de redirecter multiple
+				elem->fd_outfile = open(elem->redirecter[i] + j, O_CREAT | O_WRONLY | O_TRUNC, 0777);
 				if (elem->fd_outfile == -1) {
                     perror("Erreur lors de l'ouverture du fichier de sortie (>)");
 					ft_close(elem);
@@ -73,14 +74,14 @@ void	ft_redirection(t_lst *elem)
                 }
 				break;
 			}
-			else if (elem->redirection[i][j] == '<')// <
+			else if (elem->redirecter[i][j] == '<')// <
 			{
 				j++;
-				while (elem->redirection[i][j] == ' ')
+				while (elem->redirecter[i][j] == ' ')
 					j++;
-				elem->fd_infile = open(elem->redirection[i] + j, O_RDONLY, 0777);
+				elem->fd_infile = open(elem->redirecter[i] + j, O_RDONLY, 0777);
 				if (elem->fd_infile == -1) {
-                    write (2, elem->redirection[i] + j, ft_strlen(elem->redirection[i] + j));
+                    write (2, elem->redirecter[i] + j, ft_strlen(elem->redirecter[i] + j));
                     perror(" (<)");
 					ft_close(elem);
 					elem->open = -1; //permet de verifier le fail dun input alors ne pas exec la cmd

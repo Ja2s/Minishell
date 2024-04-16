@@ -3,30 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   dislpay_err.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:19:08 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/01 18:00:15 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/04/16 17:30:21 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "libft/libft.h"
 
-void	display_error_cmd(t_lst *var)
+void	display_error_cmd(t_cmd *var)
 {
 	ft_putstr_fd("minishell: commande not found: ", 2);
-	ft_putstr_fd(var->cmd, 2);
+	ft_putstr_fd(var->args[0], 2);
 	write(2, "\n", 1);
 }
 
-void	display_no_such(t_lst *var)
+void	display_no_such(t_cmd *var)
 {
 	ft_putstr_fd("minishell: no such file or directory: ", 2);
-	ft_putstr_fd(var->cmd, 2);
+	ft_putstr_fd(var->args[0], 2);
 	write(2, "\n", 1);
 }
 
-void	ft_free_access(t_lst *var)
+void	ft_free_access(t_cmd *var)
 {
 	int	i;
 
@@ -53,7 +54,7 @@ void	ft_free_access(t_lst *var)
 	}
 }
 
-void	ft_free_token(t_lst *var)
+void	ft_free_token(t_cmd *var)
 {
 	int	i;
 
@@ -62,7 +63,7 @@ void	ft_free_token(t_lst *var)
 	{
 		while (var->args[i])
 		{
-			ft_printf("args[%d] = |%s|  ", i, var->args[i]);
+			printf("args[%d] = |%s|  ", i, var->args[i]);
 			free(var->args[i]);
 			var->args[i] = NULL;
 			i++;
@@ -70,23 +71,23 @@ void	ft_free_token(t_lst *var)
 		free(var->args);
 	}
 	i = 0;
-	ft_printf("\n");
-	if (var->redirection)
+	printf("\n");
+	if (var->redirecter)
 	{
-		while (var->redirection[i])
+		while (var->redirecter[i])
 		{
-			ft_printf("redi[%d]  ", i);
-			free(var->redirection[i]);
-			var->redirection[i] = NULL;
+			printf("redi[%d]  ", i);
+			free(var->redirecter[i]);
+			var->redirecter[i] = NULL;
 			i++;
 		}
-		free(var->redirection);
+		free(var->redirecter);
 	}
 }
 
-void ft_free_lst(t_lst *lst)
+void ft_free_lst(t_cmd *lst)
 {
-    t_lst *tmp;
+    t_cmd *tmp;
 
     while (lst)
     {

@@ -6,11 +6,99 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/16 16:29:51 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:57:32 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_cmd	*ft_lstlast(t_cmd *lst)
+{
+	t_cmd	*last;
+
+	if (!lst)
+		return (NULL);
+	last = lst;
+	while (last->next)
+		last = last->next;
+	return (last);
+}
+
+void	args_free(t_cmd *lst)
+{
+	int	i;
+
+	i = 0;
+	while (i < lst->nb_args)
+	{
+		free(lst->args[i]);
+		i++;
+	}
+	if (lst->nb_args > 0)
+		free(lst->args);
+}
+
+void	red_free(t_cmd *lst)
+{
+	int	i;
+
+	i = 0;
+	while (i < lst->nb_red)
+	{
+		free(lst->redirecter[i]);
+		i++;
+	}
+	if (lst->nb_red > 0)
+		free(lst->redirecter);
+}
+
+void	del_free(t_cmd *lst)
+{
+	int	i;
+
+	i = 0;
+	while (i < lst->nb_del)
+	{
+		free(lst->delimiter[i]);
+		i++;
+	}
+	if (lst->nb_del > 0)
+		free(lst->delimiter);
+}
+
+void	ft_lstdelone(t_cmd *lst)
+{
+	args_free(lst);
+	red_free(lst);
+	del_free(lst);
+	if (lst)
+		free(lst);
+}
+
+void	ft_lstclear(t_cmd **lst)
+{
+	t_cmd	*tmp;
+
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		ft_lstdelone(*lst);
+		*lst = tmp;
+	}
+}
+
+int	ft_lstlen(t_cmd *elem)
+{
+	int	i;
+
+	i = 0;
+	while (elem)
+	{
+		i++;
+		elem = elem->next;
+	}
+	return (i);
+}
 
 int	double_cote_checker(char *rl, bool *cot, size_t *i)
 {
@@ -634,7 +722,7 @@ char *dolls_expander(char *rl)
 	return (free(rl), output);	
 }
 
-/*int	launch_exec(t_cmd *lst, char **envp)
+int	launch_exec(t_cmd *lst, char **envp)
 {
  	t_cmd    	*begin_lst;
     t_struct   	var;
@@ -644,13 +732,11 @@ char *dolls_expander(char *rl)
     lst = NULL;
     int len_lst = ft_lstlen(lst);
     begin_lst = lst;
-
+	printf("lst = %p\n", lst);
     while (lst)
     {
+		printf("HERE\n");
         i++;
-        ft_printf("command %d\n", i);
-        display_lst(lst);
-
         if (lst->heredoc > 0)        //1. Heredoc check
             printf("ft_heredoc() a faire\n");
         lst->open = 0;
@@ -668,21 +754,21 @@ char *dolls_expander(char *rl)
         ft_check_access(lst, envp);    //4 Cmd check
 
         if (i == 1 && lst->open == 0){            //5. exec (cmd_first) | cmd_middle... | cmd_last
-            ft_printf("go exec first cmd\n\n");
+            printf("go exec first cmd\n\n");
             ft_first_fork(lst, &var, envp);
             close(var.pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
             var.save_pipe = var.pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
         }
 
         else if (i < len_lst && lst->open == 0){//6. exec cmd_first | (cmd_middle...) | cmd_last
-            ft_printf("go exec middle cmd\n\n");
+            printf("go exec middle cmd\n\n");
             ft_middle_fork(lst, &var, envp);
             close(var.pipe_fd[1]);
             var.save_pipe = var.pipe_fd[0];
         }
 
         else if (i == len_lst && lst->open == 0){//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
-            ft_printf("go exec last cmd\n\n");
+            printf("go exec last cmd\n\n");
             
             ft_last_fork(lst, &var, envp);
             close(var.pipe_fd[0]);
@@ -694,7 +780,7 @@ char *dolls_expander(char *rl)
     }
     ft_free_lst(begin_lst);
     return (0);
-}*/
+}
 
 int main(int argc, char **argv, char **envp)
 {
@@ -705,6 +791,7 @@ int main(int argc, char **argv, char **envp)
 	int		i;
 	int		a;
 	t_var	*var;
+	t_cmd	*start = NULL;
 	t_cmd	*cmd = NULL;
 	t_cmd	*tmp = NULL;
 	(void)argc;
@@ -733,7 +820,7 @@ int main(int argc, char **argv, char **envp)
 			pipes = ft_split(rl, '|');	//je separe chaque commande grace au pipe
 			while (pipes[i])	//chaque commande est rangee par ligne dans un tableau afin de les traiter une a une 
 			{
-				tmp = ft_lstnew(); //jinitialise ma structure car nous allons en avoir besoin
+				tmp = ft_lstnew_minishell(); //jinitialise ma structure car nous allons en avoir besoin
 				if (!tmp)
 					break;
 				if (heredoc_checker(pipes[i], &tmp) == -1)
@@ -745,12 +832,16 @@ int main(int argc, char **argv, char **envp)
 				if (stock_input(input, &tmp) == 0)	//je vais recuperer le nom de la commande et les arguments dans input et les ranger dans la structure tmp
 				{
 					i++;	// la commande a ete traitee, je passe a la prochaine (si il y en a une)
-					ft_lstadd_back(&cmd, tmp);	//j'ajoute le noeud tmp ou tout a ete ranger a ma liste chainee 
+					ft_lstadd_back_minishell(&cmd, tmp);	//j'ajoute le noeud tmp ou tout a ete ranger a ma liste chainee 
 				}
 				add_history(rl);
 			}
 			i = 0;
 			ft_printf_struct(cmd);
+			printf("\033[38;5;220mLancement de Launch_exec...\n\033[0m");
+			printf("cmd = %p\n", cmd);
+			
+			launch_exec(cmd, var->mini_env);
 			ft_lstclear(&cmd);
 			free(pipes);
 			free(pwd);

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 12:00:26 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/16 11:33:36 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:36:02 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,27 +25,6 @@ typedef struct s_list
 	void			*content;
 	struct s_list	*next;
 }					t_list;
-
-typedef struct s_cmd
-{
-	int				nb_flags;
-	int				nb_args;
-	int				nb_red;
-	int				nb_del;
-	int				heredoc;
-	char			**delimiter;
-	char			**redirecter;
-	char			**args;
-	struct s_cmd	*next;
-	struct s_cmd	*start;
-	int				open;
-	int				fd_infile;
-	int				fd_outfile;
-	char			**split_path;
-	char			*slash_cmd;
-	char			*path_cmd;
-	int				i;
-}					t_cmd;
 
 int		ft_isprint(int c);
 int		ft_isdigit(int c);
@@ -83,12 +62,7 @@ char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	*ft_itoa(int n);
 char	**ft_split(char const *s, char c);
-t_cmd	*ft_lstnew(void);
-t_cmd	*ft_lstlast(t_cmd *lst);
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
-void	ft_lstdelone(t_cmd *lst);
-void	ft_lstclear(t_cmd **lst);
-void	ft_lstadd_back(t_cmd **lst, t_cmd *new);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 
