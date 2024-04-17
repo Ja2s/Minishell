@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 16:50:46 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/16 17:56:58 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/16 23:35:48 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ void    ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int		ft_lstlen(t_cmd *elem);
 void    ft_redirecter(t_cmd *elem);
 int		ft_check_access(t_cmd *elem, char **envp);
-int		ft_first_fork(t_cmd *elem, t_struct *var, char **envp);
-int		ft_middle_fork(t_cmd *elem, t_struct *var, char **envp);
-int		ft_last_fork(t_cmd *elem, t_struct *var, char **envp);
+int		ft_first_fork(t_cmd *elem, t_struct **var, char **envp);
+int		ft_middle_fork(t_cmd *elem, t_struct **var, char **envp);
+int		ft_last_fork(t_cmd *elem, t_struct **var, char **envp);
 void    display_error_cmd(t_cmd *elem);
 void    display_no_such(t_cmd *elem);
 void    ft_free_access(t_cmd *elem);

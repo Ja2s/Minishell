@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/16 17:56:52 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/16 23:44:13 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
 
-int	ft_first_fork(t_cmd *elem, t_struct *var, char **envp)
+int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 {
 	pid_t	pid;
 
@@ -45,12 +45,14 @@ int	ft_first_fork(t_cmd *elem, t_struct *var, char **envp)
 		//sinon dans pipe[1] si il y a un next, sinon dans stdout
 		else if (elem->next) // --> | cmd
 		{
-			if (dup2(var->pipe_fd[1], STDOUT_FILENO) == -1)
+			if (dup2((*var)->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
 				perror("dup2 first pipe[1] failed : ");
 				exit(EXIT_FAILURE);
 			}
 		}
+		printf("\033[38;5;220mpath.cmd : \033[0m%s\n", elem->path_cmd);
+		printf("\033[38;5;220mpath.cmd : \033[0m%s\n", elem->args[1]);
 		execve(elem->path_cmd, elem->args, envp);
 		perror("execve 1 : failed ");
 		exit(0);
@@ -64,7 +66,7 @@ int	ft_first_fork(t_cmd *elem, t_struct *var, char **envp)
 	return (0);
 }
 
-int	ft_middle_fork(t_cmd *elem, t_struct *var, char **envp)
+int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 {
 	pid_t	pid;
 
@@ -89,7 +91,7 @@ int	ft_middle_fork(t_cmd *elem, t_struct *var, char **envp)
 		//soit dans pipe[0]
 		else
 		{
-			if (dup2(var->save_pipe, STDIN_FILENO))
+			if (dup2((*var)->save_pipe, STDIN_FILENO))
 			{
 				perror("dup2 middle pipe_fd[0] failed :");
 				exit(EXIT_FAILURE);
@@ -108,7 +110,7 @@ int	ft_middle_fork(t_cmd *elem, t_struct *var, char **envp)
 		else if (elem->next)
 		{
 			printf("PI1\n");
-			if (dup2(var->pipe_fd[1], STDOUT_FILENO) == -1)
+			if (dup2((*var)->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
 				perror("dup2 middle pipe[1] failed :");
 				exit(EXIT_FAILURE);
@@ -127,7 +129,7 @@ int	ft_middle_fork(t_cmd *elem, t_struct *var, char **envp)
 	return (0);
 }
 
-int	ft_last_fork(t_cmd *elem, t_struct *var, char **envp)
+int	ft_last_fork(t_cmd *elem, t_struct **var, char **envp)
 {
 	pid_t	pid;
 
@@ -150,7 +152,7 @@ int	ft_last_fork(t_cmd *elem, t_struct *var, char **envp)
 		//soit dans pipe[0]
 		else
 		{
-			if (dup2(var->save_pipe, STDIN_FILENO) == -1) // sortie de l'ancienne cmd
+			if (dup2((*var)->save_pipe, STDIN_FILENO) == -1) // sortie de l'ancienne cmd
 			{
 				perror("dup2 last pipe_fd[0] failed : ");
 				exit(EXIT_FAILURE);
@@ -174,7 +176,7 @@ int	ft_last_fork(t_cmd *elem, t_struct *var, char **envp)
 		int	status;
 		wait(&status);printf("status de l'enfant last %d\n", status);
 		//printf("je suis dans le processus du parent du dernier fork, le pid de l'enfant est %d\n", pid);
-		close(var->pipe_fd[0]);
+		close((*var)->pipe_fd[0]);
 	}
 	return (0);
 }
