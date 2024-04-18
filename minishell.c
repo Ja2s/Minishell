@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/18 22:28:58 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:41:48 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,40 @@ void	del_free(t_cmd *lst)
 		free(lst->delimiter);
 }
 
+void	split_path_free(t_cmd *lst)
+{
+	int	i;
+
+	i = 0;
+	while (lst->split_path[i])
+	{
+		free(lst->split_path[i]);
+		i++;
+	}
+	if (lst->split_path)
+		free(lst->split_path);
+}
+
+void	path_cmd_free(t_cmd *lst)
+{
+	if (lst->path_cmd)
+		free(lst->path_cmd);
+}
+
+void	slash_cmd_free(t_cmd *lst)
+{
+	if (lst->slash_cmd)
+		free(lst->slash_cmd);
+}
+
 void	ft_lstdelone(t_cmd *lst)
 {
 	args_free(lst);
 	red_free(lst);
 	del_free(lst);
+	split_path_free(lst);
+	path_cmd_free(lst);
+	slash_cmd_free(lst);
 	if (lst)
 		free(lst);
 }
