@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/18 15:36:10 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 16:05:01 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -467,7 +467,7 @@ int	redirecter(char *pipes, t_cmd **cmd)
 	len = redirect_counter(pipes);
 	(*cmd)->nb_red = len;
 	if (len > 0)
-		(*cmd)->redirecter = malloc(sizeof(char*)* len);
+		(*cmd)->redirecter = malloc(sizeof(char*)* (len + 1));
 	len = 0;
 	while (pipes[i])
 	{
@@ -550,6 +550,7 @@ char	*redirect_deleter(char	*pipes)
 
 	tmp = NULL;
 	i = 0;
+	len = 0;
 	len = len_calculator(pipes);
 	printf ("len for malloc : %d\n", len);
 	tmp = malloc(sizeof(char)* (len + 1));
@@ -559,7 +560,7 @@ char	*redirect_deleter(char	*pipes)
 	{
 		while (pipes[i] && pipes[i] != '<' && pipes[i] != '>')
 		{
-			if (pipes[i] == ' '/*&& tmp[len - 1] == ' '*/)
+			if (pipes[i] == ' ' && tmp[len/* - 1*/] == ' ')
 				i++;
 			else
 			{
