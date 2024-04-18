@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/18 16:05:01 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 17:04:04 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,39 +302,39 @@ int	ft_printf_struct(t_cmd *cmd)
 	i = 0;
 	while (cmd)
 	{
-		printf("\n\n\n\033[33m-------------Command name----------------\033[0m\n");
-		printf("Commande -> |%s|\n", cmd->args[i]);
+		printf("\n\n\n\033[33m--------------=Command name=--------------\033[0m\n");
+		printf("	Commande -> |%s|\n", cmd->args[i]);
 		i++;
-		printf("\033[33m-------------Arguments----------------\033[0m\n");
+		printf("\033[33m----------------=Arguments=---------------\033[0m\n");
 		while (i < cmd->nb_args)
 			{
-				printf("Arg n%d -> |%s|\n", i + 1, cmd->args[i]);
+				printf("		  Arg[%d] -> |%s|\n", i, cmd->args[i]);
 				i++;
 			}
 		i = 0;
 		if (cmd->nb_red > 0)
 		{
-			printf("\033[33m-------------Redirections----------------\033[0m\n");
+			printf("\033[33m-------------=Redirections=-------------\033[0m\n");
 			while(i < cmd->nb_red)
 			{
-				printf("Redirecter -> |%s|\n", cmd->redirecter[i]);
+				printf("		Redirecter -> |%s|\n", cmd->redirecter[i]);
 				i++;
 			}
 		}
 		i = 0;
 		if (cmd->heredoc == true)
 		{
-			printf("\033[35m-------------Heredoc (true)----------------\033[0m\n");
+			printf("\033[35m-------------=Heredoc (true)=-------------\033[0m\n");
 			while (i < cmd->nb_del)
 			{
-				printf("delimiter -> |%s|\n", cmd->delimiter[i]);
+				printf("		  delimiter -> |%s|\n", cmd->delimiter[i]);
 				i++;
 			}
 		}
 		i = 0;
 		
 
-		printf("\033[35m-------------End of command----------------\033[0m\n");
+		printf("\033[35m-------------=End of command=-------------\033[0m\n\n\n");
 		if (cmd->next)
 			cmd = cmd->next;
 		else
@@ -467,47 +467,52 @@ int	redirecter(char *pipes, t_cmd **cmd)
 	len = redirect_counter(pipes);
 	(*cmd)->nb_red = len;
 	if (len > 0)
-		(*cmd)->redirecter = malloc(sizeof(char*)* (len + 1));
-	len = 0;
-	while (pipes[i])
-	{
-		if (pipes[i] == '<' || pipes[i] == '>')
+	{	
+		(*cmd)->redirecter = malloc(sizeof(char*) * (len + 1));
+		printf("____________________________\nLEN = %d\n______________________\n", len);
+		len = 0;
+		while (pipes[i])
 		{
-			if (pipes[i] == '<' && pipes[i + 1] == '<')
+			if (pipes[i] == '<' || pipes[i] == '>')
 			{
-				i += 2;
-				while (pipes[i] && pipes[i] == ' ')
+				if (pipes[i] == '<' && pipes[i + 1] == '<')
+				{
+					i += 2;
+					while (pipes[i] && pipes[i] == ' ')
+						i++;
+					while (pipes[i] && pipes[i] != ' ' && pipes[i] != '<' && pipes[i] != '>')
+						i++;
+				}
+				else
+				{
+					start = i;
 					i++;
-				while (pipes[i] && pipes[i] != ' ' && pipes[i] != '<' && pipes[i] != '>')
-					i++;
+					len++;
+					if (pipes[i] == '<' || pipes[i] == '>')
+					{
+						i++;
+						len++;
+					}
+					while (pipes[i] && pipes[i] == ' ')
+					{
+						i++;
+						len++;
+					}
+					while (pipes[i] && pipes[i] != ' ' && pipes[i] != '<' && pipes[i] != '>')
+					{
+						i++;
+						len++;
+					}
+					(*cmd)->redirecter[x] = ft_substr(pipes, start, len);
+					x++;
+					len = 0;	
+				}
 			}
 			else
-			{
-				start = i;
 				i++;
-				len++;
-				if (pipes[i] == '<' || pipes[i] == '>')
-				{
-					i++;
-					len++;
-				}
-				while (pipes[i] && pipes[i] == ' ')
-				{
-					i++;
-					len++;
-				}
-				while (pipes[i] && pipes[i] != ' ' && pipes[i] != '<' && pipes[i] != '>')
-				{
-					i++;
-					len++;
-				}
-				(*cmd)->redirecter[x] = ft_substr(pipes, start, len);
-				x++;
-				len = 0;	
-			}
 		}
-		else
-			i++;
+		printf("____________________________\nX = %d\n______________________\n", x);
+		(*cmd)->redirecter[x] = NULL;
 	}
 	return (0);
 }
@@ -552,8 +557,8 @@ char	*redirect_deleter(char	*pipes)
 	i = 0;
 	len = 0;
 	len = len_calculator(pipes);
-	printf ("len for malloc : %d\n", len);
-	tmp = malloc(sizeof(char)* (len + 1));
+	//printf ("len for malloc : %d\n", len);
+	tmp = ft_calloc((len + 1), sizeof(char));
 	//printf("len:%d\ni:%d\n", len, i);
 	len = 0;
 	while (pipes[i])
@@ -580,11 +585,11 @@ char	*redirect_deleter(char	*pipes)
 				i++;
 		}
 	}
-	printf ("len for index : %d\n", len);
+	//printf ("len for index : %d\n", len);
 	//printf("LEN PIPES = %d\n", len);
 	//printf("len:%d\ni:%d\n", len, i);
 	//printf("tmp[i]->|%c|\n", tmp[len - 1]);
-	tmp[len] = '\0';
+	//tmp[len] = '\0';
 	//printf("TMP = |%s|\n", tmp);
 	free(pipes);
 	return(tmp);
@@ -731,11 +736,8 @@ int	launch_exec(t_cmd **lst, char **envp)
 	var->save_pipe = 0;
     i = 0;
     int len_lst = ft_lstlen((*lst));
-	printf("nb of pipe (node) in list : %d\n", len_lst);
-	printf("lst = %p\n", (*lst));
     while (*lst)
     {
-		printf("HERE\n");
         i++;
         if ((*lst)->heredoc > 0)        //1. Heredoc check
             printf("ft_heredoc() a faire\n");
@@ -754,22 +756,21 @@ int	launch_exec(t_cmd **lst, char **envp)
         ft_check_access((*lst), envp);    //4 Cmd check
 
         if (i == 1 && (*lst)->open == 0){            //5. exec (cmd_first) | cmd_middle... | cmd_last
-            printf("go exec first cmd\n\n");
+            //printf("go exec first cmd\n\n");
             ft_first_fork((*lst), &var, envp);
             close(var->pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
             var->save_pipe = var->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
         }
 
         else if (i < len_lst && (*lst)->open == 0){//6. exec cmd_first | (cmd_middle...) | cmd_last
-            printf("go exec middle cmd\n\n");
+            //printf("go exec middle cmd\n\n");
             ft_middle_fork((*lst), &var, envp);
             close(var->pipe_fd[1]);
             var->save_pipe = var->pipe_fd[0];
         }
 
         else if (i == len_lst && (*lst)->open == 0){//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
-            printf("go exec last cmd\n\n");
-            
+            //printf("go exec last cmd\n\n");
             ft_last_fork((*lst), &var, envp);
             close(var->pipe_fd[0]);
             }
@@ -838,13 +839,14 @@ int main(int argc, char **argv, char **envp)
 			}
 			i = 0;
 			ft_printf_struct(cmd);
-			printf("\033[38;5;220mLancement de Launch_exec...\n\033[0m");
+			printf("\033[38;5;220mLancement de Launch_exec...\033[0m\n");
 			if (launch_exec(&cmd, envp) == -1)
 				printf ("Error exec\n");
-			printf("--------------------------------------------------------\n");
+			//printf("--------------------------------------------------------\n");
 			ft_lstclear(&cmd);
 			free(pipes);
 			free(pwd);
+			printf("\n");
 		}
 	}
 }

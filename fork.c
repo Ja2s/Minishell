@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/18 11:53:48 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 16:48:38 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 	else if (pid > 0)
 	{
 		int	status;
-		wait(&status);printf("status de l'enfant first %d\n", status);
+		wait(&status);
 		//printf("je suis dans le processus du parent du 1er fork, le pid de l'enfant est %d\n", pid);
 	}
 	return (0);
@@ -122,7 +122,7 @@ int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 	else
 	{
 		int	status;
-		wait(&status);printf("status de l'enfant midlle %d\n", status);
+		wait(&status);
 	}
 	return (0);
 }
@@ -172,7 +172,7 @@ int	ft_last_fork(t_cmd *elem, t_struct **var, char **envp)
 	else if (pid > 0)
 	{
 		int	status;
-		wait(&status);printf("status de l'enfant last %d\n", status);
+		wait(&status);
 		//printf("je suis dans le processus du parent du dernier fork, le pid de l'enfant est %d\n", pid);
 		close((*var)->pipe_fd[0]);
 	}
