@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/16 23:44:13 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/18 11:53:48 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 				exit(EXIT_FAILURE);
 			}
 		}
-		printf("\033[38;5;220mpath.cmd : \033[0m%s\n", elem->path_cmd);
-		printf("\033[38;5;220mpath.cmd : \033[0m%s\n", elem->args[1]);
 		execve(elem->path_cmd, elem->args, envp);
 		perror("execve 1 : failed ");
 		exit(0);

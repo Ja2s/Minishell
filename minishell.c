@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/17 14:21:33 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/18 13:23:01 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@ int	args_memory_alloc(char **input, t_cmd **cmd)
 	while (input[i])
 		i++;
 	(*cmd)->nb_args = i;
-	(*cmd)->args = malloc(sizeof(char *) * (*cmd)->nb_args);
+	(*cmd)->args = malloc(sizeof(char *)* i);
 	if (!(*cmd)->args)
 		return (-1);
 	return (0);
@@ -652,6 +652,7 @@ char *dolls_expander(char *rl)
 	int			p;
 	int			i;
 	
+	output = NULL;
 	i = 0;
 	if (rl)
 		output = ft_strdup(rl);
@@ -723,9 +724,7 @@ int	launch_exec(t_cmd *lst, char **envp)
 	var = malloc(sizeof(t_struct));
 	var->pipe_fd[0] = 0;
 	var->pipe_fd[1] = 0;
-	var->pipe_fd[2] = 0;
 	var->save_pipe = 0;
-	
     i = 0;
     int len_lst = ft_lstlen(lst);
 	printf("nb of pipe (node) in list : %d\n", len_lst);
@@ -788,8 +787,8 @@ int main(int argc, char **argv, char **envp)
 	t_var	*var;
 	t_cmd	*cmd = NULL;
 	t_cmd	*tmp = NULL;
-	(void)argc;
-	(void)argv;
+	argc = 0;
+	argv = NULL;
 	var = malloc(sizeof(t_var));
 	if (!var)
 		printf("t_var memory allocation Error\n");
@@ -802,7 +801,7 @@ int main(int argc, char **argv, char **envp)
 	while(1)
 	{
 		pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
-		//var->mini_env = env_copyer(envp, var); // je recupere et copie lenvironnement dans un autre tableau
+		var->mini_env = env_copyer(envp, var); // je recupere et copie lenvironnement dans un autre tableau
 		printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
 		rl = readline("\e[33m$> \e[37m");	//je recupere la ligne en entree dans une boucle infini afin de l'attendre
 		printf("==========RL : %s\n", rl);
@@ -836,7 +835,6 @@ int main(int argc, char **argv, char **envp)
 			i = 0;
 			ft_printf_struct(cmd);
 			printf("\033[38;5;220mLancement de Launch_exec...\n\033[0m");
-			printf("cmd = %p\n", cmd);
 			if (launch_exec(cmd, envp) == -1)
 				printf ("Error exec\n");
 			printf("--------------------------------------------------------\n");
