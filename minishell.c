@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/18 13:23:01 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:17:34 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,14 +252,15 @@ void	command_stocker(char **input, t_cmd **cmd)
 	int	i;
 
 	i = 0;
-	if (input[0][0] != '<' && input[0][0] != '>')
-		(*cmd)->args[i] = ft_strdup(input[i]);
-	i++;
+	// if (input[0][0] != '<' && input[0][0] != '>')
+	// 	(*cmd)->args[i] = ft_strdup(input[i]);
+	//i++;
 	while (input[i])
 	{
 		(*cmd)->args[i] = ft_strdup(input[i]);
 		i++;
 	}
+	(*cmd)->args[i] = NULL;
 }
 
 /*Cette fonction vas aller check le nombre d'arguments qui sont present dans la commande pour allouer la bonne taille au tableau associe*/
@@ -271,13 +272,13 @@ int	args_memory_alloc(char **input, t_cmd **cmd)
 	while (input[i])
 		i++;
 	(*cmd)->nb_args = i;
-	(*cmd)->args = malloc(sizeof(char *)* i);
+	(*cmd)->args = malloc(sizeof(char *) * (i + 1));
 	if (!(*cmd)->args)
 		return (-1);
 	return (0);
 }
 
-/*Cette fonction vas apper la fonction plus haute, (de base cetait plus propre et plus logique de l'avoir vu que je faisai pariel avec les flags)*/
+/*Cette fonction vas appeler la fonction plus haute, (de base cetait plus propre et plus logique de l'avoir vu que je faisai pariel avec les flags)*/
 int	memory_alloc(char **input, t_cmd **cmd)
 {
 	if (args_memory_alloc(input, cmd) == -1)
@@ -550,7 +551,7 @@ char	*redirect_deleter(char	*pipes)
 	tmp = NULL;
 	i = 0;
 	len = len_calculator(pipes);
-	tmp = malloc(sizeof(char)* len + 1);
+	tmp = malloc(sizeof(char)* (len + 1));
 	//printf("len:%d\ni:%d\n", len, i);
 	len = 0;
 	while (pipes[i])
@@ -716,7 +717,7 @@ char *dolls_expander(char *rl)
 	return (free(rl), output);	
 }
 
-int	launch_exec(t_cmd *lst, char **envp)
+int	launch_exec(t_cmd **lst, char **envp)
 {
     t_struct   	*var;
     int        	i;
@@ -726,20 +727,20 @@ int	launch_exec(t_cmd *lst, char **envp)
 	var->pipe_fd[1] = 0;
 	var->save_pipe = 0;
     i = 0;
-    int len_lst = ft_lstlen(lst);
+    int len_lst = ft_lstlen((*lst));
 	printf("nb of pipe (node) in list : %d\n", len_lst);
-	printf("lst = %p\n", lst);
-    while (lst)
+	printf("lst = %p\n", (*lst));
+    while (*lst)
     {
 		printf("HERE\n");
         i++;
-        if (lst->heredoc > 0)        //1. Heredoc check
+        if ((*lst)->heredoc > 0)        //1. Heredoc check
             printf("ft_heredoc() a faire\n");
-        lst->open = 0;
-        if (lst->redirecter)        //2. redirecter check
-            ft_redirecter(lst);
+        (*lst)->open = 0;
+        if ((*lst)->redirecter)        //2. redirecter check
+            ft_redirecter(*lst);
 
-        if (lst->next != NULL)        //3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe 
+        if ((*lst)->next != NULL)        //3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe 
         {
             if (pipe(var->pipe_fd) == -1){
                 perror("pipe failed");
@@ -747,32 +748,32 @@ int	launch_exec(t_cmd *lst, char **envp)
             }
         }
 
-        ft_check_access(lst, envp);    //4 Cmd check
+        ft_check_access((*lst), envp);    //4 Cmd check
 
-        if (i == 1 && lst->open == 0){            //5. exec (cmd_first) | cmd_middle... | cmd_last
+        if (i == 1 && (*lst)->open == 0){            //5. exec (cmd_first) | cmd_middle... | cmd_last
             printf("go exec first cmd\n\n");
-            ft_first_fork(lst, &var, envp);
+            ft_first_fork((*lst), &var, envp);
             close(var->pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
             var->save_pipe = var->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
         }
 
-        else if (i < len_lst && lst->open == 0){//6. exec cmd_first | (cmd_middle...) | cmd_last
+        else if (i < len_lst && (*lst)->open == 0){//6. exec cmd_first | (cmd_middle...) | cmd_last
             printf("go exec middle cmd\n\n");
-            ft_middle_fork(lst, &var, envp);
+            ft_middle_fork((*lst), &var, envp);
             close(var->pipe_fd[1]);
             var->save_pipe = var->pipe_fd[0];
         }
 
-        else if (i == len_lst && lst->open == 0){//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
+        else if (i == len_lst && (*lst)->open == 0){//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
             printf("go exec last cmd\n\n");
             
-            ft_last_fork(lst, &var, envp);
+            ft_last_fork((*lst), &var, envp);
             close(var->pipe_fd[0]);
             }
 
         //ft_free_token(lst);
-        ft_close(lst);
-        lst = lst->next;
+        ft_close(*lst);
+        (*lst) = (*lst)->next;
     }
     return (0);
 }
@@ -835,7 +836,7 @@ int main(int argc, char **argv, char **envp)
 			i = 0;
 			ft_printf_struct(cmd);
 			printf("\033[38;5;220mLancement de Launch_exec...\n\033[0m");
-			if (launch_exec(cmd, envp) == -1)
+			if (launch_exec(&cmd, envp) == -1)
 				printf ("Error exec\n");
 			printf("--------------------------------------------------------\n");
 			ft_lstclear(&cmd);

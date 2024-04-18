@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/16 17:37:50 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 13:55:27 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,13 @@ t_cmd	*ft_lstnew_minishell(void)
 	new_elem->next = NULL;
 	new_elem->start = NULL;
 	new_elem->heredoc = false;
+	new_elem->open = 0;
+	new_elem->path_cmd = NULL;
+	new_elem->slash_cmd = NULL;
+	new_elem->fd_infile = 0;
+	new_elem->fd_outfile = 0;
+	new_elem->i = 0;
+	new_elem->split_path = NULL;
+	
 	return (new_elem);
 }
