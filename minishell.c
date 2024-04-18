@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/18 15:17:34 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:36:10 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -551,6 +551,7 @@ char	*redirect_deleter(char	*pipes)
 	tmp = NULL;
 	i = 0;
 	len = len_calculator(pipes);
+	printf ("len for malloc : %d\n", len);
 	tmp = malloc(sizeof(char)* (len + 1));
 	//printf("len:%d\ni:%d\n", len, i);
 	len = 0;
@@ -558,7 +559,7 @@ char	*redirect_deleter(char	*pipes)
 	{
 		while (pipes[i] && pipes[i] != '<' && pipes[i] != '>')
 		{
-			if (pipes[i] == ' ' && tmp[len - 1] == ' ')
+			if (pipes[i] == ' '/*&& tmp[len - 1] == ' '*/)
 				i++;
 			else
 			{
@@ -578,6 +579,7 @@ char	*redirect_deleter(char	*pipes)
 				i++;
 		}
 	}
+	printf ("len for index : %d\n", len);
 	//printf("LEN PIPES = %d\n", len);
 	//printf("len:%d\ni:%d\n", len, i);
 	//printf("tmp[i]->|%c|\n", tmp[len - 1]);
@@ -802,7 +804,7 @@ int main(int argc, char **argv, char **envp)
 	while(1)
 	{
 		pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
-		var->mini_env = env_copyer(envp, var); // je recupere et copie lenvironnement dans un autre tableau
+		//var->mini_env = env_copyer(envp, var); // je recupere et copie lenvironnement dans un autre tableau
 		printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
 		rl = readline("\e[33m$> \e[37m");	//je recupere la ligne en entree dans une boucle infini afin de l'attendre
 		printf("==========RL : %s\n", rl);
