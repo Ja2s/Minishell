@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/18 16:48:38 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:15:37 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 	pid_t	pid;
 
 	pid = fork();
-	if (pid < 0){
+	if (pid < 0)
+	{
 		perror("fork first failed :");	
 		exit(1);
 	}
@@ -51,6 +52,7 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 				exit(EXIT_FAILURE);
 			}
 		}
+		//ft_close(elem);
 		execve(elem->path_cmd, elem->args, envp);
 		perror("execve 1 : failed ");
 		exit(0);

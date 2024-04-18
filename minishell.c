@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/18 17:04:04 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/18 22:28:58 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -755,25 +755,29 @@ int	launch_exec(t_cmd **lst, char **envp)
 
         ft_check_access((*lst), envp);    //4 Cmd check
 
-        if (i == 1 && (*lst)->open == 0){            //5. exec (cmd_first) | cmd_middle... | cmd_last
+        if (i == 1 && (*lst)->open == 0)
+		{   
+			//5. exec (cmd_first) | cmd_middle... | cmd_last
             //printf("go exec first cmd\n\n");
             ft_first_fork((*lst), &var, envp);
             close(var->pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
             var->save_pipe = var->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
         }
 
-        else if (i < len_lst && (*lst)->open == 0){//6. exec cmd_first | (cmd_middle...) | cmd_last
+        else if (i < len_lst && (*lst)->open == 0)
+		{	//6. exec cmd_first | (cmd_middle...) | cmd_last
             //printf("go exec middle cmd\n\n");
             ft_middle_fork((*lst), &var, envp);
             close(var->pipe_fd[1]);
             var->save_pipe = var->pipe_fd[0];
         }
 
-        else if (i == len_lst && (*lst)->open == 0){//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
+        else if (i == len_lst && (*lst)->open == 0)
+		{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
             //printf("go exec last cmd\n\n");
             ft_last_fork((*lst), &var, envp);
             close(var->pipe_fd[0]);
-            }
+        }
 
         //ft_free_token(lst);
         ft_close(*lst);
@@ -785,15 +789,15 @@ int	launch_exec(t_cmd **lst, char **envp)
 int main(int argc, char **argv, char **envp)
 {
 	char	*rl;
-	char	*pwd;
+	//char	*pwd;
 	char	**input;
 	char	**pipes;
 	int		i;
 	t_var	*var;
 	t_cmd	*cmd = NULL;
 	t_cmd	*tmp = NULL;
-	argc = 0;
-	argv = NULL;
+	(void)argc;
+	(void)argv;
 	var = malloc(sizeof(t_var));
 	if (!var)
 		printf("t_var memory allocation Error\n");
@@ -805,9 +809,9 @@ int main(int argc, char **argv, char **envp)
 	printf_title();
 	while(1)
 	{
-		pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
+		//pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
 		//var->mini_env = env_copyer(envp, var); // je recupere et copie lenvironnement dans un autre tableau
-		printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
+		//printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
 		rl = readline("\e[33m$> \e[37m");	//je recupere la ligne en entree dans une boucle infini afin de l'attendre
 		printf("==========RL : %s\n", rl);
 		if (syntaxe_error(rl) == 0)	//je check les erreurs de syntaxes et lance le programme seulement si tout est OK
@@ -845,8 +849,8 @@ int main(int argc, char **argv, char **envp)
 			//printf("--------------------------------------------------------\n");
 			ft_lstclear(&cmd);
 			free(pipes);
-			free(pwd);
-			printf("\n");
+			//free(pwd);
 		}
 	}
+	rl_clear_history();
 }

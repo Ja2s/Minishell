@@ -15,7 +15,7 @@
 
 
 
-void	ft_close(t_cmd *elem)
+void	 ft_close(t_cmd *elem)
 {
 	if (elem->redirecter && elem->fd_infile != -1)//s'il n'y a pas de redirecter les elem->fd ne sont pas initaliser
 	{
