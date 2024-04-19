@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/18 22:15:37 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:07:47 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 		//prend soit dans fd_infile en prioriter sil y en a un
 		if (elem->redirecter && elem->fd_infile > 0)
 		{
-			printf("IN0\n");
 			if (dup2(elem->fd_infile, STDIN_FILENO))
 			{
 				perror("dup2 middle fd_indile failed :");
@@ -109,7 +108,6 @@ int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 		//sinon dans pipe[1]
 		else if (elem->next)
 		{
-			printf("PI1\n");
 			if (dup2((*var)->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
 				perror("dup2 middle pipe[1] failed :");

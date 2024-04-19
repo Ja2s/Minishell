@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/18 22:41:48 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:09:10 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,15 @@ void	split_path_free(t_cmd *lst)
 	int	i;
 
 	i = 0;
-	while (lst->split_path[i])
-	{
-		free(lst->split_path[i]);
-		i++;
-	}
 	if (lst->split_path)
-		free(lst->split_path);
+	{
+		while (lst->split_path[i])
+		{
+			free(lst->split_path[i]);
+			i++;
+		}
+			free(lst->split_path);
+	}
 }
 
 void	path_cmd_free(t_cmd *lst)
@@ -94,14 +96,16 @@ void	slash_cmd_free(t_cmd *lst)
 
 void	ft_lstdelone(t_cmd *lst)
 {
-	args_free(lst);
-	red_free(lst);
-	del_free(lst);
-	split_path_free(lst);
-	path_cmd_free(lst);
-	slash_cmd_free(lst);
 	if (lst)
+	{
+		args_free(lst);
+		red_free(lst);
+		del_free(lst);
+		split_path_free(lst);
+		path_cmd_free(lst);
+		slash_cmd_free(lst);
 		free(lst);
+	}
 }
 
 void	ft_lstclear(t_cmd **lst)
@@ -789,7 +793,8 @@ int	launch_exec(t_cmd **lst, char **envp)
 			//5. exec (cmd_first) | cmd_middle... | cmd_last
             //printf("go exec first cmd\n\n");
             ft_first_fork((*lst), &var, envp);
-            close(var->pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
+			if (var->pipe_fd[1] > 3)
+            	close(var->pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
             var->save_pipe = var->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
         }
 
@@ -812,7 +817,38 @@ int	launch_exec(t_cmd **lst, char **envp)
         ft_close(*lst);
         (*lst) = (*lst)->next;
     }
+	free(var);
     return (0);
+}
+
+void	free_pipes(char **pipes)
+{
+	int	i;
+
+	i = 0;
+	if (pipes)
+	{
+		while(pipes[i])
+		{
+			free(pipes[i]);
+			i++;
+		}
+		free(pipes);
+	}
+}
+
+int	pipes_counter(char *rl)
+{
+	int	i;
+
+	i = 0;
+	while (rl[i])
+	{
+		if (rl[i] == '|')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -833,7 +869,6 @@ int main(int argc, char **argv, char **envp)
 	var->mini_env = NULL;
 	pipes = NULL;
 	rl = NULL;
-	
 	i = 0;
 	printf_title();
 	while(1)
@@ -850,7 +885,14 @@ int main(int argc, char **argv, char **envp)
 			printf("RL after cotes checker = \e[31m%s\n\e[0m", rl);
 			rl = dolls_expander(rl);
 			printf("RL  after expander = \e[31m%s\n\e[0m", rl);
+			//if (pipes_counter(rl) == 1)
 			pipes = ft_split(rl, '|');	//je separe chaque commande grace au pipe
+			// else
+			// {
+			// 	pipes = malloc(sizeof(char *) * 2);
+			// 	pipes[0] = ft_strdup(rl);
+			// 	pipes[1] = NULL;
+			// }
 			add_history(rl);
 			free(rl);
 			while (pipes[i])	//chaque commande est rangee par ligne dans un tableau afin de les traiter une a une 
@@ -863,7 +905,6 @@ int main(int argc, char **argv, char **envp)
 				redirecter(pipes[i], &tmp);	//je vais chercher toutes les redirects afin de les ranger dans une variable a part
 				pipes[i] = redirect_deleter(pipes[i]);	//je vai supprimer toutes les redirects de la ligne principale afin de ne plus les prendre en compte
 				input = ft_split(pipes[i], ' ');	//il me reste donc plus que la commande et les arguments separes d'espaces, je les separe donc et les range dans input
-				free(pipes[i]);
 				if (stock_input(input, &tmp) == 0)	//je vais recuperer le nom de la commande et les arguments dans input et les ranger dans la structure tmp
 				{
 					i++;	// la commande a ete traitee, je passe a la prochaine (si il y en a une)
@@ -872,12 +913,13 @@ int main(int argc, char **argv, char **envp)
 			}
 			i = 0;
 			ft_printf_struct(cmd);
+			//start = cmd;
 			printf("\033[38;5;220mLancement de Launch_exec...\033[0m\n");
 			if (launch_exec(&cmd, envp) == -1)
 				printf ("Error exec\n");
-			//printf("--------------------------------------------------------\n");
+			printf("--------------------------------------------------------\n");
 			ft_lstclear(&cmd);
-			free(pipes);
+			free_pipes(pipes);
 			//free(pwd);
 		}
 	}

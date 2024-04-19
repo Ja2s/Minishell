@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/18 13:55:27 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:49:49 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,5 @@ t_cmd	*ft_lstnew_minishell(void)
 	new_elem->fd_outfile = 0;
 	new_elem->i = 0;
 	new_elem->split_path = NULL;
-	
 	return (new_elem);
 }
