@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 16:50:46 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/16 23:35:48 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:16:49 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,10 @@ void    ft_free_access(t_cmd *elem);
 void    ft_free_token(t_cmd *elem);
 void    ft_free_lst(t_cmd *lst);
 void    ft_close(t_cmd *elem);
+int		rafters_checker(char *rl);
+int		double_pipe_checker(char *rl);
+int		cote_checker(char *rl);
+int		syntaxe_error(char	*rl);
+
 
 #endif

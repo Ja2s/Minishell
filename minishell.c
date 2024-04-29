@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/19 15:09:10 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:24:26 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 t_cmd	*ft_lstlast(t_cmd *lst)
 {
@@ -169,81 +169,7 @@ int	simple_cote_checker(char *rl, bool *cot, size_t *i)
 	return (0);
 }
 
-/*Cette fonction vas checker que toutes les cotes sont bien et si ce n'est pas le cas, provoque une erreur de syntaxe*/
-int	cote_checker(char *rl)
-{
-	size_t	i;
-	bool	cot;
-
-	cot = true;
-	i = 0;
-	while (rl[i])
-	{
-		if (rl[i] == 34)
-		{
-			if (double_cote_checker(rl, &cot, &i) == -1)
-				return (-1);
-		}
-		if (rl[i] == 39)
-		{
-			if (simple_cote_checker(rl, &cot, &i) == -1)
-				return (-1);
-		}
-		i++;
-	}
-	return (0);
-}
-
-/*Cette fonction vas checker qu'aucun double pipe n'exite dans lentree, si c'est le cas, retourne une erreur de syntaxe*/
-int	double_pipe_checker(char *rl)
-{
-	size_t	i;
-
-	i = 0;
-	while (rl[i])
-	{
-		if (rl[i] == '|' && rl[i + 1] == '|')
-			return (-1);
-		i++;
-	}
-	return (0);
-}
-
-/*Cette fonction bas checker les erreurs de syntaxes lie aux chevrons (exemple "<< <", ">>>" ou avec aucun nom de fichier)*/
-int	rafters_checker(char *rl)
-{
-	int	i;
-
-	i = 0;
-	while (rl[i])
-	{
-		if (rl[i] == '<' || rl[i] == '>')
-		{
-			i++;
-			if (rl[i] == '<' || rl[i] == '>')
-				i++;
-			while (rl[i] == ' ')
-				i++;
-			if (rl[i] == '\0' || rl[i] == '<' || rl[i] == '>' || rl[i] == '|')
-				return (-1);
-		}
-		else
-			i++;
-	}
-	return (0);
-}
-
 /*Cette fonction vas lancer chaque sous fonction de check pour les erreurs de syntaxes (fonctions plus hautez)*/
-int	syntaxe_error(char	*rl)
-{
-	if (rafters_checker(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
-	if (cote_checker(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
-	if (double_pipe_checker(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
-	return (0);
-}
 
 /*Cette fonction vas parcourir toute lentree, et passer en negatif les caracteres speciaux entre cotes, suivant ceux que nous voulons interpreter ou pas*/
 void	negative_checker(char *rl)

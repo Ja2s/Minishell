@@ -4,7 +4,10 @@ CC 			= cc
 
 CFLAGS		= -g3  -Wextra -Werror
 
-SRC			= dislpay_err.c check_access.c lst_add.c redirection.c fork.c minishell.c
+SRC			= dislpay_err.c check_access.c lst_add.c redirection.c fork.c minishell.c \
+				$(PARSING_SRC)syntaxe_errors.c
+
+PARSING_SRC	= parsing/
 
 OBJ 		= $(SRC:.c=.o)
 
