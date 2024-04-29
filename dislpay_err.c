@@ -6,11 +6,11 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:19:08 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/16 17:30:21 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:47:32 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "includes/minishell.h"
 #include "libft/libft.h"
 
 void	display_error_cmd(t_cmd *var)

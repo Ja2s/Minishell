@@ -6,14 +6,14 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 12:00:26 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/16 17:36:02 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:49:30 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include "../minishell.h"
+# include "../includes/minishell.h"
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lst_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/19 13:49:49 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:49:57 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "includes/minishell.h"
 #include "libft/libft.h"
 
 t_cmd	*ft_lstlast_minishell(t_cmd *lst)
