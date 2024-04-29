@@ -16,22 +16,31 @@ int	ft_builtins(t_cmd *elem)
 {
 	int	i;
 	int	builtins;
+	char	*cwd;
 
-	i = 0;
+	i = 1;
 	if (ft_strncmp(elem->args[0], "pwd", 3) == 0)
 	{
-		printf("%s\n", getcwd(NULL, 0));
+		cwd = getcwd(NULL, 0);
+		if (!cwd)
+		{
+			perror("getcwd");
+			exit(EXIT_FAILURE);
+		}
+		printf("%s\n", cwd);
+		free(cwd);
 		builtins = 1;
 	}
 	else if (ft_strncmp(elem->args[0], "echo", 4) == 0)
 	{
-		while (elem->args[++i])
-		{
-			if (ft_strncmp(elem->args[1], "-n", 2) == 0)
+		while (elem->args[i] && ft_strncmp(elem->args[i], "-n", 2) == 0)
 				i++;
-			printf("%s ", elem->args[i]);
+		while (elem->args[i])
+		{
+			printf("%s", elem->args[i]);
+			if (elem->args[++i]) printf(" ");  // Ajoute un espace entre les arguments
 		}
-		if (ft_strncmp(elem->args[1], "-n", 2) != 0)	
+		if (elem->args[1] && ft_strncmp(elem->args[1], "-n", 2) != 0)	
 			printf("\n");
 		builtins = 1;
 	}

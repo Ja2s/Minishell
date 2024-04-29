@@ -3,14 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 14:13:59 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/29 15:03:18 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+int	ft_heredoc(t_cmd *lst)
+{
+	int	i;
+	int	j;
+	char *rl = readline(">");
+
+	i = 0;
+	j = 0;
+	int len = 1;
+	int del = 0;
+	lst->heredoc_content = NULL;
+	lst->heredoc_content = malloc((len) * sizeof(char *));
+	printf("nb heredoc = %d\n", lst->nb_del);
+	while (i < lst->nb_del)
+	{
+			
+		while (lst->heredoc_content[j] && ft_strncmp(lst->heredoc_content[j], lst->delimiter[del], ft_strlen(lst->delimiter[j]) != 0))
+			lst->heredoc_content[j++] = readline(">");
+		i++;
+		del++;
+		j = 0;
+	}
+
+	while(lst->heredoc_content[j])
+		printf("%s", lst->heredoc_content[++j]);
+	exit(0);
+	/*while (lst->next)	
+	{
+		while (i < lst->nb_del)
+		{
+			while (ft_strncmp(lst->heredoc_content[++j], lst->delimiter[++j], ft_strlen(lst->delimiter[j]) != 0))
+				lst->heredoc_content[j] = readline(">");
+			i++;
+		}
+		
+		
+	}*/
+}
 
 int	launch_exec(t_cmd **lst, char **envp)
 {
@@ -37,6 +76,8 @@ int	launch_exec(t_cmd **lst, char **envp)
                 exit(EXIT_FAILURE);
             }
         }
+		if ((*lst)->heredoc == true)
+			ft_heredoc(*lst);
 		//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
         ft_check_access((*lst), envp);    //4 Cmd check
 
