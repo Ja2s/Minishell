@@ -6,11 +6,47 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:07:14 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 11:12:33 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:50:28 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../includes/minishell.h"
+
+int	double_cote_checker(char *rl, bool *cot, size_t *i)
+{
+	size_t	p;
+
+	*cot = false;
+	p = *i;
+	while (rl[p] && *cot == false)
+	{
+		p++;
+		if (rl[p] == 34)
+			*cot = true;
+	}
+	if (*cot == false)
+		return (-1);
+	*i = p;
+	return (0);
+}
+
+int	simple_cote_checker(char *rl, bool *cot, size_t *i)
+{
+	size_t	p;
+
+	*cot = false;
+	p = *i;
+	while (rl[p] && *cot == false)
+	{
+		p++;
+		if (rl[p] == 39)
+			*cot = true;
+	}
+	if (*cot == false)
+		return (-1);
+	*i = p;
+	return (0);
+}
 
 /*Cette fonction bas checker les erreurs de syntaxes lie aux chevrons (exemple "<< <", ">>>" ou avec aucun nom de fichier)*/
 int	rafters_checker(char *rl)

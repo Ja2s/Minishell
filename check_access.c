@@ -6,11 +6,11 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:24:55 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/16 17:30:27 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:49:44 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "includes/minishell.h"
 #include "libft/libft.h"
 
 //Fonction	: Verifie si la args[0] est good

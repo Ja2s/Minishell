@@ -3,15 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/19 15:07:47 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:47:51 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "includes/minishell.h"
 #include "libft/libft.h"
+
+int	ft_builtins(t_cmd *elem)
+{
+	int	i;
+	int	builtins;
+
+	i = 0;
+	if (ft_strncmp(elem->args[0], "pwd", 3) == 0)
+	{
+		printf("%s\n", getcwd(NULL, 0));
+		builtins = 1;
+	}
+	else if (ft_strncmp(elem->args[0], "echo", 4) == 0)
+	{
+		while (elem->args[++i])
+		{
+			if (ft_strncmp(elem->args[1], "-n", 2) == 0)
+				i++;
+			printf("%s ", elem->args[i]);
+		}
+		if (ft_strncmp(elem->args[1], "-n", 2) != 0)	
+			printf("\n");
+		builtins = 1;
+	}
+	else
+		builtins = 0;
+	return builtins;
+}
 
 int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 {
@@ -53,6 +81,8 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 			}
 		}
 		//ft_close(elem);
+		if (ft_builtins(elem) != 0)
+			exit(0);
 		execve(elem->path_cmd, elem->args, envp);
 		perror("execve 1 : failed ");
 		exit(0);
@@ -61,7 +91,6 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 	{
 		int	status;
 		wait(&status);
-		//printf("je suis dans le processus du parent du 1er fork, le pid de l'enfant est %d\n", pid);
 	}
 	return (0);
 }
@@ -173,7 +202,6 @@ int	ft_last_fork(t_cmd *elem, t_struct **var, char **envp)
 	{
 		int	status;
 		wait(&status);
-		//printf("je suis dans le processus du parent du dernier fork, le pid de l'enfant est %d\n", pid);
 		close((*var)->pipe_fd[0]);
 	}
 	return (0);
