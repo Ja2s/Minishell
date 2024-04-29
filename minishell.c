@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/19 15:09:10 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/26 18:42:47 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,12 +336,12 @@ int	ft_printf_struct(t_cmd *cmd)
 	while (cmd)
 	{
 		printf("\n\n\n\033[33m--------------=Command name=--------------\033[0m\n");
-		printf("	Commande -> |%s|\n", cmd->args[i]);
+		printf("\tCommande -> |%s|\n", cmd->args[i]);
 		i++;
 		printf("\033[33m----------------=Arguments=---------------\033[0m\n");
 		while (i < cmd->nb_args)
 			{
-				printf("		  Arg[%d] -> |%s|\n", i, cmd->args[i]);
+				printf("\tArg[%d] -> |%s|\n", i, cmd->args[i]);
 				i++;
 			}
 		i = 0;
@@ -350,7 +350,7 @@ int	ft_printf_struct(t_cmd *cmd)
 			printf("\033[33m-------------=Redirections=-------------\033[0m\n");
 			while(i < cmd->nb_red)
 			{
-				printf("		Redirecter -> |%s|\n", cmd->redirecter[i]);
+				printf("\tRedirecter -> |%s|\n", cmd->redirecter[i]);
 				i++;
 			}
 		}
@@ -502,7 +502,7 @@ int	redirecter(char *pipes, t_cmd **cmd)
 	if (len > 0)
 	{	
 		(*cmd)->redirecter = malloc(sizeof(char*) * (len + 1));
-		printf("____________________________\nLEN = %d\n______________________\n", len);
+		//printf("____________________________\nLEN = %d\n______________________\n", len);
 		len = 0;
 		while (pipes[i])
 		{
@@ -544,7 +544,7 @@ int	redirecter(char *pipes, t_cmd **cmd)
 			else
 				i++;
 		}
-		printf("____________________________\nX = %d\n______________________\n", x);
+		//printf("____________________________\nX = %d\n______________________\n", x);
 		(*cmd)->redirecter[x] = NULL;
 	}
 	return (0);
@@ -772,12 +772,9 @@ int	launch_exec(t_cmd **lst, char **envp)
     while (*lst)
     {
         i++;
-        if ((*lst)->heredoc > 0)        //1. Heredoc check
-            printf("ft_heredoc() a faire\n");
         (*lst)->open = 0;
         if ((*lst)->redirecter)        //2. redirecter check
             ft_redirecter(*lst);
-
         if ((*lst)->next != NULL)        //3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe 
         {
             if (pipe(var->pipe_fd) == -1){
@@ -785,12 +782,11 @@ int	launch_exec(t_cmd **lst, char **envp)
                 exit(EXIT_FAILURE);
             }
         }
-
+//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
         ft_check_access((*lst), envp);    //4 Cmd check
 
         if (i == 1 && (*lst)->open == 0)
-		{   
-			//5. exec (cmd_first) | cmd_middle... | cmd_last
+		{   //5. exec (cmd_first) | cmd_middle... | cmd_last
             //printf("go exec first cmd\n\n");
             ft_first_fork((*lst), &var, envp);
 			if (var->pipe_fd[1] > 3)
@@ -812,7 +808,6 @@ int	launch_exec(t_cmd **lst, char **envp)
             ft_last_fork((*lst), &var, envp);
             close(var->pipe_fd[0]);
         }
-
         //ft_free_token(lst);
         ft_close(*lst);
         (*lst) = (*lst)->next;
@@ -854,7 +849,7 @@ int	pipes_counter(char *rl)
 int main(int argc, char **argv, char **envp)
 {
 	char	*rl;
-	//char	*pwd;
+	char	*pwd;
 	char	**input;
 	char	**pipes;
 	int		i;
@@ -873,18 +868,14 @@ int main(int argc, char **argv, char **envp)
 	printf_title();
 	while(1)
 	{
-		//pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
+		pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
 		//var->mini_env = env_copyer(envp, var); // je recupere et copie lenvironnement dans un autre tableau
-		//printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
+		printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
 		rl = readline("\e[33m$> \e[37m");	//je recupere la ligne en entree dans une boucle infini afin de l'attendre
-		printf("==========RL : %s\n", rl);
 		if (syntaxe_error(rl) == 0)	//je check les erreurs de syntaxes et lance le programme seulement si tout est OK
 		{
-			printf("RL = \e[31m%s\n\e[0m", rl);
 			negative_checker(rl);		//je check toutes mes cotes et passe en negatif tout ce qui ne vas pas devoir etre interprete
-			printf("RL after cotes checker = \e[31m%s\n\e[0m", rl);
 			rl = dolls_expander(rl);
-			printf("RL  after expander = \e[31m%s\n\e[0m", rl);
 			//if (pipes_counter(rl) == 1)
 			pipes = ft_split(rl, '|');	//je separe chaque commande grace au pipe
 			// else

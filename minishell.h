@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 16:50:46 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/16 23:35:48 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/04/26 17:43:20 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,13 @@ typedef struct s_cmd
 	int				nb_args;
 	int				nb_red;
 	int				nb_del;
+	
 	int				heredoc;
 	char			**delimiter;
 	char			**redirecter;
 	char			**args;
 	struct s_cmd	*next;
+	
 	struct s_cmd	*start;
 	int				open;
 	int				fd_infile;
