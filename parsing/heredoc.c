@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:38:50 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 13:39:53 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/30 13:01:28 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,25 @@ int heredoc_copyer(char *pipes, t_cmd **cmd, int *i, int del)
 	return (0);
 }
 
+void	end_heredoc(char *pipes, t_cmd **cmd)
+{
+	size_t	i;
+
+	i = 0;
+	while(pipes[i])
+	{
+		if (pipes[i] == '<')
+		{
+			i++;
+			if (pipes[i] == '<')
+				(*cmd)->end_heredoc = 1;
+			else
+				(*cmd)->end_heredoc = 0;
+		}
+		i++;
+	}
+}
+
 int	heredoc_checker(char *pipes, t_cmd **cmd)
 {
 	int i;
@@ -75,6 +94,8 @@ int	heredoc_checker(char *pipes, t_cmd **cmd)
 	i = 0;
 	if (heredoc_memory_allocer(pipes, cmd) == -1)
 		return (-1);
+	end_heredoc(pipes, cmd);
+	//printf("End heredoc = %d\n", (*cmd)->end_heredoc);
 	while (pipes[i])
 	{
 		if (pipes[i] && pipes[i] == '<')

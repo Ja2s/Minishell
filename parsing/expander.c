@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 13:49:16 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/30 16:43:19 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,15 @@ void	expand_initializer(t_expand **var)
 	(*var)->value = NULL;
 	(*var)->value_len = 0;
 }
+void	free_expand(t_expand **var)
+{
+	if ((*var)->name)
+		free((*var)->name);
+	if ((*var)->value)
+		free((*var)->value);
+	if (*var)
+		free(*var);
+}
 
 char *dolls_expander(char *rl) 
 {
@@ -99,10 +108,12 @@ char *dolls_expander(char *rl)
 			expand_initializer(&var);
 			var->name_start = i + 1;
 			var->name_end = var->name_start;
-			while (output[var->name_end] && output[var->name_end] != ' ' \
-			&& output[var->name_end] != '$' && output[var->name_end] != 34)
+			while (output[var->name_end] && output[var->name_end] > 32 &&\
+			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39)
 				var->name_end++;
-			printf("startname = %c\nendname = %c\n", output[var->name_start], output[var->name_end]);
+			//var->name_end--;
+			//printf("startname = %c\nendname = %c\nLen name = %d\n", output[var->name_start], output[var->name_end], var->name_end - var->name_start);
+			//printf("index start : %d\nIndex end : %d\n", var->name_start, var->name_end);
 			var->name_len = var->name_end - var->name_start;
 			var->name = ft_substr(output, var->name_start, var->name_len);
 			var->value = getenv(var->name);
@@ -124,7 +135,7 @@ char *dolls_expander(char *rl)
 				{
 					rl[i] = var->value[p];
 					i++;
-					p++;		
+					p++;
 				}
 			}
 			p = var->name_end;
@@ -137,12 +148,13 @@ char *dolls_expander(char *rl)
 			}
 			rl[i] = '\0';
 			output = ft_strdup(rl);
-			printf("LEN OUTPUT |%ld|\nLEN RL |%ld|", ft_strlen(output), ft_strlen(rl));
+			//printf("LEN OUTPUT |%ld|\nLEN RL |%ld|", ft_strlen(output), ft_strlen(rl));
 			//printf ("\033[31mrl : |%s|\033[0m\n]", rl);
 			//printf ("\033[31moutput : |%s|\033[0m\n]", output);
 			//printf("\033[38;5;220mVarName : %s\033[0m\n", var->name);
 			//printf("\033[38;5;220mVarValue : %s\033[0m\n", var->value);
 			i = 0;
+			//free_expand(&var);
 		}
 		else
 			i++;

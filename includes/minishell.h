@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 14:07:21 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:08:17 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,5 +125,6 @@ int		heredoc_memory_allocer(char *pipes, t_cmd **cmd);
 int		heredoc_copyer(char *pipes, t_cmd **cmd, int *i, int del);
 int		heredoc_checker(char *pipes, t_cmd **cmd);
 void	free_pipes(char **pipes);
+void	command_positiver(char *pipes);
 
 #endif

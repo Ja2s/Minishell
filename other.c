@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:35:20 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 13:54:40 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/04/30 12:59:18 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_printf_struct(t_cmd *cmd)
 		printf("\033[33m----------------=Arguments=---------------\033[0m\n");
 		while (i < cmd->nb_args)
 			{
-				printf("		  Arg[%d] -> |%s|\n", i, cmd->args[i]);
+				printf("	Arg[%d] -> |%s|\n", i, cmd->args[i]);
 				i++;
 			}
 		i = 0;
