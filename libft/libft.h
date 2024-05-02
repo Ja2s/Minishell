@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 12:00:26 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 11:49:30 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/02 15:49:44 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,6 @@ char	**ft_split(char const *s, char c);
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 void	ft_lstadd_front(t_list **lst, t_list *new);
 void	ft_lstiter(t_list *lst, void (*f)(void *));
+int		ft_strcmp(const char *str1, const char *str2);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 17:08:17 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:05:56 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,13 @@ typedef struct s_struct
 	int		pipe_fd[2];
 	int 	save_pipe;
 }    		t_struct; 
+
+typedef struct s_env
+{
+	char			*name;
+	char			*value;
+	struct	s_env	*next;
+}					t_env;
 
 typedef struct s_cmd
 {
@@ -111,7 +118,7 @@ int		memory_alloc(char **input, t_cmd **cmd);
 int		stock_input(char **input, t_cmd **cmd);
 void	negative_checker(char *rl);
 void	expand_initializer(t_expand **var);
-char	*dolls_expander(char *rl);
+char	*dolls_expander(char *rl, t_env *mini_env);
 int		redirect_counter(char *pipes);
 int		redirecter(char *pipes, t_cmd **cmd);
 int		len_calculator(char	*pipes);
@@ -119,12 +126,14 @@ char	*redirect_deleter(char	*pipes);
 int		ft_printf_struct(t_cmd *cmd);
 void	printf_title();
 int		pipes_counter(char *rl);
-char	**env_copyer(char **envp, t_var *var);
+int		env_copyer(char **envp, t_env **mini_env);
 int		heredoc_counter(char *pipes);
 int		heredoc_memory_allocer(char *pipes, t_cmd **cmd);
 int		heredoc_copyer(char *pipes, t_cmd **cmd, int *i, int del);
 int		heredoc_checker(char *pipes, t_cmd **cmd);
 void	free_pipes(char **pipes);
 void	command_positiver(char *pipes);
+void	env_cmd(t_env *env);
+char	*ft_getenv(char *name, t_env *mini_env);
 
 #endif

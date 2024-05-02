@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/30 16:37:24 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:09:24 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,12 +175,12 @@ int main(int argc, char **argv, char **envp)
 	t_var	*var;
 	t_cmd	*cmd = NULL;
 	t_cmd	*tmp = NULL;
+	t_env	*mini_env = NULL;
 	(void)argc;
 	(void)argv;
 	var = malloc(sizeof(t_var));
 	if (!var)
 		printf("t_var memory allocation Error\n");
-	var->mini_env = NULL;
 	input = NULL;
 	rl = NULL;
 	i = 0;
@@ -190,13 +190,16 @@ int main(int argc, char **argv, char **envp)
 	while(1)
 	{
 		pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
-		//var->mini_env = env_copyer(envp, var); // je recupere et copie lenvironnement dans un autre tableau
+		if (env_copyer(envp, &mini_env) == -1) // je recupere et copie lenvironnement dans un autre tableau
+			return (printf("Malloc error\n"), -1);
 		printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
 		rl = readline("\e[33m$> \e[37m");	//je recupere la ligne en entree dans une boucle infini afin de l'attendre
+		if (ft_strcmp(rl, "envp") == 0)
+			env_cmd(mini_env);
 		if (syntaxe_error(rl) == 0)	//je check les erreurs de syntaxes et lance le programme seulement si tout est OK
 		{
 			negative_checker(rl);		//je check toutes mes cotes et passe en negatif tout ce qui ne vas pas devoir etre interprete
-			rl = dolls_expander(rl);
+			rl = dolls_expander(rl, mini_env);
 			//printf("after expand = %s\n", rl);
 			pipes = ft_split(rl, '|');	//je separe chaque commande grace au pipe
 			add_history(rl);
@@ -226,7 +229,7 @@ int main(int argc, char **argv, char **envp)
 				i++;
 			}
 			i = 0;
-			//ft_printf_struct(cmd); PRINT STRUCTURE --------------------------
+			ft_printf_struct(cmd); //PRINT STRUCTURE --------------------------
 			//start = cmd;
 			//printf("\033[38;5;220mLancement de Launch_exec...\033[0m\n"); LANCEMENT LAUNCH EXEC-----------
 			if (launch_exec(&cmd, envp) == -1)

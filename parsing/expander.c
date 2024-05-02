@@ -6,32 +6,130 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/30 16:43:19 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:05:41 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	**env_copyer(char **envp, t_var *var)
+t_env	*ft_envlast(t_env *lst)
 {
-	int 	i;
+	t_env	*tmp;
+
+	if (!lst)
+		return (NULL);
+	tmp = lst;
+	while (tmp->next)
+		tmp = tmp->next;
+	return (tmp);
+}
+
+void	ft_envadd_back(t_env **env, t_env *new)
+{
+	if (*env)
+		ft_envlast(*env)->next = new;
+	else
+		*env = new;
+}
+
+t_env	*env_new(void)
+{
+	t_env	*new_elem;
+
+	new_elem = malloc(sizeof(t_env));
+	if (!new_elem)
+		return (NULL);
+	new_elem->name = NULL;
+	new_elem->next = NULL;
+	new_elem->value = NULL;
+	return (new_elem);
+}
+
+char	*env_extractor(char	*env, int choice)
+{
+	int		i;
+	int		x;
 	int		len;
-	char	**mini_env;
+	char	*str;
 
 	len = 0;
+	x = 0;
 	i = 0;
-	while (envp[len])
-		len++;
-	mini_env = malloc(sizeof(char *)* len);
-	if (!mini_env)
-		return (NULL);
-	var->len_env = len;
-	while (i < len)
+	str = NULL;
+	if (choice == 1)
 	{
-		mini_env[i] = ft_strdup(envp[i]);
-		i++;
+		while(env[i] && env[i] != '=')
+			i++;
+		str = ft_calloc(i, sizeof(char));
+		i = 0; 
+		while(env[i] && env[i] != '=')
+		{
+			str[i] = env[i]; 
+			i++;
+		}
 	}
-	return (mini_env);
+	else if (choice == 2)
+	{
+		while (env[i] && env[i] != '=')
+			i++;
+		i++;
+		x = i;
+		while (env[i])
+		{
+			i++;
+			len++;
+		}
+		str = ft_calloc(len, sizeof(char));
+		i = 0;
+		while (env[x])
+			str[i++] = env[x++];
+	}
+	return (str);
+}
+
+int	env_copyer(char **envp, t_env **mini_env)
+{
+	int		i;
+	t_env	*tmp;
+
+	i = 0;
+	while(envp[i])
+	{
+		if((tmp = env_new()))
+		{
+			tmp->name = env_extractor(envp[i], 1);
+			tmp->value = env_extractor(envp[i], 2);
+			ft_envadd_back(mini_env, tmp);
+			i++;
+		}
+		else
+			return (-1);
+	}
+	return (0);
+}
+
+void	doll_heredoc(char **rl)
+{
+	int	i;
+	
+	i = 0;
+	while((*rl)[i])
+	{
+		if ((*rl)[i] == '<')
+		{
+			i++;
+			if ((*rl)[i] == '<')
+			{
+				i++;
+				while ((*rl)[i] == ' ')
+					i++;
+				if ((*rl)[i] == '$')
+					(*rl)[i] = (*rl)[i] * -1;
+			}
+		}
+		else
+			i++;
+	}
 }
 
 /*Cette fonction vas parcourir toute lentree, et passer en negatif les caracteres speciaux entre cotes, suivant ceux que nous voulons interpreter ou pas*/
@@ -42,6 +140,7 @@ void	negative_checker(char *rl)
 
 	i = 0;
 	len = ft_strlen(rl);
+	doll_heredoc(&rl);
 	while (i < len)
 	{
 		if (rl[i] == 34)
@@ -49,7 +148,7 @@ void	negative_checker(char *rl)
 			i++;
 			while (rl[i] != 34)
 			{
-				if (rl[i] == ' ' || rl[i] == '<' || rl[i] == '>')
+				if (rl[i] == ' ' || rl[i] == '<' || rl[i] == '>' || rl[i] == 39)
 					rl[i] = rl[i] * -1;
 				i++;
 			}
@@ -88,7 +187,7 @@ void	free_expand(t_expand **var)
 		free(*var);
 }
 
-char *dolls_expander(char *rl) 
+char *dolls_expander(char *rl, t_env *mini_env) 
 {
 	t_expand	*var;
 	char		*output;
@@ -111,15 +210,14 @@ char *dolls_expander(char *rl)
 			while (output[var->name_end] && output[var->name_end] > 32 &&\
 			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39)
 				var->name_end++;
-			//var->name_end--;
 			//printf("startname = %c\nendname = %c\nLen name = %d\n", output[var->name_start], output[var->name_end], var->name_end - var->name_start);
 			//printf("index start : %d\nIndex end : %d\n", var->name_start, var->name_end);
 			var->name_len = var->name_end - var->name_start;
 			var->name = ft_substr(output, var->name_start, var->name_len);
-			var->value = getenv(var->name);
+			var->value = ft_getenv(var->name, mini_env);
 			if (var->value)
 				var->value_len = ft_strlen(var->value);
-			rl = malloc(sizeof(char)* var->value_len + i + 1);
+			rl = malloc(sizeof(char)* var->value_len + i + 2);
 			if (!rl)
 				printf("ERROR MALLOC EXPAND\n\n\n\n");
 			i = 0;
@@ -154,7 +252,6 @@ char *dolls_expander(char *rl)
 			//printf("\033[38;5;220mVarName : %s\033[0m\n", var->name);
 			//printf("\033[38;5;220mVarValue : %s\033[0m\n", var->value);
 			i = 0;
-			//free_expand(&var);
 		}
 		else
 			i++;
