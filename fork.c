@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/29 14:12:27 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:46:46 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int	ft_builtins(t_cmd *elem)
+int	ft_builtins(t_cmd *lst)
 {
 	int	i;
 	int	builtins;
 	char	*cwd;
 
 	i = 1;
-	if (ft_strncmp(elem->args[0], "pwd", 3) == 0)
+	if (ft_strncmp(lst->args[0], "pwd", 3) == 0)
 	{
 		cwd = getcwd(NULL, 0);
 		if (!cwd)
@@ -31,16 +31,16 @@ int	ft_builtins(t_cmd *elem)
 		free(cwd);
 		builtins = 1;
 	}
-	else if (ft_strncmp(elem->args[0], "echo", 4) == 0)
+	else if (ft_strncmp(lst->args[0], "echo", 4) == 0)
 	{
-		while (elem->args[i] && ft_strncmp(elem->args[i], "-n", 2) == 0)
+		while (lst->args[i] && ft_strncmp(lst->args[i], "-n", 2) == 0)
 				i++;
-		while (elem->args[i])
+		while (lst->args[i])
 		{
-			printf("%s", elem->args[i]);
-			if (elem->args[++i]) printf(" ");  // Ajoute un espace entre les arguments
+			printf("%s", lst->args[i]);
+			if (lst->args[++i]) printf(" ");  // Ajoute un espace entre les arguments
 		}
-		if (elem->args[1] && ft_strncmp(elem->args[1], "-n", 2) != 0)	
+		if (lst->args[1] && ft_strncmp(lst->args[1], "-n", 2) != 0)	
 			printf("\n");
 		builtins = 1;
 	}
@@ -49,7 +49,58 @@ int	ft_builtins(t_cmd *elem)
 	return builtins;
 }
 
-int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
+char	**ft_cp_heredoc(t_cmd *lst)
+{
+	size_t		i;
+	size_t		j;
+	char	**tab;
+
+	i = 0;
+	j = 0;
+	tab = NULL;
+	while (lst->heredoc_content && lst->heredoc_content[i])
+		i++;
+	while (lst->args && lst->args[j])
+		j++;
+	tab = malloc(sizeof(char*) * (i + j + 1));
+	i = 0;
+	j = 0;
+	while (lst->args[j])
+	{
+		tab[j] = ft_strdup(lst->args[j]);
+		j++;
+	}
+	while (lst->heredoc_content[i])
+	{
+		tab[j] = ft_strdup(lst->heredoc_content[i]);
+		i++;
+	}
+	tab[i + j] = NULL;
+	return (tab);
+}
+/*
+void	ft_display_arg(t_cmd *lst)
+{
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (lst != NULL)
+	{
+		printf("arg %d :\n", i);
+		i++;
+		while (lst->args && lst->args[j])
+		{
+			printf("%d|%s|\n", j, lst->args[j]);
+			j++;
+		}
+	j = 0;
+	lst = lst->next;
+	}
+}*/
+
+int	ft_first_fork(t_cmd *lst, t_struct **var, char **envp)
 {
 	pid_t	pid;
 
@@ -62,25 +113,25 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 	if (pid == 0)
 	{
 		//prend dans fd_infile en prioriter sinon dans stdin
-		if (elem->redirecter && elem->fd_infile > 0)// < f1
+		if (lst->redirecter && lst->fd_infile > 0)// < f1
 		{
-			if (dup2(elem->fd_infile, STDIN_FILENO) == -1)
+			if (dup2(lst->fd_infile, STDIN_FILENO) == -1)
 			{
 				perror("dup2 first fd_infile failed : ");
 				exit(EXIT_FAILURE);
 			}
 		}
 		//envoi dans fd_outfile en prioriter s'il y en a un
-		if (elem->redirecter && elem->fd_outfile > 0)// > f2
+		if (lst->redirecter && lst->fd_outfile > 0)// > f2
 		{
-			if (dup2(elem->fd_outfile, STDOUT_FILENO) == -1)
+			if (dup2(lst->fd_outfile, STDOUT_FILENO) == -1)
 			{
 				perror("dup2 first fd_outfile failed : ");
 				exit(EXIT_FAILURE);
 			}
 		}
 		//sinon dans pipe[1] si il y a un next, sinon dans stdout
-		else if (elem->next) // --> | cmd
+		else if (lst->next) // --> | cmd
 		{
 			if (dup2((*var)->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
@@ -88,10 +139,19 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 				exit(EXIT_FAILURE);
 			}
 		}
-		//ft_close(elem);
-		if (ft_builtins(elem) != 0)
+		//ft_close(lst);
+		if (ft_builtins(lst) != 0)
 			exit(0);
-		execve(elem->path_cmd, elem->args, envp);
+		/*if (lst->heredoc_content && lst->end_heredoc == 1)
+		{
+			printf("ARG AV \n");
+			ft_display_arg(lst);
+			lst->args = ft_cp_heredoc(lst);
+			printf("\n\nARG AP \n");
+			ft_display_arg(lst);
+			exit(0);
+		}*/
+		execve(lst->path_cmd, lst->args, envp);
 		perror("execve 1 : failed ");
 		exit(0);
 	}
@@ -103,7 +163,7 @@ int	ft_first_fork(t_cmd *elem, t_struct **var, char **envp)
 	return (0);
 }
 
-int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
+int	ft_middle_fork(t_cmd *lst, t_struct **var, char **envp)
 {
 	pid_t	pid;
 
@@ -116,9 +176,9 @@ int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 	else if (pid == 0)
 	{
 		//prend soit dans fd_infile en prioriter sil y en a un
-		if (elem->redirecter && elem->fd_infile > 0)
+		if (lst->redirecter && lst->fd_infile > 0)
 		{
-			if (dup2(elem->fd_infile, STDIN_FILENO))
+			if (dup2(lst->fd_infile, STDIN_FILENO))
 			{
 				perror("dup2 middle fd_indile failed :");
 				exit(EXIT_FAILURE);
@@ -134,16 +194,16 @@ int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 			}
 		}
 		//envoi dans fd_outfile en prioriter sil y en a un
-		if (elem->redirecter && elem->fd_outfile > 0)
+		if (lst->redirecter && lst->fd_outfile > 0)
 		{
-			if (dup2(elem->fd_outfile, STDOUT_FILENO))
+			if (dup2(lst->fd_outfile, STDOUT_FILENO))
 			{
 				perror("dup2 middle fd_outfile failed :");
 				exit(EXIT_FAILURE);
 			}
 		}
 		//sinon dans pipe[1]
-		else if (elem->next)
+		else if (lst->next)
 		{
 			if (dup2((*var)->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
@@ -151,9 +211,9 @@ int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 				exit(EXIT_FAILURE);
 			}
 		}
-		execve(elem->path_cmd, elem->args, envp);
+		execve(lst->path_cmd, lst->args, envp);
 		perror("execve 2 failed : ");
-		//free elem->path et args
+		//free lst->path et args
 		exit(0);
 	}
 	else
@@ -164,7 +224,7 @@ int	ft_middle_fork(t_cmd *elem, t_struct **var, char **envp)
 	return (0);
 }
 
-int	ft_last_fork(t_cmd *elem, t_struct **var, char **envp)
+int	ft_last_fork(t_cmd *lst, t_struct **var, char **envp)
 {
 	pid_t	pid;
 
@@ -176,9 +236,9 @@ int	ft_last_fork(t_cmd *elem, t_struct **var, char **envp)
 	if (pid == 0)
 	{
 		//prend soit dans infile en prioriter sil y en a un
-		if (elem->redirecter && elem->fd_infile > 0)// < f1
+		if (lst->redirecter && lst->fd_infile > 0)// < f1
 		{
-			if (dup2(elem->fd_infile, STDIN_FILENO) == -1)
+			if (dup2(lst->fd_infile, STDIN_FILENO) == -1)
 			{
 				perror("dup2 last fd_infile failed : ");
 				exit(EXIT_FAILURE);
@@ -194,15 +254,15 @@ int	ft_last_fork(t_cmd *elem, t_struct **var, char **envp)
 			}
 		}
 		//envoi soit dans fd_outfile s'il y en a un soit dans stdout qui reste inchange (pas de dup2)
-		if (elem->redirecter && elem->fd_outfile > 0)// > f2
+		if (lst->redirecter && lst->fd_outfile > 0)// > f2
 		{
-			if (dup2(elem->fd_outfile, STDOUT_FILENO) == -1)
+			if (dup2(lst->fd_outfile, STDOUT_FILENO) == -1)
 			{
 				perror("dup2 last fd_outfile failed : ");
 				exit(EXIT_FAILURE);
 			}
 		}
-		execve(elem->path_cmd, elem->args, envp);
+		execve(lst->path_cmd, lst->args, envp);
 		perror("execve 3 : failed ");
 		exit(0);
 	}

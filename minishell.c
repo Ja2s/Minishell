@@ -3,57 +3,99 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/02 16:09:24 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:24:34 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int	ft_heredoc(t_cmd *lst)
+char	**ft_realloc(char *rl, t_cmd *lst)
 {
-	int	i;
-	int	j;
-	char *rl = readline(">");
+	size_t		i;
+	char	**tab;
 
+	tab = NULL;
 	i = 0;
-	j = 0;
-	int len = 1;
-	int del = 0;
-	lst->heredoc_content = NULL;
-	lst->heredoc_content = malloc((len) * sizeof(char *));
-	printf("nb heredoc = %d\n", lst->nb_del);
-	while (i < lst->nb_del)
-	{
-			
-		while (lst->heredoc_content[j] && ft_strncmp(lst->heredoc_content[j], lst->delimiter[del], ft_strlen(lst->delimiter[j]) != 0))
-			lst->heredoc_content[j++] = readline(">");
+	while (lst->heredoc_content && lst->heredoc_content[i])
 		i++;
-		del++;
-		j = 0;
-	}
-
-	while(lst->heredoc_content[j])
-		printf("%s", lst->heredoc_content[++j]);
-	exit(0);
-	/*while (lst->next)	
+	if (i == 0)
 	{
-		while (i < lst->nb_del)
-		{
-			while (ft_strncmp(lst->heredoc_content[++j], lst->delimiter[++j], ft_strlen(lst->delimiter[j]) != 0))
-				lst->heredoc_content[j] = readline(">");
-			i++;
-		}
-		
-		
-	}*/
+		tab = malloc(sizeof(char *) * 2);
+		tab[i] = ft_strdup(rl);
+		tab[i + 1] = NULL;
+		return (tab);
+	}
+	tab = malloc(sizeof(char*) * (i + 2));
+	i = 0;
+	while (lst->heredoc_content[i])
+	{
+		tab[i] = ft_strdup(lst->heredoc_content[i]);
+		i++;
+	}
+	tab[i] = ft_strdup(rl);
+	tab[i + 1] = NULL;
+	return (tab);
 }
 
-int	launch_exec(t_cmd **lst, char **envp)
+int ft_heredoc(t_cmd *lst) 
 {
-    t_struct   	*var;
+    int i = 0;  // Indice du nombre de Heredocs
+    char *line;
+
+    lst->heredoc_content = NULL;
+	while (lst)
+	{
+		while (i < lst->nb_del) 
+		{
+			line = readline(">");
+			while (ft_strncmp(line, lst->delimiter[i], ft_strlen(line)) != 0)
+			{
+				lst->heredoc_content = ft_realloc(line, lst);
+				free(line);  // Libère la mémoire allouée par readline
+				line = readline(">");
+			}
+			printf("end heredoc\n");
+			i++;
+			if (i  < lst->nb_del)
+			{
+				//ft_free_heredoc(lst)
+				lst->heredoc_content = NULL; //delete old heredoc
+			}
+		}
+		i = 0;
+		lst = lst->next;
+	}
+
+    return 0;
+}
+
+void	ft_display_heredoc(t_cmd *lst)
+{
+	int i;
+	int j;
+
+	i = 1;
+	j = 0;
+	while (lst != NULL)
+	{
+		printf("\nheredoc %d :\n", i);
+		i++;
+		while (lst->heredoc_content && lst->heredoc_content[j])
+		{
+			printf("%d|%s|\n", j, lst->heredoc_content[j]);
+			j++;
+		}
+	j = 0;
+	lst = lst->next;
+	}
+}
+
+int	launch_exec(t_cmd *lst, char **envp)
+{
+	t_struct   	*var;
     int        	i;
 
 	var = malloc(sizeof(t_struct));
@@ -61,14 +103,14 @@ int	launch_exec(t_cmd **lst, char **envp)
 	var->pipe_fd[1] = 0;
 	var->save_pipe = 0;
     i = 0;
-    int len_lst = ft_lstlen((*lst));
-    while (*lst)
+    int len_lst = ft_lstlen(lst);
+    while (lst)
     {
         i++;
-        (*lst)->open = 0;
-        if ((*lst)->redirecter)        //2. redirecter check
-            ft_redirecter(*lst);
-        if ((*lst)->next != NULL)        //3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe 
+        lst->open = 0;
+        if (lst->redirecter)		//2. redirecter check
+            ft_redirecter(lst);
+        if (lst->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe 
         {
             if (pipe(var->pipe_fd) == -1)
 			{
@@ -76,41 +118,46 @@ int	launch_exec(t_cmd **lst, char **envp)
                 exit(EXIT_FAILURE);
             }
         }
-		if ((*lst)->heredoc == true)
-			ft_heredoc(*lst);
+		if (lst->heredoc == true)
+		{
+			ft_heredoc(lst);
+			ft_display_heredoc(lst);
+		}
+		if (!lst->args[0])
+			return(0);
 		//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
-        ft_check_access((*lst), envp);    //4 Cmd check
-
-        if (i == 1 && (*lst)->open == 0)
+        ft_check_access(lst, envp);    //4 Cmd check
+        if (i == 1 && lst->open == 0)
 		{   //5. exec (cmd_first) | cmd_middle... | cmd_last
             //printf("go exec first cmd\n\n");
-            ft_first_fork((*lst), &var, envp);
+            ft_first_fork(lst, &var, envp);
 			if (var->pipe_fd[1] > 3)
             	close(var->pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
             var->save_pipe = var->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
         }
 
-        else if (i < len_lst && (*lst)->open == 0)
+        else if (i < len_lst && lst->open == 0)
 		{	//6. exec cmd_first | (cmd_middle...) | cmd_last
             //printf("go exec middle cmd\n\n");
-            ft_middle_fork((*lst), &var, envp);
+            ft_middle_fork(lst, &var, envp);
             close(var->pipe_fd[1]);
             var->save_pipe = var->pipe_fd[0];
         }
 
-        else if (i == len_lst && (*lst)->open == 0)
+        else if (i == len_lst && lst->open == 0)
 		{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
             //printf("go exec last cmd\n\n");
-            ft_last_fork((*lst), &var, envp);
+            ft_last_fork(lst, &var, envp);
             close(var->pipe_fd[0]);
         }
         //ft_free_token(lst);
-        ft_close(*lst);
-        (*lst) = (*lst)->next;
+        ft_close(lst);
+        lst = lst->next;
     }
 	free(var);
     return (0);
 }
+
 
 void	command_positiver(char *pipes)
 {
@@ -232,7 +279,7 @@ int main(int argc, char **argv, char **envp)
 			ft_printf_struct(cmd); //PRINT STRUCTURE --------------------------
 			//start = cmd;
 			//printf("\033[38;5;220mLancement de Launch_exec...\033[0m\n"); LANCEMENT LAUNCH EXEC-----------
-			if (launch_exec(&cmd, envp) == -1)
+			if (launch_exec(cmd, envp) == -1)
 				printf ("Error exec\n");
 			ft_lstclear(&cmd);
 			free_pipes(pipes);
