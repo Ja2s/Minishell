@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntaxe_errors.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:07:14 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 11:50:28 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/04 00:57:40 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,13 @@ int	cote_checker(char *rl)
 	return (0);
 }
 
+int	starter_pipe(char *rl)
+{
+	if (rl[0] == '|')
+		return(-1);
+	return (0);
+}
+
 int	syntaxe_error(char	*rl)
 {
 	if (rafters_checker(rl) == -1)
@@ -119,6 +126,8 @@ int	syntaxe_error(char	*rl)
 	if (cote_checker(rl) == -1)
 		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
 	if (double_pipe_checker(rl) == -1)
+		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
+	if (starter_pipe(rl) == -1)
 		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
 	return (0);
 }
