@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 15:50:24 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 16:44:39 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int	launch_exec(t_cmd *lst, char **envp, t_env *mini_env)
+int	launch_exec(t_cmd *lst, t_env *mini_env)
 {
 	t_struct   	*var;
     int        	i;
@@ -49,7 +49,7 @@ int	launch_exec(t_cmd *lst, char **envp, t_env *mini_env)
 		if (!lst->args[0])
 			return(0);
 		//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
-        ft_check_access(lst, envp);    //4 Cmd check
+        ft_check_access(lst, tab_mini_env);    //4 Cmd check
         if (i == 1 && lst->open == 0)
 		{   //5. exec (cmd_first) | cmd_middle... | cmd_last
             //printf("go exec first cmd\n\n");
@@ -146,6 +146,7 @@ int main(int argc, char **argv, char **envp)
 	t_cmd	*cmd = NULL;
 	t_cmd	*tmp = NULL;
 	t_env	*mini_env = NULL;
+	t_env	*tmpenv = NULL;
 	(void)argc;
 	(void)argv;
 	var = malloc(sizeof(t_var));
@@ -157,11 +158,12 @@ int main(int argc, char **argv, char **envp)
 	input_copy = NULL;
 	input = NULL;
 	printf_title();
+	if (env_copyer(envp, &mini_env) == -1) // je recupere et copie lenvironnement dans un autre tableau
+		return (printf("Malloc error\n"), -1);
+
 	while(1)
 	{
 		pwd = getcwd(NULL, 0);	//je recupere le chemin d'acces pour l'afficher tel fish
-		if (env_copyer(envp, &mini_env) == -1) // je recupere et copie lenvironnement dans un autre tableau
-			return (printf("Malloc error\n"), -1);
 		printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
 		rl = readline("\e[33m$> \e[37m");	//je recupere la ligne en entree dans une boucle infini afin de l'attendre
 		if (syntaxe_error(rl) == 0)	//je check les erreurs de syntaxes et lance le programme seulement si tout est OK
@@ -200,7 +202,7 @@ int main(int argc, char **argv, char **envp)
 			//ft_printf_struct(cmd); //PRINT STRUCTURE --------------------------
 			//start = cmd;
 			//printf("\033[38;5;220mLancement de Launch_exec...\033[0m\n"); LANCEMENT LAUNCH EXEC-----------
-			if (launch_exec(cmd, envp, mini_env) == -1)
+			if (launch_exec(cmd, mini_env) == -1)
 				printf ("Error exec\n");
 			ft_lstclear(&cmd);
 			free_pipes(pipes);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 15:38:58 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 16:49:23 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ char	*ft_getenv(char *name, t_env *mini_env)
 int	ft_builtins(t_cmd *lst, t_env *mini_env)
 {
 	int	i;
-	int	builtins;
 	char	*cwd;
 
 	i = 1;
@@ -55,7 +54,7 @@ int	ft_builtins(t_cmd *lst, t_env *mini_env)
 		}
 		printf("%s\n", cwd);
 		free(cwd);
-		builtins = 1;
+		return (1);
 	}
 	else if (ft_strcmp(lst->args[0], "echo") == 0)
 	{
@@ -68,12 +67,13 @@ int	ft_builtins(t_cmd *lst, t_env *mini_env)
 		}
 		if (lst->args[1] && ft_strncmp(lst->args[1], "-n", 2) != 0)	
 			printf("\n");
-		builtins = 1;
+		return (1);
 	}
 	else if (ft_strcmp(lst->args[0], "env") == 0)
+	{
 			env_cmd(mini_env);
-	else
-		builtins = 0;
-	return builtins;
+			return (1);
+	}
+	return 0;
 }
 

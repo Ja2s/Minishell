@@ -6,7 +6,7 @@ CFLAGS		= -g3  -Wextra -Werror
 
 SRC			= 	$(EXEC_SRC)dislpay_err.c $(EXEC_SRC)check_access.c  \
 				$(EXEC_SRC)redirection.c $(EXEC_SRC)fork.c minishell.c \
-				$(OTHER_SRC)other.c $(OTHER_SRC)builtin.c $(OTHER_SRC)lst_add.c \
+				$(OTHER_SRC)other.c $(OTHER_SRC)builtins.c $(OTHER_SRC)lst_add.c \
 				$(EXEC_SRC)heredoc.c $(OTHER_SRC)env.c \
 				$(PARSING_SRC)syntaxe_errors.c $(PARSING_SRC)utilities.c \
 				$(PARSING_SRC)utilities_nd.c $(PARSING_SRC)commands_stocker.c \
