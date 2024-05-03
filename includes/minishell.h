@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/02 16:05:56 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:33:07 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,9 @@ void    ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int		ft_lstlen(t_cmd *elem);
 void    ft_redirecter(t_cmd *elem);
 int		ft_check_access(t_cmd *elem, char **envp);
-int		ft_first_fork(t_cmd *elem, t_struct **var, char **envp);
-int		ft_middle_fork(t_cmd *elem, t_struct **var, char **envp);
-int		ft_last_fork(t_cmd *elem, t_struct **var, char **envp);
+int		ft_first_fork(t_cmd *lst, t_struct **var, t_env	*mini_env, char	**tab_mini_env);
+int		ft_middle_fork(t_cmd *lst, t_struct **var, char **tab_mini_env);
+int		ft_last_fork(t_cmd *lst, t_struct **var, char **tab_mini_env);
 void    display_error_cmd(t_cmd *elem);
 void    display_no_such(t_cmd *elem);
 void    ft_free_access(t_cmd *elem);
@@ -135,5 +135,9 @@ void	free_pipes(char **pipes);
 void	command_positiver(char *pipes);
 void	env_cmd(t_env *env);
 char	*ft_getenv(char *name, t_env *mini_env);
+char	*line_extractor(t_env *mini_env);
+int		ft_envsize(t_env *mini_env);
+char	**ft_list_to_tab(t_env *mini_env);
+
 
 #endif

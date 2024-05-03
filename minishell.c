@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 11:20:43 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:33:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,15 @@ void	ft_display_heredoc(t_cmd *lst)
 	}
 }
 
-int	launch_exec(t_cmd *lst, char **envp)
+int	launch_exec(t_cmd *lst, char **envp, t_env *mini_env)
 {
 	t_struct   	*var;
     int        	i;
+	char	**tab_mini_env;
 
+	tab_mini_env = ft_list_to_tab(mini_env);
+	if (!tab_mini_env)
+		return (-1);
 	var = malloc(sizeof(t_struct));
 	var->pipe_fd[0] = 0;
 	var->pipe_fd[1] = 0;
@@ -130,7 +134,7 @@ int	launch_exec(t_cmd *lst, char **envp)
         if (i == 1 && lst->open == 0)
 		{   //5. exec (cmd_first) | cmd_middle... | cmd_last
             //printf("go exec first cmd\n\n");
-            ft_first_fork(lst, &var, envp);
+            ft_first_fork(lst, &var, mini_env, tab_mini_env);
 			if (var->pipe_fd[1] > 3)
             	close(var->pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
             var->save_pipe = var->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
@@ -139,7 +143,7 @@ int	launch_exec(t_cmd *lst, char **envp)
         else if (i < len_lst && lst->open == 0)
 		{	//6. exec cmd_first | (cmd_middle...) | cmd_last
             //printf("go exec middle cmd\n\n");
-            ft_middle_fork(lst, &var, envp);
+            ft_middle_fork(lst, &var, tab_mini_env);
             close(var->pipe_fd[1]);
             var->save_pipe = var->pipe_fd[0];
         }
@@ -147,7 +151,7 @@ int	launch_exec(t_cmd *lst, char **envp)
         else if (i == len_lst && lst->open == 0)
 		{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
             //printf("go exec last cmd\n\n");
-            ft_last_fork(lst, &var, envp);
+            ft_last_fork(lst, &var, tab_mini_env);
             close(var->pipe_fd[0]);
         }
         //ft_free_token(lst);
@@ -241,9 +245,7 @@ int main(int argc, char **argv, char **envp)
 			return (printf("Malloc error\n"), -1);
 		printf ("\033[90m%s\033[0m", pwd);	//je l'affiche
 		rl = readline("\e[33m$> \e[37m");	//je recupere la ligne en entree dans une boucle infini afin de l'attendre
-		if (ft_strcmp(rl, "envp") == 0)
-			env_cmd(mini_env);
-		else if (syntaxe_error(rl) == 0)	//je check les erreurs de syntaxes et lance le programme seulement si tout est OK
+		if (syntaxe_error(rl) == 0)	//je check les erreurs de syntaxes et lance le programme seulement si tout est OK
 		{
 			negative_checker(rl);		//je check toutes mes cotes et passe en negatif tout ce qui ne vas pas devoir etre interprete
 			rl = dolls_expander(rl, mini_env);
@@ -276,10 +278,10 @@ int main(int argc, char **argv, char **envp)
 				i++;
 			}
 			i = 0;
-			ft_printf_struct(cmd); //PRINT STRUCTURE --------------------------
+			//ft_printf_struct(cmd); //PRINT STRUCTURE --------------------------
 			//start = cmd;
 			//printf("\033[38;5;220mLancement de Launch_exec...\033[0m\n"); LANCEMENT LAUNCH EXEC-----------
-			if (launch_exec(cmd, envp) == -1)
+			if (launch_exec(cmd, envp, mini_env) == -1)
 				printf ("Error exec\n");
 			ft_lstclear(&cmd);
 			free_pipes(pipes);

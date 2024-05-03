@@ -6,20 +6,20 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/03 11:31:39 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:32:36 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_builtins(t_cmd *lst)
+int	ft_builtins(t_cmd *lst, t_env *mini_env)
 {
 	int	i;
 	int	builtins;
 	char	*cwd;
 
 	i = 1;
-	if (ft_strncmp(lst->args[0], "pwd", 3) == 0)
+	if (ft_strcmp(lst->args[0], "pwd") == 0)
 	{
 		cwd = getcwd(NULL, 0);
 		if (!cwd)
@@ -31,7 +31,7 @@ int	ft_builtins(t_cmd *lst)
 		free(cwd);
 		builtins = 1;
 	}
-	else if (ft_strncmp(lst->args[0], "echo", 4) == 0)
+	else if (ft_strcmp(lst->args[0], "echo") == 0)
 	{
 		while (lst->args[i] && ft_strncmp(lst->args[i], "-n", 2) == 0)
 				i++;
@@ -44,6 +44,8 @@ int	ft_builtins(t_cmd *lst)
 			printf("\n");
 		builtins = 1;
 	}
+	else if (ft_strcmp(lst->args[0], "env") == 0)
+			env_cmd(mini_env);
 	else
 		builtins = 0;
 	return builtins;
@@ -100,10 +102,71 @@ void	ft_display_arg(t_cmd *lst)
 	}
 }*/
 
-int	ft_first_fork(t_cmd *lst, t_struct **var, char **envp)
+char	*line_extractor(t_env *mini_env)
+{
+	char	*line;
+	int		len;
+	int		i;
+
+	i = 0;
+	len = 0;
+	line = NULL;
+	len = (ft_strlen(mini_env->name) + ft_strlen(mini_env->value) + 2);
+	line = malloc(sizeof(char)* len);
+	if (!line)
+		return (NULL);
+	len = 0;
+	while (mini_env->name[len])
+	{
+		line[len] = mini_env->name[len];
+		len++;
+	}
+	line[len++] = '=';
+	while (mini_env->value[i])
+		line[len++] = mini_env->value[i++];
+	line[len] = '\0';
+	return (line);
+}
+
+int	ft_envsize(t_env *mini_env)
+{
+	int	i;
+
+	i = 0;
+	while(mini_env)
+	{
+		i++;
+		mini_env = mini_env->next;
+	}
+	return (i);
+}
+
+char	**ft_list_to_tab(t_env *mini_env)
+{
+	char	**tab;
+	t_env	*tmp;
+	int		len;
+	int		i;
+
+	i = 0;
+	tab = NULL;
+	tmp = mini_env;
+	len = ft_envsize(mini_env);
+	tab = ft_calloc(len, sizeof(char*));
+	if(!tab)
+		return (NULL);
+	while (tmp)
+	{
+		tab[i++] = line_extractor(tmp);
+		tmp = tmp->next;
+	}
+	return (tab);
+}
+
+int	ft_first_fork(t_cmd *lst, t_struct **var, t_env	*mini_env, char	**tab_mini_env)
 {
 	pid_t	pid;
-
+	
 	pid = fork();
 	if (pid < 0)
 	{
@@ -140,7 +203,7 @@ int	ft_first_fork(t_cmd *lst, t_struct **var, char **envp)
 			}
 		}
 		//ft_close(lst);
-		if (ft_builtins(lst) != 0)
+		if (ft_builtins(lst, mini_env) != 0)
 			exit(0);
 		/*if (lst->heredoc_content && lst->end_heredoc == 1)
 		{
@@ -151,7 +214,7 @@ int	ft_first_fork(t_cmd *lst, t_struct **var, char **envp)
 			ft_display_arg(lst);
 			exit(0);
 		}*/
-		execve(lst->path_cmd, lst->args, envp);
+		execve(lst->path_cmd, lst->args, tab_mini_env);
 		perror("execve 1 : failed ");
 		exit(0);
 	}
@@ -163,7 +226,7 @@ int	ft_first_fork(t_cmd *lst, t_struct **var, char **envp)
 	return (0);
 }
 
-int	ft_middle_fork(t_cmd *lst, t_struct **var, char **envp)
+int	ft_middle_fork(t_cmd *lst, t_struct **var, char **tab_mini_env)
 {
 	pid_t	pid;
 
@@ -211,7 +274,7 @@ int	ft_middle_fork(t_cmd *lst, t_struct **var, char **envp)
 				exit(EXIT_FAILURE);
 			}
 		}
-		execve(lst->path_cmd, lst->args, envp);
+		execve(lst->path_cmd, lst->args, tab_mini_env);
 		perror("execve 2 failed : ");
 		//free lst->path et args
 		exit(0);
@@ -224,7 +287,7 @@ int	ft_middle_fork(t_cmd *lst, t_struct **var, char **envp)
 	return (0);
 }
 
-int	ft_last_fork(t_cmd *lst, t_struct **var, char **envp)
+int	ft_last_fork(t_cmd *lst, t_struct **var, char **tab_mini_env)
 {
 	pid_t	pid;
 
@@ -262,7 +325,7 @@ int	ft_last_fork(t_cmd *lst, t_struct **var, char **envp)
 				exit(EXIT_FAILURE);
 			}
 		}
-		execve(lst->path_cmd, lst->args, envp);
+		execve(lst->path_cmd, lst->args, tab_mini_env);
 		perror("execve 3 : failed ");
 		exit(0);
 	}
