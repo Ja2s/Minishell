@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 15:33:07 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:54:29 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,8 @@ char	*ft_getenv(char *name, t_env *mini_env);
 char	*line_extractor(t_env *mini_env);
 int		ft_envsize(t_env *mini_env);
 char	**ft_list_to_tab(t_env *mini_env);
-
+int		ft_builtins(t_cmd *lst, t_env *mini_env);
+int		ft_heredoc(t_cmd *lst);
+void	ft_display_heredoc(t_cmd *lst);
 
 #endif

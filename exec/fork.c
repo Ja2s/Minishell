@@ -6,50 +6,11 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/03 15:32:36 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:40:45 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	ft_builtins(t_cmd *lst, t_env *mini_env)
-{
-	int	i;
-	int	builtins;
-	char	*cwd;
-
-	i = 1;
-	if (ft_strcmp(lst->args[0], "pwd") == 0)
-	{
-		cwd = getcwd(NULL, 0);
-		if (!cwd)
-		{
-			perror("getcwd");
-			exit(EXIT_FAILURE);
-		}
-		printf("%s\n", cwd);
-		free(cwd);
-		builtins = 1;
-	}
-	else if (ft_strcmp(lst->args[0], "echo") == 0)
-	{
-		while (lst->args[i] && ft_strncmp(lst->args[i], "-n", 2) == 0)
-				i++;
-		while (lst->args[i])
-		{
-			printf("%s", lst->args[i]);
-			if (lst->args[++i]) printf(" ");  // Ajoute un espace entre les arguments
-		}
-		if (lst->args[1] && ft_strncmp(lst->args[1], "-n", 2) != 0)	
-			printf("\n");
-		builtins = 1;
-	}
-	else if (ft_strcmp(lst->args[0], "env") == 0)
-			env_cmd(mini_env);
-	else
-		builtins = 0;
-	return builtins;
-}
 
 char	**ft_cp_heredoc(t_cmd *lst)
 {
@@ -101,67 +62,6 @@ void	ft_display_arg(t_cmd *lst)
 	lst = lst->next;
 	}
 }*/
-
-char	*line_extractor(t_env *mini_env)
-{
-	char	*line;
-	int		len;
-	int		i;
-
-	i = 0;
-	len = 0;
-	line = NULL;
-	len = (ft_strlen(mini_env->name) + ft_strlen(mini_env->value) + 2);
-	line = malloc(sizeof(char)* len);
-	if (!line)
-		return (NULL);
-	len = 0;
-	while (mini_env->name[len])
-	{
-		line[len] = mini_env->name[len];
-		len++;
-	}
-	line[len++] = '=';
-	while (mini_env->value[i])
-		line[len++] = mini_env->value[i++];
-	line[len] = '\0';
-	return (line);
-}
-
-int	ft_envsize(t_env *mini_env)
-{
-	int	i;
-
-	i = 0;
-	while(mini_env)
-	{
-		i++;
-		mini_env = mini_env->next;
-	}
-	return (i);
-}
-
-char	**ft_list_to_tab(t_env *mini_env)
-{
-	char	**tab;
-	t_env	*tmp;
-	int		len;
-	int		i;
-
-	i = 0;
-	tab = NULL;
-	tmp = mini_env;
-	len = ft_envsize(mini_env);
-	tab = ft_calloc(len, sizeof(char*));
-	if(!tab)
-		return (NULL);
-	while (tmp)
-	{
-		tab[i++] = line_extractor(tmp);
-		tmp = tmp->next;
-	}
-	return (tab);
-}
 
 int	ft_first_fork(t_cmd *lst, t_struct **var, t_env	*mini_env, char	**tab_mini_env)
 {
