@@ -6,12 +6,12 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:24:55 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/29 11:49:44 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 11:31:30 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
-#include "libft/libft.h"
+#include "../includes/minishell.h"
+#include "../libft/libft.h"
 
 //Fonction	: Verifie si la args[0] est good
 //Renvoi	: -1 --> echec / 0 --> success / -2 ---> malloc crash

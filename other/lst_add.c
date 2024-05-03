@@ -6,12 +6,12 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/04/29 15:14:44 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 11:31:17 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
-#include "libft/libft.h"
+#include "../includes/minishell.h"
+#include "../libft/libft.h"
 
 t_cmd	*ft_lstlast_minishell(t_cmd *lst)
 {

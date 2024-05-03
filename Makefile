@@ -4,13 +4,19 @@ CC 			= cc
 
 CFLAGS		= -g3  -Wextra -Werror
 
-SRC			= dislpay_err.c check_access.c builtin.c lst_add.c redirection.c fork.c minishell.c other.c \
+SRC			= 	$(EXEC_SRC)dislpay_err.c $(EXEC_SRC)check_access.c  \
+				$(EXEC_SRC)redirection.c $(EXEC_SRC)fork.c minishell.c \
+				$(OTHER_SRC)other.c $(OTHER_SRC)builtin.c $(OTHER_SRC)lst_add.c \
 				$(PARSING_SRC)syntaxe_errors.c $(PARSING_SRC)utilities.c \
 				$(PARSING_SRC)utilities_nd.c $(PARSING_SRC)commands_stocker.c \
 				$(PARSING_SRC)expander.c $(PARSING_SRC)heredoc.c \
 				$(PARSING_SRC)redirection.c
 
 PARSING_SRC	= parsing/
+
+EXEC_SRC = exec/
+
+OTHER_SRC = other/
 
 OBJ 		= $(SRC:.c=.o)
 
