@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:39:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 16:41:58 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/03 17:00:50 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*line_extractor(t_env *mini_env)
 	len = 0;
 	line = NULL;
 	len = (ft_strlen(mini_env->name) + ft_strlen(mini_env->value) + 2);
-	line = malloc(sizeof(char)* len);
+	line = malloc(sizeof(char) * len);
 	if (!line)
 		return (NULL);
 	len = 0;
@@ -43,7 +43,7 @@ int	ft_envsize(t_env *mini_env)
 	int	i;
 
 	i = 0;
-	while(mini_env)
+	while (mini_env)
 	{
 		i++;
 		mini_env = mini_env->next;
@@ -62,8 +62,8 @@ char	**ft_list_to_tab(t_env *mini_env)
 	tab = NULL;
 	tmp = mini_env;
 	len = ft_envsize(mini_env);
-	tab = ft_calloc(len, sizeof(char*) + 1);
-	if(!tab)
+	tab = ft_calloc(len, sizeof(char *) + 1);
+	if (!tab)
 		return (NULL);
 	while (tmp)
 	{

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:35:20 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 11:31:21 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:03:18 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int	ft_printf_struct(t_cmd *cmd)
 {
-	int i;
+	int	i;
+	
 	i = 0;
 	while (cmd)
 	{
@@ -59,7 +60,7 @@ int	ft_printf_struct(t_cmd *cmd)
 	return (0);
 }
 
-void	printf_title()
+void	printf_title(void)
 {
 	printf("\033[93m");
 	printf("		           _       _     _          _ _ \n");
@@ -92,7 +93,7 @@ void	free_pipes(char **pipes)
 	i = 0;
 	if (pipes)
 	{
-		while(pipes[i])
+		while (pipes[i])
 		{
 			free(pipes[i]);
 			i++;

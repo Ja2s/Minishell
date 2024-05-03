@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin.c                                          :+:      :+:    :+:   */
+/*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 16:49:23 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/03 16:57:51 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	env_cmd(t_env *env)
 	t_env	*mini_env;
 
 	mini_env = env;
-	while(mini_env)
+	while (mini_env)
 	{
 		printf("%s=%s\n", mini_env->name, mini_env->value);
 		mini_env = mini_env->next;
@@ -40,7 +40,7 @@ char	*ft_getenv(char *name, t_env *mini_env)
 
 int	ft_builtins(t_cmd *lst, t_env *mini_env)
 {
-	int	i;
+	int		i;
 	char	*cwd;
 
 	i = 1;
@@ -59,21 +59,21 @@ int	ft_builtins(t_cmd *lst, t_env *mini_env)
 	else if (ft_strcmp(lst->args[0], "echo") == 0)
 	{
 		while (lst->args[i] && ft_strncmp(lst->args[i], "-n", 2) == 0)
-				i++;
+			i++;
 		while (lst->args[i])
 		{
 			printf("%s", lst->args[i]);
-			if (lst->args[++i]) printf(" ");  // Ajoute un espace entre les arguments
+			if (lst->args[++i])
+				printf(" ");// Ajoute un espace entre les arguments
 		}
-		if (lst->args[1] && ft_strncmp(lst->args[1], "-n", 2) != 0)	
+		if (lst->args[1] && ft_strncmp(lst->args[1], "-n", 2) != 0)
 			printf("\n");
 		return (1);
 	}
 	else if (ft_strcmp(lst->args[0], "env") == 0)
 	{
-			env_cmd(mini_env);
-			return (1);
+		env_cmd(mini_env);
+		return (1);
 	}
-	return 0;
+	return (0);
 }
-
