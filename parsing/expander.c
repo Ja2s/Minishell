@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/08 15:14:47 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/10 16:49:21 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ char	*value_extractor(char *env)
 		len++;
 	}
 	str = ft_calloc(len + 1, sizeof(char));
+	if (!str)
+		return (NULL);
 	i = 0;
 	while (env[x])
 		str[i++] = env[x++];
@@ -82,6 +84,8 @@ char	*name_extractor(char *env)
 	while (env[i] && env[i] != '=')
 		i++;
 	str = ft_calloc(i + 1, sizeof(char));
+	if (!str)
+		return (NULL);
 	i = 0;
 	while (env[i] && env[i] != '=')
 	{
@@ -106,6 +110,8 @@ char	*env_extractor(char	*env, int choice)
 		str = name_extractor(env);
 	else if (choice == 2)
 		str = value_extractor(env);
+	if (str == NULL)
+		return (NULL);
 	return (str);
 }
 
@@ -210,6 +216,8 @@ void	expand_initializer(t_expand **var)
 	(*var)->name = NULL;
 	(*var)->value = NULL;
 	(*var)->value_len = 0;
+	(*var)->code_copy = 0;
+	(*var)->nb_numbers = 0;
 }
 void	free_expand(t_expand **var)
 {
@@ -221,7 +229,7 @@ void	free_expand(t_expand **var)
 		free(*var);
 }
 
-char *dolls_expander(char *rl, t_env *mini_env) 
+char *dolls_expander(char *rl, t_env *mini_env, t_data *data) 
 {
 	t_expand	*var;
 	char		*output;
@@ -239,6 +247,8 @@ char *dolls_expander(char *rl, t_env *mini_env)
 		if (output[i] == '$' && output[i + 1] != '?')
 		{
 			expand_initializer(&var);
+			if (!var)
+				return (NULL);
 			var->name_start = i + 1;
 			var->name_end = var->name_start;
 			while (output[var->name_end] && output[var->name_end] > 32 &&\
@@ -246,12 +256,14 @@ char *dolls_expander(char *rl, t_env *mini_env)
 				var->name_end++;
 			var->name_len = var->name_end - var->name_start;
 			var->name = ft_substr(output, var->name_start, var->name_len);
+			if (!var->name)
+				return (NULL);
 			var->value = ft_getenv(var->name, mini_env);
 			if (var->value)
 				var->value_len = ft_strlen(var->value);
 			rl = ft_calloc((var->value_len - var->name_len + ft_strlen(output) + 1), sizeof(char));
 			if (!rl)
-				return(printf("ERROR MALLOC EXPAND\n"), NULL);
+				return(NULL);
 			i = 0;
 			while (i < (var->name_start - 1))
 			{
@@ -278,6 +290,52 @@ char *dolls_expander(char *rl, t_env *mini_env)
 			rl[i] = '\0';
 			output = ft_strdup(rl);
 			i = 0;
+		}
+		else if (output[i] == '$' && output[i + 1] == '?')
+		{
+			expand_initializer(&var);
+			var->code_copy = data->exit_code;
+			var->nb_numbers = 0;
+			if (!var)
+				return (NULL);
+			var->name_start = i + 1;
+			var->name_end = var->name_start + 1;
+			var->name_len = var->name_end - var->name_start;
+			var->name = ft_substr(output, var->name_start, var->name_len);
+			if (!var->name)
+				return (NULL);
+			var->value = ft_itoa(data->exit_code);
+			if (var->value)
+				var->value_len = ft_strlen(var->value);
+			rl = ft_calloc((var->value_len - var->name_len + ft_strlen(output) + 1), sizeof(char));
+			if (!rl)
+				return(NULL);
+			i = 0;
+			while (i < (var->name_start - 1))
+			{
+				rl[i] = output[i];
+				i++;
+			}
+			p = 0;
+			if(var->value)
+			{
+				while (var->value[p])
+				{
+					rl[i] = var->value[p];
+					i++;
+					p++;
+				}
+			}
+			p = var->name_end;
+			while (output[p])
+			{
+				rl[i] = output[p];
+				i++;
+				p++;
+			}
+			rl[i] = '\0';
+			output = ft_strdup(rl);
+			i = 0;	
 		}
 		else
 			i++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 12:42:50 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/10 18:34:03 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 	if (i == 0)
 	{
 		tab = malloc(sizeof(char *) * 2);
+		if (!tab)
+			return (NULL);
 		tab[i] = ft_strdup(rl);
 		tab[i + 1] = NULL;
 		return (tab);
@@ -36,11 +38,13 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 		i++;
 	}
 	tab[i] = ft_strdup(rl);
+	if (tab[i] == NULL)
+		return (NULL);
 	tab[i + 1] = NULL;
 	return (tab);
 }
 
-int ft_heredoc(t_cmd *lst) 
+int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data) 
 {
     int i = 0;  // Indice du nombre de Heredocs
     char *line;
@@ -52,9 +56,13 @@ int ft_heredoc(t_cmd *lst)
 		while (i < lst->nb_del) 
 		{
 			line = readline(">");
-			while (ft_strncmp(line, lst->delimiter[i], ft_strlen(line)) != 0)
+			while (ft_strcmp(line, lst->delimiter[i]) != 0)
 			{
+				if (lst->expand_heredoc == 1)
+					line = dolls_expander(line, mini_env, data);
 				lst->heredoc_content = ft_realloc(line, lst);
+				if (!lst->heredoc_content)
+					return(exit_status(data, 1, "Malloc error from [ft_heredoc]\n"), -1);
 				free(line);  // Libère la mémoire allouée par readline
 				line = readline(">");
 			}

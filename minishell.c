@@ -6,18 +6,19 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 13:09:38 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/10 18:33:48 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int	launch_exec(t_cmd *lst, t_env *mini_env)
+int	launch_exec(t_cmd *lst, t_env *mini_env, t_data *data)
 {
 	t_struct   	var;
     int        	i;
 	char	**tab_env;
 
+	(void)data;
 	tab_env = ft_list_to_tab(mini_env);
 	if (!tab_env)
 		return (-1);
@@ -28,7 +29,7 @@ int	launch_exec(t_cmd *lst, t_env *mini_env)
     int len_lst = ft_lstlen(lst);
 	if (lst->heredoc == true)
 	{
-		ft_heredoc(lst);
+		ft_heredoc(lst, mini_env, data);
 		ft_display_heredoc(lst);
 	}
 	while (lst)
@@ -51,7 +52,6 @@ int	launch_exec(t_cmd *lst, t_env *mini_env)
 		ft_check_access(lst, tab_env);    //4 Cmd check
 		if (i == 1 && lst->open == 0)
 		{   //5. exec (cmd_first) | cmd_middle... | cmd_last
-			printf("go exec first cmd\n\n");
 			ft_first_fork(lst, &var, mini_env, tab_env);
 			if (var.pipe_fd[1] > 3)
 				close(var.pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
@@ -59,14 +59,12 @@ int	launch_exec(t_cmd *lst, t_env *mini_env)
 		}
 		else if (i < len_lst && lst->open == 0)
 		{	//6. exec cmd_first | (cmd_middle...) | cmd_last
-			printf("go exec middle cmd\n\n");
 			ft_middle_fork(lst, &var, tab_env);
 			close(var.pipe_fd[1]);
 			var.save_pipe = var.pipe_fd[0];
 		}
 		else if (i == len_lst && lst->open == 0)
 		{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
-			printf("go exec last cmd\n\n");
 			ft_last_fork(lst, &var, tab_env);
 			close(var.pipe_fd[0]);
 		}

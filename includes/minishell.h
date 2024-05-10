@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 13:13:26 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/10 18:32:43 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ typedef struct s_expand
 	char	*name;
 	int		value_len;
 	char	*value;
+	int 	nb_numbers;
+	int		code_copy;
 }			t_expand;
 
 typedef struct s_var
@@ -131,7 +133,7 @@ int		memory_alloc(char **input, t_cmd **cmd);
 int		stock_input(char **input, t_cmd **cmd);
 void	negative_checker(char *rl);
 void	expand_initializer(t_expand **var);
-char	*dolls_expander(char *rl, t_env *mini_env);
+char	*dolls_expander(char *rl, t_env *mini_env, t_data *data);
 int		redirect_counter(char *pipes);
 int		redirecter(char *pipes, t_cmd **cmd);
 int		len_calculator(char	*pipes);
@@ -152,7 +154,7 @@ char	*line_extractor(t_env *mini_env);
 int		ft_envsize(t_env *mini_env);
 char	**ft_list_to_tab(t_env *mini_env);
 int		ft_builtins(t_cmd *lst, t_env *mini_env);
-int		ft_heredoc(t_cmd *lst);
+int		ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data);
 void	ft_display_heredoc(t_cmd *lst);
 int		minishell_starter(char **env, t_data *data);
 int 	prompt_customer(t_data *data);
@@ -164,7 +166,7 @@ void	command_positiver(char *pipes);
 char	*copy_w_cote(char *src, char *dest);
 char	**input_copyer(char **input, char **input_copy);
 void	data_initializer(t_data *data);
-int		launch_exec(t_cmd *lst, t_env *mini_env);
+int		launch_exec(t_cmd *lst, t_env *mini_env, t_data *data);
 int		rafter_checker_one(char *rl, int p);
 int		rafter_checker_two(char *rl, int p);
 int		starter_pipe(char *rl);

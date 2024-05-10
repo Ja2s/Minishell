@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:27:51 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/08 14:01:28 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/10 16:04:42 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ int	redirecter(char *pipes, t_cmd **cmd)
 						len++;
 					}
 					(*cmd)->redirecter[x] = ft_substr(pipes, start, len);
+					if ((*cmd)->redirecter[x] == NULL)
+						return (-1);
 					x++;
 					len = 0;
 				}

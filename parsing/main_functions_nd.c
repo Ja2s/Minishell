@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_nd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/08 15:57:55 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/10 16:23:41 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ char	*copy_w_cote(char *src, char *dest)
 	p = 0;
 	i = 0;
 	dest = malloc(sizeof (char) * (ft_strlen(src) + 1));
+	if (!dest)
+		return (NULL);
 	while (src[i])
 	{
 		if (src[i] == 34 || src[i] == 39)
@@ -80,11 +82,12 @@ int	final_parse(t_data *data)
 
 	i = 0;
 	if (node_creator(data) == -1)
-		return (printf("Error from the function \"node_creator\n\""), -1);
+		return (exit_status(data, 1, "\033[31mMalloc error from [node_creator]\n\033[0m"), -1);
 	while (data->cmd->args[i])
 		command_positiver(data->cmd->args[i++]);
-	if (launch_exec(data->cmd, data->mini_env) == -1)
-		return (printf("Error exec\n"), -1);
+	if (launch_exec(data->cmd, data->mini_env, data) == -1)
+		return (-1);
+	data->exit_code = 0;
 	ft_lstclear(&data->cmd);
 	free_pipes(data->var.pipes);
 	free(data->var.pwd);
