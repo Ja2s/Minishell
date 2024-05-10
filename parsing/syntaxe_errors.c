@@ -6,18 +6,18 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:07:14 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/04 00:57:40 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/08 16:13:31 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	double_cote_checker(char *rl, bool *cot, size_t *i)
+int	double_cote_checker(char *rl, bool *cot, int i)
 {
-	size_t	p;
+	int	p;
 
 	*cot = false;
-	p = *i;
+	p = i;
 	while (rl[p] && *cot == false)
 	{
 		p++;
@@ -26,13 +26,12 @@ int	double_cote_checker(char *rl, bool *cot, size_t *i)
 	}
 	if (*cot == false)
 		return (-1);
-	*i = p;
-	return (0);
+	return (p);
 }
 
-int	simple_cote_checker(char *rl, bool *cot, size_t *i)
+int	simple_cote_checker(char *rl, bool *cot, int *i)
 {
-	size_t	p;
+	int	p;
 
 	*cot = false;
 	p = *i;
@@ -48,38 +47,25 @@ int	simple_cote_checker(char *rl, bool *cot, size_t *i)
 	return (0);
 }
 
-/*Cette fonction bas checker les erreurs de syntaxes lie aux chevrons (exemple "<< <", ">>>" ou avec aucun nom de fichier)*/
-int	rafters_checker(char *rl)
+int	double_pipe_checker(char *rl)
 {
 	int	i;
 
 	i = 0;
 	while (rl[i])
 	{
-		if (rl[i] == '<' || rl[i] == '>')
+		if (rl[i] == 34)
 		{
 			i++;
-			if (rl[i] == '<' || rl[i] == '>')
+			while (rl[i] != 34)
 				i++;
-			while (rl[i] == ' ')
-				i++;
-			if (rl[i] == '\0' || rl[i] == '<' || rl[i] == '>' || rl[i] == '|')
-				return (-1);
 		}
-		else
+		if (rl[i] == 39)
+		{
 			i++;
-	}
-	return (0);
-}
-
-/*Cette fonction vas checker qu'aucun double pipe n'exite dans lentree, si c'est le cas, retourne une erreur de syntaxe*/
-int	double_pipe_checker(char *rl)
-{
-	size_t	i;
-
-	i = 0;
-	while (rl[i])
-	{
+			while (rl[i] != 39)
+				i++;
+		}
 		if (rl[i] == '|' && rl[i + 1] == '|')
 			return (-1);
 		i++;
@@ -87,10 +73,9 @@ int	double_pipe_checker(char *rl)
 	return (0);
 }
 
-/*Cette fonction vas checker que toutes les cotes sont bien et si ce n'est pas le cas, provoque une erreur de syntaxe*/
 int	cote_checker(char *rl)
 {
-	size_t	i;
+	int	i;
 	bool	cot;
 
 	cot = true;
@@ -99,7 +84,8 @@ int	cote_checker(char *rl)
 	{
 		if (rl[i] == 34)
 		{
-			if (double_cote_checker(rl, &cot, &i) == -1)
+			i = double_cote_checker(rl, &cot, i);
+			if (i == -1)
 				return (-1);
 		}
 		if (rl[i] == 39)
@@ -112,18 +98,11 @@ int	cote_checker(char *rl)
 	return (0);
 }
 
-int	starter_pipe(char *rl)
-{
-	if (rl[0] == '|')
-		return(-1);
-	return (0);
-}
-
 int	syntaxe_error(char	*rl)
 {
-	if (rafters_checker(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
 	if (cote_checker(rl) == -1)
+		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
+	if (rafters_checker(rl) == -1)
 		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
 	if (double_pipe_checker(rl) == -1)
 		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);

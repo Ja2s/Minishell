@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 15:54:29 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/10 12:46:12 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <sys/wait.h>
 # include <stdbool.h>
 
+
 typedef struct s_expand
 {
 	int		name_start;
@@ -40,6 +41,8 @@ typedef struct s_var
 	char	*rl;
 	char	*pwd;
 	char	**input;
+	char	**pipes;
+	char	**input_copy;
 	char	**mini_env;
 	int		len_env;
 	int		i;
@@ -66,13 +69,14 @@ typedef struct s_cmd
 	int				nb_del;
 	
 	int				heredoc;
+	int				expand_heredoc;
 	int				end_heredoc;
+	int				fd_str_rand;
 	char			**heredoc_content;
 	char			**delimiter;
 	char			**redirecter;
 	char			**args;
 	struct s_cmd	*next;
-	
 	struct s_cmd	*start;
 	int				open;
 	int				fd_infile;
@@ -83,15 +87,24 @@ typedef struct s_cmd
 	int				i;
 }					t_cmd;
 
+typedef struct s_data
+{
+	t_env		*mini_env;
+	t_cmd		*cmd;
+	t_cmd		*tmp;
+	t_var		var;
+	int			exit_code;
+}			t_data;
+
 t_cmd	*ft_lstnew_minishell(void);
 t_cmd	*ft_lstlast_minishell(t_cmd *lst);
 void    ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int		ft_lstlen(t_cmd *elem);
 void    ft_redirecter(t_cmd *elem);
 int		ft_check_access(t_cmd *elem, char **envp);
-int		ft_first_fork(t_cmd *lst, t_struct **var, t_env	*mini_env, char	**tab_mini_env);
-int		ft_middle_fork(t_cmd *lst, t_struct **var, char **tab_mini_env);
-int		ft_last_fork(t_cmd *lst, t_struct **var, char **tab_mini_env);
+int		ft_first_fork(t_cmd *lst, t_struct *var, t_env	*mini_env, char	**tab_mini_env);
+int		ft_middle_fork(t_cmd *lst, t_struct *var, char **tab_mini_env);
+int		ft_last_fork(t_cmd *lst, t_struct *var, char **tab_mini_env);
 void    display_error_cmd(t_cmd *elem);
 void    display_no_such(t_cmd *elem);
 void    ft_free_access(t_cmd *elem);
@@ -129,7 +142,7 @@ int		pipes_counter(char *rl);
 int		env_copyer(char **envp, t_env **mini_env);
 int		heredoc_counter(char *pipes);
 int		heredoc_memory_allocer(char *pipes, t_cmd **cmd);
-int		heredoc_copyer(char *pipes, t_cmd **cmd, int *i, int del);
+int		heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del);
 int		heredoc_checker(char *pipes, t_cmd **cmd);
 void	free_pipes(char **pipes);
 void	command_positiver(char *pipes);
@@ -141,5 +154,19 @@ char	**ft_list_to_tab(t_env *mini_env);
 int		ft_builtins(t_cmd *lst, t_env *mini_env);
 int		ft_heredoc(t_cmd *lst);
 void	ft_display_heredoc(t_cmd *lst);
+int		minishell_starter(char **env, t_data *data);
+int 	prompt_customer(t_data *data);
+int		parser(t_data *data);
+int		node_precreator(t_data *data, int i);
+int 	node_creator(t_data *data);
+int		final_parse(t_data *data);
+void	command_positiver(char *pipes);
+char	*copy_w_cote(char *src, char *dest);
+char	**input_copyer(char **input, char **input_copy);
+void	data_initializer(t_data *data);
+int		launch_exec(t_cmd *lst, t_env *mini_env);
+int		rafter_checker_one(char *rl, int p);
+int		rafter_checker_two(char *rl, int p);
+int		starter_pipe(char *rl);
 
 #endif

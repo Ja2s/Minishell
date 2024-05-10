@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 15:50:29 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/10 12:42:50 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int ft_heredoc(t_cmd *lst)
     char *line;
 
     lst->heredoc_content = NULL;
+	printf("go heredoc");
 	while (lst)
 	{
 		while (i < lst->nb_del) 
@@ -57,10 +58,10 @@ int ft_heredoc(t_cmd *lst)
 				free(line);  // Libère la mémoire allouée par readline
 				line = readline(">");
 			}
-			printf("end heredoc\n");
 			i++;
 			if (i  < lst->nb_del)
 			{
+				printf("end heredoc\n");
 				//ft_free_heredoc(lst)
 				lst->heredoc_content = NULL; //delete old heredoc
 			}

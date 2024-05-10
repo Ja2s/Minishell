@@ -11,7 +11,8 @@ SRC			= 	$(EXEC_SRC)dislpay_err.c $(EXEC_SRC)check_access.c  \
 				$(PARSING_SRC)syntaxe_errors.c $(PARSING_SRC)utilities.c \
 				$(PARSING_SRC)utilities_nd.c $(PARSING_SRC)commands_stocker.c \
 				$(PARSING_SRC)expander.c $(PARSING_SRC)heredoc.c \
-				$(PARSING_SRC)redirection.c
+				$(PARSING_SRC)redirection.c $(PARSING_SRC)main_functions.c \
+				$(PARSING_SRC)main_functions_nd.c $(PARSING_SRC)syntaxe_errors_nd.c 
 
 PARSING_SRC	= parsing/
 

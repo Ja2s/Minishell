@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/02 16:05:41 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:14:47 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,52 @@ t_env	*env_new(void)
 	return (new_elem);
 }
 
+char	*value_extractor(char *env)
+{
+	int		i;
+	int		x;
+	int		len;
+	char	*str;
+
+	len = 0;
+	x = 0;
+	i = 0;
+	str = NULL;
+	while (env[i] && env[i] != '=')
+		i++;
+	i++;
+	x = i;
+	while (env[i])
+	{
+		i++;
+		len++;
+	}
+	str = ft_calloc(len + 1, sizeof(char));
+	i = 0;
+	while (env[x])
+		str[i++] = env[x++];
+	return (str);
+}
+
+char	*name_extractor(char *env)
+{
+	int		i;
+	char	*str;
+
+	str = NULL;
+	i = 0;
+	while (env[i] && env[i] != '=')
+		i++;
+	str = ft_calloc(i + 1, sizeof(char));
+	i = 0;
+	while (env[i] && env[i] != '=')
+	{
+		str[i] = env[i];
+		i++;
+	}
+	return (str);
+}
+
 char	*env_extractor(char	*env, int choice)
 {
 	int		i;
@@ -57,33 +103,9 @@ char	*env_extractor(char	*env, int choice)
 	i = 0;
 	str = NULL;
 	if (choice == 1)
-	{
-		while(env[i] && env[i] != '=')
-			i++;
-		str = ft_calloc(i, sizeof(char));
-		i = 0; 
-		while(env[i] && env[i] != '=')
-		{
-			str[i] = env[i]; 
-			i++;
-		}
-	}
+		str = name_extractor(env);
 	else if (choice == 2)
-	{
-		while (env[i] && env[i] != '=')
-			i++;
-		i++;
-		x = i;
-		while (env[i])
-		{
-			i++;
-			len++;
-		}
-		str = ft_calloc(len, sizeof(char));
-		i = 0;
-		while (env[x])
-			str[i++] = env[x++];
-	}
+		str = value_extractor(env);
 	return (str);
 }
 
@@ -93,17 +115,22 @@ int	env_copyer(char **envp, t_env **mini_env)
 	t_env	*tmp;
 
 	i = 0;
-	while(envp[i])
+	while (envp[i])
 	{
-		if((tmp = env_new()))
+		tmp = env_new();
+		if (!tmp)
+			return (-1);
+		else
 		{
 			tmp->name = env_extractor(envp[i], 1);
+			if (!tmp->name)
+				return (-1);
 			tmp->value = env_extractor(envp[i], 2);
+			if (!tmp->value)
+				return (-1);
 			ft_envadd_back(mini_env, tmp);
 			i++;
 		}
-		else
-			return (-1);
 	}
 	return (0);
 }
@@ -113,7 +140,7 @@ void	doll_heredoc(char **rl)
 	int	i;
 	
 	i = 0;
-	while((*rl)[i])
+	while ((*rl)[i])
 	{
 		if ((*rl)[i] == '<')
 		{
@@ -132,24 +159,33 @@ void	doll_heredoc(char **rl)
 	}
 }
 
+void	double_negativer(int i, char **rl)
+{
+	if ((*rl)[i] == ' ' || (*rl)[i] == '<' || (*rl)[i] == '>' || (*rl)[i] == 39 || (*rl)[i] == '|')
+		(*rl)[i] = (*rl)[i] * -1;
+}
+
+void	simple_negativer(int i, char **rl)
+{
+	if ((*rl)[i] == ' ' || (*rl)[i] == '$' || (*rl)[i] == '<' || (*rl)[i] == '>' || (*rl)[i] == '|' || (*rl)[i] == 34)
+		(*rl)[i] = (*rl)[i] * -1;
+}
+
 /*Cette fonction vas parcourir toute lentree, et passer en negatif les caracteres speciaux entre cotes, suivant ceux que nous voulons interpreter ou pas*/
 void	negative_checker(char *rl)
 {
 	int		i;
-	int		len;
 
 	i = 0;
-	len = ft_strlen(rl);
 	doll_heredoc(&rl);
-	while (i < len)
+	while (rl[i++])
 	{
 		if (rl[i] == 34)
 		{
 			i++;
 			while (rl[i] != 34)
 			{
-				if (rl[i] == ' ' || rl[i] == '<' || rl[i] == '>' || rl[i] == 39)
-					rl[i] = rl[i] * -1;
+				double_negativer(i, &rl);
 				i++;
 			}
 		}
@@ -158,12 +194,10 @@ void	negative_checker(char *rl)
 			i++;
 			while (rl[i] != 39)
 			{
-				if (rl[i] == ' ' || rl[i] == '$' || rl[i] == '<' || rl[i] == '>' || rl[i] == '|' || rl[i] == 34)
-				rl[i] = rl[i] * -1;
+ 				simple_negativer(i, &rl);
 				i++;
 			}
 		}
-		i++;
 	}
 }
 
@@ -202,7 +236,7 @@ char *dolls_expander(char *rl, t_env *mini_env)
 		return (NULL);
 	while (output[i])
 	{
-		if (output[i] == '$')
+		if (output[i] == '$' && output[i + 1] != '?')
 		{
 			expand_initializer(&var);
 			var->name_start = i + 1;
@@ -210,16 +244,14 @@ char *dolls_expander(char *rl, t_env *mini_env)
 			while (output[var->name_end] && output[var->name_end] > 32 &&\
 			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39)
 				var->name_end++;
-			//printf("startname = %c\nendname = %c\nLen name = %d\n", output[var->name_start], output[var->name_end], var->name_end - var->name_start);
-			//printf("index start : %d\nIndex end : %d\n", var->name_start, var->name_end);
 			var->name_len = var->name_end - var->name_start;
 			var->name = ft_substr(output, var->name_start, var->name_len);
 			var->value = ft_getenv(var->name, mini_env);
 			if (var->value)
 				var->value_len = ft_strlen(var->value);
-			rl = malloc(sizeof(char)* var->value_len + i + 2);
+			rl = ft_calloc((var->value_len - var->name_len + ft_strlen(output) + 1), sizeof(char));
 			if (!rl)
-				printf("ERROR MALLOC EXPAND\n\n\n\n");
+				return(printf("ERROR MALLOC EXPAND\n"), NULL);
 			i = 0;
 			while (i < (var->name_start - 1))
 			{
@@ -237,7 +269,6 @@ char *dolls_expander(char *rl, t_env *mini_env)
 				}
 			}
 			p = var->name_end;
-			//printf("p = %d\nlen output = %ld", p, ft_strlen(output));
 			while (output[p])
 			{
 				rl[i] = output[p];
@@ -246,11 +277,6 @@ char *dolls_expander(char *rl, t_env *mini_env)
 			}
 			rl[i] = '\0';
 			output = ft_strdup(rl);
-			//printf("LEN OUTPUT |%ld|\nLEN RL |%ld|", ft_strlen(output), ft_strlen(rl));
-			//printf ("\033[31mrl : |%s|\033[0m\n]", rl);
-			//printf ("\033[31moutput : |%s|\033[0m\n]", output);
-			//printf("\033[38;5;220mVarName : %s\033[0m\n", var->name);
-			//printf("\033[38;5;220mVarValue : %s\033[0m\n", var->value);
 			i = 0;
 		}
 		else

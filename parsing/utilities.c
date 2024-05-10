@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utillities.c                                       :+:      :+:    :+:   */
+/*   utilities.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:38:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 12:40:47 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/08 13:50:01 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,6 @@ void	split_path_free(t_cmd *lst)
 			free(lst->split_path[i]);
 			i++;
 		}
-			free(lst->split_path);
+		free(lst->split_path);
 	}
 }
