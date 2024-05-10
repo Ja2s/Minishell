@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:38:50 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/08 16:02:59 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/10 12:59:23 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,10 @@ int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
 		if ((*cmd)->delimiter[del][0] == 34 || (*cmd)->delimiter[del][0] == 39)
 		{
 			(*cmd)->delimiter[del] = heredoc_w_cote((*cmd)->delimiter[del]);
-			(*cmd)->expand_heredoc = 1;
+			(*cmd)->expand_heredoc = 0;
 		}
 		else
-			(*cmd)->expand_heredoc = 0;
+			(*cmd)->expand_heredoc = 1;
 		printf("expand heredo?? >> %d\n", (*cmd)->expand_heredoc);
 	}
 	return (p);

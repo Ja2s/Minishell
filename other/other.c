@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:35:20 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/03 17:03:18 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/10 13:18:31 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,11 @@ void	free_pipes(char **pipes)
 		}
 		free(pipes);
 	}
+}
+
+void	exit_status(t_data *data, int code, char *message)
+{
+	data->exit_code = code;
+	write(2, message, ft_strlen(message));
+	//free
 }

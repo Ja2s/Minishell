@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 12:42:16 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/10 13:09:38 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,14 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	i = 0;
+	data.exit_code = 0;
 	if (minishell_starter(envp, &data) == -1)
 		return (printf("Malloc error\n"), -1);
 	while (1)
 	{
 		if (prompt_customer(&data) == 0)
 		{
-			if (data.var.rl[0] != '\0' && syntaxe_error(data.var.rl) == 0)
+			if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
 			{
 				if (parser(&data) == 0)
 					if (final_parse(&data) == -1)

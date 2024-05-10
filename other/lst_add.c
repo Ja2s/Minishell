@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/08 16:23:01 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/10 12:59:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	int_initalizer(t_cmd **new_elem)
 	(*new_elem)->fd_infile = 0;
 	(*new_elem)->fd_outfile = 0;
 	(*new_elem)->end_heredoc = 0;
-	(*new_elem)->expand_heredoc = 0;
+	(*new_elem)->expand_heredoc = 1;
 }
 
 t_cmd	*ft_lstnew_minishell(void)

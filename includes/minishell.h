@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 12:46:12 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/10 13:13:26 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void    ft_close(t_cmd *elem);
 int		rafters_checker(char *rl);
 int		double_pipe_checker(char *rl);
 int		cote_checker(char *rl);
-int		syntaxe_error(char	*rl);
+int		syntaxe_error(t_data *data, char *rl);
 t_cmd	*ft_lstlast(t_cmd *lst);
 void	args_free(t_cmd *lst);
 void	red_free(t_cmd *lst);
@@ -168,5 +168,6 @@ int		launch_exec(t_cmd *lst, t_env *mini_env);
 int		rafter_checker_one(char *rl, int p);
 int		rafter_checker_two(char *rl, int p);
 int		starter_pipe(char *rl);
+void	exit_status(t_data *data, int code, char *message);
 
 #endif

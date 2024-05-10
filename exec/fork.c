@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/10 12:40:05 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/10 13:14:28 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ int	ft_middle_fork(t_cmd *lst, t_struct *var, char **tab_mini_env)
 		//3. SINON SI save pipe contient bien data pipe[0]
 		else if (var->save_pipe)
 		{//recupere les donnes dans save_pipe au lieu de lentree standard
-			if (dup2(var->save_pipe, STDIN_FILENO))
+			if (dup2(var->save_pipe, STDIN_FILENO) == -1)
 			{
 				perror("dup2 middle pipe_fd[0] failed :");
 				exit(EXIT_FAILURE);
@@ -191,7 +191,7 @@ int	ft_middle_fork(t_cmd *lst, t_struct *var, char **tab_mini_env)
 		//1. SI redirecteur != NULL et que fd_outfile a de la data
 		if (lst->redirecter && lst->fd_outfile > 0)
 		{//met la data de la sortie de lexecve dans fd_outfile
-			if (dup2(lst->fd_outfile, STDOUT_FILENO))
+			if (dup2(lst->fd_outfile, STDOUT_FILENO) == -1)
 			{
 				perror("dup2 middle fd_outfile failed :");
 				exit(EXIT_FAILURE);

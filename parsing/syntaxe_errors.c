@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntaxe_errors.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:07:14 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/08 16:13:31 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/10 13:12:56 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,15 +98,15 @@ int	cote_checker(char *rl)
 	return (0);
 }
 
-int	syntaxe_error(char	*rl)
+int	syntaxe_error(t_data *data, char *rl)
 {
 	if (cote_checker(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
+		return (exit_status(data, 2, "\033[31mSyntaxe error [cotes]\n\033[0m"), -1);
 	if (rafters_checker(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
+		return (exit_status(data, 2, "\033[31mSyntaxe error [rafters]\n\033[0m"), -1);
 	if (double_pipe_checker(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
+		return (exit_status(data, 2, "\033[31mSyntaxe error [pipes]\n\033[0m"), -1);
 	if (starter_pipe(rl) == -1)
-		return (printf("\033[31mSyntaxe error\n\033[0m"), -1);
+		return (exit_status(data, 2, "\033[31mSyntaxe error [pipes]\n\033[0m"), -1);
 	return (0);
 }
