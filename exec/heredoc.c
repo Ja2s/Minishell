@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 18:34:03 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/10 18:48:30 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
 
 char	**ft_realloc(char *rl, t_cmd *lst)
 {
@@ -27,18 +28,24 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 		if (!tab)
 			return (NULL);
 		tab[i] = ft_strdup(rl);
+		if (!tab)
+			return (NULL);
 		tab[i + 1] = NULL;
 		return (tab);
 	}
 	tab = malloc(sizeof(char*) * (i + 2));
+	if (!tab)
+		return (NULL);
 	i = 0;
 	while (lst->heredoc_content[i])
 	{
 		tab[i] = ft_strdup(lst->heredoc_content[i]);
+		if (!tab)
+			return (NULL);
 		i++;
 	}
 	tab[i] = ft_strdup(rl);
-	if (tab[i] == NULL)
+	if (!tab)
 		return (NULL);
 	tab[i + 1] = NULL;
 	return (tab);
@@ -53,7 +60,7 @@ int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data)
 	printf("go heredoc");
 	while (lst)
 	{
-		while (i < lst->nb_del) 
+		while (i < lst->nb_del && lst->heredoc == true) 
 		{
 			line = readline(">");
 			while (ft_strcmp(line, lst->delimiter[i]) != 0)

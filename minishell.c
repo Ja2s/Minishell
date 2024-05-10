@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 18:33:48 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/10 18:48:42 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,9 @@ int	launch_exec(t_cmd *lst, t_env *mini_env, t_data *data)
 	var.save_pipe = 0;
     i = 0;
     int len_lst = ft_lstlen(lst);
-	if (lst->heredoc == true)
-	{
-		ft_heredoc(lst, mini_env, data);
-		ft_display_heredoc(lst);
-	}
+	ft_heredoc(lst, mini_env, data);
+	//ft_display_heredoc(lst);
+	
 	while (lst)
 	{
 		i++;
