@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/10 16:23:41 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/13 16:45:53 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,17 @@ void	data_initializer(t_data *data)
 	(*data).cmd = NULL;
 }
 
+int redirecter_finisher(t_data *data)
+{
+	int		i;
+
+	i = 0;
+	data->cmd->red_copy = input_copyer(data->cmd->redirecter, data->cmd->red_copy);
+	data->cmd->redirecter = data->cmd->red_copy;
+	data->cmd->red_copy = NULL;
+	return (0);	
+}
+
 int	final_parse(t_data *data)
 {
 	int	i;
@@ -85,6 +96,19 @@ int	final_parse(t_data *data)
 		return (exit_status(data, 1, "\033[31mMalloc error from [node_creator]\n\033[0m"), -1);
 	while (data->cmd->args[i])
 		command_positiver(data->cmd->args[i++]);
+	i = 0;
+	if (data->cmd->nb_del > 0)
+	{
+		while (data->cmd->delimiter[i])
+			command_positiver(data->cmd->delimiter[i++]);	
+	}
+	i = 0;
+	if (data->cmd->nb_red > 0)
+	{
+		redirecter_finisher(data);
+		while (data->cmd->redirecter[i])
+			command_positiver(data->cmd->redirecter[i++]);	
+	}
 	if (launch_exec(data->cmd, data->mini_env, data) == -1)
 		return (-1);
 	data->exit_code = 0;

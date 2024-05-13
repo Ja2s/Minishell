@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/08 16:16:57 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/13 13:41:44 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ char	*ft_getenv(char *name, t_env *mini_env)
 	}
 	return (NULL);
 }
+
 
 int	ft_builtins(t_cmd *lst, t_env *mini_env)
 {

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/10 13:14:28 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/13 13:13:32 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ int	ft_middle_fork(t_cmd *lst, t_struct *var, char **tab_mini_env)
 		//1. SI il y a un infile ET quil est en dernier  sil y en a un et quil est en dernier
 		if (lst->redirecter && lst->fd_infile > 0 && lst->end_heredoc == 0)// < f1
 		{//recupere les donner dans fd_infile au lieu de lentree standard
-			if (dup2(lst->fd_infile, STDIN_FILENO))
+			if (dup2(lst->fd_infile, STDIN_FILENO) == -1)
 			{
 				perror("dup2 middle fd_indile failed :");
 				exit(EXIT_FAILURE);

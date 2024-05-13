@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 18:48:30 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/13 13:34:04 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data)
     char *line;
 
     lst->heredoc_content = NULL;
-	printf("go heredoc");
+	//printf("go heredoc");
 	while (lst)
 	{
 		while (i < lst->nb_del && lst->heredoc == true) 
@@ -84,7 +84,7 @@ int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data)
 		i = 0;
 		lst = lst->next;
 	}
-    return 0;
+    return (0);
 }
 
 void	ft_display_heredoc(t_cmd *lst)

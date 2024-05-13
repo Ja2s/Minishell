@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 18:32:43 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/13 16:07:19 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ typedef struct s_cmd
 	char			**heredoc_content;
 	char			**delimiter;
 	char			**redirecter;
+	char			**red_copy;
 	char			**args;
 	struct s_cmd	*next;
 	struct s_cmd	*start;
