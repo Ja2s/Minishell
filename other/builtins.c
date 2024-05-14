@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/14 16:45:17 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:52:01 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	env_cmd(t_env *env)
 			mini_env = mini_env->next;
 		printf("%s=%s\n", mini_env->name, mini_env->value);
 		mini_env = mini_env->next;
+		//free la liste si cest copy dans le cas de export et non de minin env (if choice == ...)
 	}
 }
 
