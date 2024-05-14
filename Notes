@@ -1,0 +1,4 @@
+tri douteux sur export (exemple: lol, loll, lol2, lol3)
+en cas de variable sans value, export quabnd meme et afficher la variable="" ou juste variable?
+probleme en cas de | avec un builtin en premiere, (exemple "env | grep TERM")
+probleme valgrind en cas de "export" apres avoir creer une nouvelle variable

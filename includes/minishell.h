@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/14 15:52:07 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 19:43:36 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,5 +175,6 @@ void	exit_status(t_data *data, int code, char *message);
 t_env	*ft_envlast(t_env *lst);
 void	ft_envadd_back(t_env **env, t_env *new);
 int		ft_export(t_env **mini_env, t_cmd *cmd);
+char	**ft_list_to_tab_cote(t_env *mini_env);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/14 16:52:01 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 20:42:41 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ void	env_cmd(t_env *env)
 	mini_env = env;
 	while (mini_env)
 	{
-		if (!mini_env->name || !mini_env->value)
-			mini_env = mini_env->next;
 		printf("%s=%s\n", mini_env->name, mini_env->value);
 		mini_env = mini_env->next;
 		//free la liste si cest copy dans le cas de export et non de minin env (if choice == ...)
@@ -46,6 +44,7 @@ int ft_copy_env(t_env **copy, t_env *mini_env)
 	t_env	*new_elem;
 	t_env	*tmp;
 	
+	tmp = NULL;
 	tmp = mini_env;
 	while (tmp)
 	{
@@ -65,13 +64,56 @@ int ft_copy_env(t_env **copy, t_env *mini_env)
 	return (0);
 }
 
+void	sort_env(char ***tab)
+{
+	int		i;
+	int		p;
+	char	*tmp;
+
+	i = 0;
+	while ((*tab)[i + 1])
+	{
+		p = 0;
+		if ((*tab)[i][p] > (*tab)[i + 1][p])
+		{
+			tmp = (*tab)[i + 1];
+			(*tab)[i + 1] = (*tab)[i];
+			(*tab)[i] = tmp;
+			i = 0;
+		}
+		else if ((*tab)[i][p] == (*tab)[i + 1][p])
+		{
+			while ((*tab)[i][p] && (*tab)[i + 1][p] && (*tab)[i][p] == (*tab)[i + 1][p])
+				p++;
+			if ((*tab)[i][p] > (*tab)[i + 1][p])
+			{
+				tmp = (*tab)[i + 1];
+				(*tab)[i + 1] = (*tab)[i];
+				(*tab)[i] = tmp;
+				i = 0;
+			}
+			else
+				i++;
+		}
+		else
+			i++;
+	}
+}
+
+
 int	ft_export_display(t_env *mini_env)
 {
-	t_env	*copy;
-	
-	copy = malloc(sizeof(t_env));
-	ft_copy_env(&copy, mini_env);
-	env_cmd(copy);
+	int		i;
+	char	**tab;
+
+	i = 0;
+	tab = ft_list_to_tab_cote(mini_env);
+	if (!tab)
+		return (-1);
+	sort_env(&tab);
+	while(tab[i])
+		printf("declare -x %s\n", tab[i++]);
+	free_pipes(tab);
 	return (0);
 }
 
@@ -80,6 +122,7 @@ int	ft_export(t_env **mini_env, t_cmd *cmd)
 	t_env	*new_elem;
 	int		i;
 	char	**variable;
+	
 	if (!cmd->args[1])
 		ft_export_display(*mini_env);
 	else
@@ -90,10 +133,11 @@ int	ft_export(t_env **mini_env, t_cmd *cmd)
 		if (!new_elem)
 			return (-1);
 		variable = ft_split(cmd->args[1], '=');
-		if (!variable || !variable[0] || !variable[1])
+		if (!variable || !variable[0])
 			return (free(new_elem), -1);
 		new_elem->name = ft_strdup(variable[0]);
-		new_elem->value = ft_strdup(variable[1]);
+		if (variable[1])
+			new_elem->value = ft_strdup(variable[1]);
 		ft_envadd_back(mini_env, new_elem);
 		free(variable[0]);
 		free(variable[1]);
