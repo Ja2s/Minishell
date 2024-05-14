@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/10 16:50:52 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 13:42:07 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	prompt_customer(t_data *data)
 	printf ("\033[90m%s\033[0m", data->var.pwd);
 	data->var.rl = readline("\e[33m$> \e[37m");
 	if (data->var.rl == NULL)
-		return (exit_status(data, 1, "\033[31mError from [realine]\n\033[0m"), -1);
+		return (exit_status(data, 1, "\033[31mError from [readline]\n\033[0m"), -1);
 	return (0);
 }
 

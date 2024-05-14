@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/13 16:07:19 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 15:52:07 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void    ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int		ft_lstlen(t_cmd *elem);
 void    ft_redirecter(t_cmd *elem);
 int		ft_check_access(t_cmd *elem, char **envp);
-int		ft_first_fork(t_cmd *lst, t_struct *var, t_env	*mini_env, char	**tab_mini_env);
+int		ft_first_fork(t_cmd *lst, t_struct *var, char	**tab_mini_env);
 int		ft_middle_fork(t_cmd *lst, t_struct *var, char **tab_mini_env);
 int		ft_last_fork(t_cmd *lst, t_struct *var, char **tab_mini_env);
 void    display_error_cmd(t_cmd *elem);
@@ -154,7 +154,7 @@ char	*ft_getenv(char *name, t_env *mini_env);
 char	*line_extractor(t_env *mini_env);
 int		ft_envsize(t_env *mini_env);
 char	**ft_list_to_tab(t_env *mini_env);
-int		ft_builtins(t_cmd *lst, t_env *mini_env);
+int		ft_builtins(t_cmd *lst);
 int		ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data);
 void	ft_display_heredoc(t_cmd *lst);
 int		minishell_starter(char **env, t_data *data);
@@ -172,5 +172,8 @@ int		rafter_checker_one(char *rl, int p);
 int		rafter_checker_two(char *rl, int p);
 int		starter_pipe(char *rl);
 void	exit_status(t_data *data, int code, char *message);
+t_env	*ft_envlast(t_env *lst);
+void	ft_envadd_back(t_env **env, t_env *new);
+int		ft_export(t_env **mini_env, t_cmd *cmd);
 
 #endif

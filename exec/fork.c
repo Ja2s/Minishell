@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/13 13:13:32 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 15:51:36 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	ft_fd_heredoc(t_cmd *lst)
 	return 0;
 }
 
-int	ft_first_fork(t_cmd *lst, t_struct *var, t_env	*mini_env, char	**tab_mini_env)
+int	ft_first_fork(t_cmd *lst, t_struct *var, char	**tab_mini_env)
 {
 	pid_t	pid;
 	
@@ -128,11 +128,10 @@ int	ft_first_fork(t_cmd *lst, t_struct *var, t_env	*mini_env, char	**tab_mini_en
 				exit(EXIT_FAILURE);
 			}
 		}
-		if (ft_builtins(lst, mini_env) != 0)
+		if (ft_builtins(lst) != 0)
 			exit(0);
 		execve(lst->path_cmd, lst->args, tab_mini_env);
 		perror("execve 1 : failed ");
-		exit(0);
 	}
 	else if (pid > 0)
 	{
@@ -140,6 +139,7 @@ int	ft_first_fork(t_cmd *lst, t_struct *var, t_env	*mini_env, char	**tab_mini_en
 		if (waitpid(pid, &status, 0) == -1) {
             exit(EXIT_FAILURE);
         }
+		
 	}
 	return (0);
 }
