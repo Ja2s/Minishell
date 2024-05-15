@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/15 16:27:40 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/15 18:00:34 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	final_parse(t_data *data)
 			command_positiver(data->cmd->redirecter[i++]);	
 	}
 	ft_printf_struct(data->cmd);
-	if (launch_exec(data->cmd, data->mini_env, data) == -1)
+	if (launch_exec(data) == -1)
 		return (-1);
 	data->exit_code = 0;
 	ft_lstclear(&data->cmd);

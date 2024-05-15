@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/13 13:34:04 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:50:03 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,14 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 	return (tab);
 }
 
-int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data) 
+int ft_heredoc(t_data *data) 
 {
     int i = 0;  // Indice du nombre de Heredocs
     char *line;
+	t_cmd	*lst;
 
+	lst = data->cmd;
     lst->heredoc_content = NULL;
-	//printf("go heredoc");
 	while (lst)
 	{
 		while (i < lst->nb_del && lst->heredoc == true) 
@@ -66,7 +67,7 @@ int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data)
 			while (ft_strcmp(line, lst->delimiter[i]) != 0)
 			{
 				if (lst->expand_heredoc == 1)
-					line = dolls_expander(line, mini_env, data);
+					line = dolls_expander(line, data->mini_env, data);
 				lst->heredoc_content = ft_realloc(line, lst);
 				if (!lst->heredoc_content)
 					return(exit_status(data, 1, "Malloc error from [ft_heredoc]\n"), -1);

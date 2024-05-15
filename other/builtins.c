@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/15 14:55:33 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:58:02 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ int	ft_export(t_env **mini_env, t_cmd *cmd)
 	int		i;
 	char	**variable;
 	
-
 	if (!cmd->args[1])
 		ft_export_display(*mini_env);
 	else
