@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/15 17:55:38 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/15 18:08:42 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	ft_builtins_env(t_cmd *cmd, t_env *mini_env)
 	return (0);
 }
 
-int	launch_exec(t_cmd *lst, t_env *mini_env, t_data *data)
+int	launch_exec(t_data *data)
 {
     int        	i;
 
@@ -80,7 +80,7 @@ int	launch_exec(t_cmd *lst, t_env *mini_env, t_data *data)
 			if (pipe(data->pipe_fd) == -1)
 				exit_status(data, 1, "pipe failed\n");
 		//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
-		if (ft_builtins_env(lst, mini_env) == 0)
+		if (ft_builtins_env(data->cmd, data->mini_env) == 0)
 		{
 			int check_access = ft_check_access(data);
 			if (check_access == -1)  //4 Cmd check
