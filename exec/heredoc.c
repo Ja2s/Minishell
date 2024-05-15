@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 18:48:30 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/14 17:09:19 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,14 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 	return (tab);
 }
 
-int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data) 
+int ft_heredoc(t_data *data) 
 {
     int i = 0;  // Indice du nombre de Heredocs
     char *line;
+	t_cmd	*lst;
 
+	lst = data->cmd;
     lst->heredoc_content = NULL;
-	printf("go heredoc");
 	while (lst)
 	{
 		while (i < lst->nb_del && lst->heredoc == true) 
@@ -66,7 +67,7 @@ int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data)
 			while (ft_strcmp(line, lst->delimiter[i]) != 0)
 			{
 				if (lst->expand_heredoc == 1)
-					line = dolls_expander(line, mini_env, data);
+					line = dolls_expander(line, data->mini_env, data);
 				lst->heredoc_content = ft_realloc(line, lst);
 				if (!lst->heredoc_content)
 					return(exit_status(data, 1, "Malloc error from [ft_heredoc]\n"), -1);
@@ -84,7 +85,7 @@ int ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data)
 		i = 0;
 		lst = lst->next;
 	}
-    return 0;
+    return (0);
 }
 
 void	ft_display_heredoc(t_cmd *lst)

@@ -6,69 +6,65 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 18:48:42 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/15 16:57:00 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int	launch_exec(t_cmd *lst, t_env *mini_env, t_data *data)
+int	launch_exec(t_data *data)
 {
-	t_struct   	var;
     int        	i;
-	char	**tab_env;
 
-	(void)data;
-	tab_env = ft_list_to_tab(mini_env);
-	if (!tab_env)
+	data->var.mini_env = ft_list_to_tab(data->mini_env);
+	if (!data->var.mini_env)
 		return (-1);
-	var.pipe_fd[0] = 0;
-	var.pipe_fd[1] = 0;
-	var.save_pipe = 0;
+	data->save_pipe = 0;
     i = 0;
-    int len_lst = ft_lstlen(lst);
-	ft_heredoc(lst, mini_env, data);
-	//ft_display_heredoc(lst);
-	
-	while (lst)
+	int len_lst = ft_lstlen(data->cmd);
+	if (ft_heredoc(data) == -1 || !data->cmd->args[0])
+		return (-1);
+	//ft_display_heredoc(data->cmd);
+	while (data->cmd)
 	{
+		data->exit_code = 0;
 		i++;
-		lst->open = 0;
-		if (lst->redirecter)		//2. redirecter check
-			ft_redirecter(lst);
-		if (lst->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe 
-		{
-			if (pipe(var.pipe_fd) == -1)
-			{
-				perror("pipe failed");
-				exit(EXIT_FAILURE);
-			}
-		}
-		if (!lst->args[0])
-			return(0);
+		if (data->cmd->redirecter)	//2. redirecter check
+		ft_redirecter(data);
+		if (data->cmd->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe
+			if (pipe(data->pipe_fd) == -1)
+				exit_status(data, 1, "pipe failed\n");
 		//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
-		ft_check_access(lst, tab_env);    //4 Cmd check
-		if (i == 1 && lst->open == 0)
-		{   //5. exec (cmd_first) | cmd_middle... | cmd_last
-			ft_first_fork(lst, &var, mini_env, tab_env);
-			if (var.pipe_fd[1] > 3)
-				close(var.pipe_fd[1]);// je close lecriture pour pour pas que la lecture attendent indefinement.
-			var.save_pipe = var.pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
+		int check_access = ft_check_access(data);
+		if (check_access == -1)  //4 Cmd check
+			exit_status(data, 127, "");
+		else if (check_access == -2)  //4 Cmd check
+			exit_status(data, 127, "malloc error from [ft_check_access]");
+		if (i == 1)
+		{	//5. exec (cmd_first) | cmd_middle... | cmd_last
+			if (ft_first_fork(data) == -1)
+			if (data->pipe_fd[1] > 3)
+				close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
+			data->save_pipe = data->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
 		}
-		else if (i < len_lst && lst->open == 0)
+		else if (i < len_lst)
 		{	//6. exec cmd_first | (cmd_middle...) | cmd_last
-			ft_middle_fork(lst, &var, tab_env);
-			close(var.pipe_fd[1]);
-			var.save_pipe = var.pipe_fd[0];
+			ft_middle_fork(data);
+			close(data->pipe_fd[1]);
+			data->save_pipe = data->pipe_fd[0];
 		}
-		else if (i == len_lst && lst->open == 0)
+		else if (i == len_lst)
 		{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
-			ft_last_fork(lst, &var, tab_env);
-			close(var.pipe_fd[0]);
+			ft_last_fork(data);
+			close(data->pipe_fd[0]);
 		}
-		ft_close(lst);
-		lst = lst->next;
+		ft_close(data->cmd);
+		data->cmd = data->cmd->next;
+		
 	}
+	printf("EXIT_STATUS = %d\n", data->exit_code);
+	if (data->exit_code != 0)
+		return (-1);
 	return (0);
 }
 
@@ -91,9 +87,17 @@ int	main(int argc, char **argv, char **envp)
 			{
 				if (parser(&data) == 0)
 					if (final_parse(&data) == -1)
-						break ;
+					{
+						ft_lstclear(&data.cmd);
+						free_pipes(data.var.pipes);
+						free(data.var.pwd);
+					}
 			}
 		}
 	}
 	rl_clear_history();
 }
+
+//launch_exec | bultins
+
+//faire < (syntaxe err) puis ls

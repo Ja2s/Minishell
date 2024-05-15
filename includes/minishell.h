@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 18:32:43 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:00:13 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,6 @@ typedef struct s_var
 	int		i;
 }			t_var;
 
-typedef struct s_struct
-{
-	int		pipe_fd[2];
-	int 	save_pipe;
-}    		t_struct; 
-
 typedef struct s_env
 {
 	char			*name;
@@ -80,7 +74,6 @@ typedef struct s_cmd
 	char			**args;
 	struct s_cmd	*next;
 	struct s_cmd	*start;
-	int				open;
 	int				fd_infile;
 	int				fd_outfile;
 	char			**split_path;
@@ -95,6 +88,8 @@ typedef struct s_data
 	t_cmd		*cmd;
 	t_cmd		*tmp;
 	t_var		var;
+	int		pipe_fd[2];
+	int		save_pipe;
 	int			exit_code;
 }			t_data;
 
@@ -102,11 +97,11 @@ t_cmd	*ft_lstnew_minishell(void);
 t_cmd	*ft_lstlast_minishell(t_cmd *lst);
 void    ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int		ft_lstlen(t_cmd *elem);
-void    ft_redirecter(t_cmd *elem);
-int		ft_check_access(t_cmd *elem, char **envp);
-int		ft_first_fork(t_cmd *lst, t_struct *var, t_env	*mini_env, char	**tab_mini_env);
-int		ft_middle_fork(t_cmd *lst, t_struct *var, char **tab_mini_env);
-int		ft_last_fork(t_cmd *lst, t_struct *var, char **tab_mini_env);
+int    ft_redirecter(t_data *data);
+int		ft_check_access(t_data *data);
+int		ft_first_fork(t_data *data);
+int		ft_middle_fork(t_data *data);
+int		ft_last_fork(t_data *data);
 void    display_error_cmd(t_cmd *elem);
 void    display_no_such(t_cmd *elem);
 void    ft_free_access(t_cmd *elem);
@@ -154,7 +149,7 @@ char	*line_extractor(t_env *mini_env);
 int		ft_envsize(t_env *mini_env);
 char	**ft_list_to_tab(t_env *mini_env);
 int		ft_builtins(t_cmd *lst, t_env *mini_env);
-int		ft_heredoc(t_cmd *lst, t_env *mini_env, t_data *data);
+int		ft_heredoc(t_data *data);
 void	ft_display_heredoc(t_cmd *lst);
 int		minishell_starter(char **env, t_data *data);
 int 	prompt_customer(t_data *data);
@@ -166,7 +161,7 @@ void	command_positiver(char *pipes);
 char	*copy_w_cote(char *src, char *dest);
 char	**input_copyer(char **input, char **input_copy);
 void	data_initializer(t_data *data);
-int		launch_exec(t_cmd *lst, t_env *mini_env, t_data *data);
+int		launch_exec(t_data *data);
 int		rafter_checker_one(char *rl, int p);
 int		rafter_checker_two(char *rl, int p);
 int		starter_pipe(char *rl);

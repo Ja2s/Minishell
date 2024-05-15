@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/10 12:59:52 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:01:47 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new)
 void	int_initalizer(t_cmd **new_elem)
 {
 	(*new_elem)->i = 0;
-	(*new_elem)->open = 0;
 	(*new_elem)->nb_red = 0;
 	(*new_elem)->nb_del = 0;
 	(*new_elem)->nb_args = 0;

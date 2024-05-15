@@ -12,81 +12,72 @@
 
 #include "../includes/minishell.h"
 
-void	 ft_close(t_cmd *elem)
+void	 ft_close(t_cmd *lst)
 {
-	if (elem->redirecter && elem->fd_infile != -1)//s'il n'y a pas de redirecter les elem->fd ne sont pas initaliser
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
 	{
-		close(elem->fd_infile);
-		elem->fd_infile = -1;
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
 	}
-	if (elem->redirecter && elem->fd_outfile != -1)
+	if (lst->redirecter && lst->fd_outfile != -1)
 	{
-		close(elem->fd_outfile);
-		elem->fd_outfile = -1;
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
 	}
 }
 
-
-void	ft_redirecter(t_cmd *elem)
+int	ft_redirecter(t_data *data)
 {
 	int	i;
 	int	j;
+	t_cmd	*lst;
 
-	elem->fd_infile = -1;
-	elem->fd_outfile = -1;	
+	lst = data->cmd;
+	lst->fd_infile = -1;
+	lst->fd_outfile = -1;	
 	i = 0;
-	while (elem->redirecter[i])
+	while (lst->redirecter[i])
 	{
 		j = 0;
-		while (elem->redirecter[i][j])
+		while (lst->redirecter[i][j])
 		{
-			if (elem->redirecter[i][j] == '>' && elem->redirecter[i][j + 1] == '>') // >> 
+			if (lst->redirecter[i][j] == '>' && lst->redirecter[i][j + 1] == '>') // >> 
 			{
 				j += 2;
-				while (elem->redirecter[i][j] == ' ')//skip space
+				while (lst->redirecter[i][j] == ' ')//skip space
 					j++;
 				//check si je dois close l'ancien en cas de redirecter multiple
-				elem->fd_outfile = open(elem->redirecter[i] + j, O_CREAT | O_WRONLY | O_APPEND, 0777);
-				if (elem->fd_outfile == -1)
-				{
-                    perror("Erreur lors de l'ouverture du fichier de sortie (>>)");
-					ft_close(elem);
-					elem->open = -1; //permet de verifier le fail dun output alors ne pas exec la cmd
-					return;
-                }
+				lst->fd_outfile = open(lst->redirecter[i] + j, O_CREAT | O_WRONLY | O_APPEND, 0777);
+				if (lst->fd_outfile == -1)
+					return(exit_status(data, 1, " :Open failed (>>)\n"), ft_close(lst), -1);
 				break;
 			}
-			else if (elem->redirecter[i][j] == '>')// > 
+			else if (lst->redirecter[i][j] == '>')// > 
 			{
 				j++;
-				while (elem->redirecter[i][j] == ' ')
+				while (lst->redirecter[i][j] == ' ')
 					j++;
 				//check si je dois close l'ancien en cas de redirecter multiple
-				elem->fd_outfile = open(elem->redirecter[i] + j, O_CREAT | O_WRONLY | O_TRUNC, 0777);
-				if (elem->fd_outfile == -1) {
-                    perror("Erreur lors de l'ouverture du fichier de sortie (>)");
-					ft_close(elem);
-					elem->open = -1; //permet de verifier le fail dun output alors ne pas exec la cmd
-					return;
-                }
+				lst->fd_outfile = open(lst->redirecter[i] + j, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+				if (lst->fd_outfile == -1)
+					return(exit_status(data, 1, " :Open failed (>)\n"), ft_close(lst), -1);
 				break;
 			}
-			else if (elem->redirecter[i][j] == '<')// <
+			else if (lst->redirecter[i][j] == '<')// <
 			{
 				j++;
-				while (elem->redirecter[i][j] == ' ')
+				while (lst->redirecter[i][j] == ' ')
 					j++;
-				elem->fd_infile = open(elem->redirecter[i] + j, O_RDONLY, 0777);
-				if (elem->fd_infile == -1) {
-                    write (2, elem->redirecter[i] + j, ft_strlen(elem->redirecter[i] + j));
+				lst->fd_infile = open(lst->redirecter[i] + j, O_RDONLY, 0777);
+				if (lst->fd_infile == -1) {
+                    write (2, lst->redirecter[i] + j, ft_strlen(lst->redirecter[i] + j));
                     perror(" (<)");
-					ft_close(elem);
-					elem->open = -1; //permet de verifier le fail dun input alors ne pas exec la cmd
-					return;
+					return(exit_status(data, 1, ""), ft_close(lst), -1);
                 }
 				break;
 			}
 		}
 		i++;
 	}
+	return (0);
 }

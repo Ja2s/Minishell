@@ -30,7 +30,7 @@ all : $(NAME)
 $(NAME): $(OBJ)
 	make -sC libft
 	$(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
-	make clean
+	
 
 clean :
 	rm -rf  $(OBJ) 

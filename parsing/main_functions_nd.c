@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_nd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/10 16:23:41 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/13 15:53:30 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	final_parse(t_data *data)
 		return (exit_status(data, 1, "\033[31mMalloc error from [node_creator]\n\033[0m"), -1);
 	while (data->cmd->args[i])
 		command_positiver(data->cmd->args[i++]);
-	if (launch_exec(data->cmd, data->mini_env, data) == -1)
+	if (launch_exec(data) == -1)
 		return (-1);
 	data->exit_code = 0;
 	ft_lstclear(&data->cmd);
