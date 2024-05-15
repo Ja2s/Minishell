@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/13 16:45:53 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:27:40 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ char	*copy_w_cote(char *src, char *dest)
 			dest[p++] = src[i++];
 	}
 	dest[p] = '\0';
+	free(src);
 	return (dest);
 }
 
@@ -109,6 +110,7 @@ int	final_parse(t_data *data)
 		while (data->cmd->redirecter[i])
 			command_positiver(data->cmd->redirecter[i++]);	
 	}
+	ft_printf_struct(data->cmd);
 	if (launch_exec(data->cmd, data->mini_env, data) == -1)
 		return (-1);
 	data->exit_code = 0;

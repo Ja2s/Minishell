@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/14 20:42:41 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/15 14:55:33 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,25 +123,30 @@ int	ft_export(t_env **mini_env, t_cmd *cmd)
 	int		i;
 	char	**variable;
 	
+
 	if (!cmd->args[1])
 		ft_export_display(*mini_env);
 	else
 	{	
-		i = 0;
-		variable = NULL;
-		new_elem = malloc(sizeof(t_env));
-		if (!new_elem)
-			return (-1);
-		variable = ft_split(cmd->args[1], '=');
-		if (!variable || !variable[0])
-			return (free(new_elem), -1);
-		new_elem->name = ft_strdup(variable[0]);
-		if (variable[1])
-			new_elem->value = ft_strdup(variable[1]);
-		ft_envadd_back(mini_env, new_elem);
-		free(variable[0]);
-		free(variable[1]);
-		free(variable);
+		i = 1;
+		while (cmd->args[i])
+		{
+			variable = NULL;
+			new_elem = malloc(sizeof(t_env));
+			if (!new_elem)
+				return (-1);
+			variable = ft_split(cmd->args[i], '=');
+			if (!variable || !variable[0])
+				return (free(new_elem), -1);
+			new_elem->name = ft_strdup(variable[0]);
+			if (variable[1])
+				new_elem->value = ft_strdup(variable[1]);
+			ft_envadd_back(mini_env, new_elem);
+			free(variable[0]);
+			free(variable[1]);
+			free(variable);
+			i++;
+		}
 	}
 	return (0);
 }

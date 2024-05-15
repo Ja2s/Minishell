@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/14 20:00:43 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/15 14:44:15 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+void	ft_unset(t_env **mini_env, t_cmd *cmd)
+{
+	t_env	*tmp;
+	t_env	*swap;
+	int		i;
+
+	i = 1;
+	tmp = (*mini_env);
+	while (cmd->args[i])
+	{
+		while (tmp->next && ft_strcmp(tmp->next->name, cmd->args[i]) != 0)
+			tmp = tmp->next;
+		if (tmp && ft_strcmp(tmp->next->name, cmd->args[i]) == 0)
+		{
+			swap = tmp->next;
+			tmp->next = tmp->next->next;
+			free(swap->name);
+			free(swap->value);
+			free(swap);
+		}
+		i++;
+	}
+	
+}
 
 int	ft_builtins_env(t_cmd *cmd, t_env *mini_env)
 {
@@ -18,6 +43,11 @@ int	ft_builtins_env(t_cmd *cmd, t_env *mini_env)
 	{
 		ft_export(&mini_env, cmd);
 			return (1);
+	}
+	else if (ft_strcmp(cmd->args[0], "unset") == 0)
+	{
+		ft_unset(&mini_env, cmd);
+		return (1);
 	}
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
 	{

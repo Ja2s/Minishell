@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/10 16:49:21 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:14:53 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ void	doll_heredoc(char **rl)
 			if ((*rl)[i] == '<')
 			{
 				i++;
-				while ((*rl)[i] == ' ')
+				while ((*rl)[i] == ' ' || (*rl)[i] == 39 || (*rl)[i] == 34)
 					i++;
 				if ((*rl)[i] == '$')
 					(*rl)[i] = (*rl)[i] * -1;
@@ -235,6 +235,7 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 	char		*output;
 	int			p;
 	int			i;
+	int			pos_doll;
 	
 	output = NULL;
 	i = 0;
@@ -250,9 +251,10 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 			if (!var)
 				return (NULL);
 			var->name_start = i + 1;
+			pos_doll = i;
 			var->name_end = var->name_start;
 			while (output[var->name_end] && output[var->name_end] > 32 &&\
-			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39)
+			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39 && output[var->name_end] != '\\')
 				var->name_end++;
 			var->name_len = var->name_end - var->name_start;
 			var->name = ft_substr(output, var->name_start, var->name_len);
@@ -289,7 +291,7 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 			}
 			rl[i] = '\0';
 			output = ft_strdup(rl);
-			i = 0;
+			i = pos_doll + var->value_len;
 		}
 		else if (output[i] == '$' && output[i + 1] == '?')
 		{
