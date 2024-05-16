@@ -1,0 +1,13 @@
+tri douteux sur export (exemple: lol, loll, lol2, lol3)
+
+probleme en cas de | avec un builtin en premiere, (exemple "env | grep TERM")
+
+probleme valgrind en cas de "export" apres avoir creer une nouvelle variable
+
+cas des '/' qui devrait renvoyer is a directory
+
+syntaxe error &, (), 
+
+Echo cas 89 a Gerer
+
+Tests <= 100 : OK

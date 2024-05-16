@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/15 17:57:38 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/16 01:20:32 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,6 @@ int	ft_first_fork(t_data *data)
 		int status;
     	waitpid(pid, &status, 0);
 		
-		printf("status de l'enfant %d\n", status);
 		if (status == 0)
 			return (-1);
 		if (WIFEXITED(status)) {//execve failed
@@ -244,7 +243,6 @@ int	ft_middle_fork(t_data *data)
 		int status;
     	waitpid(pid, &status, 0);
 
-		printf("status de l'enfant %d\n", status);
 		if (status == 0)
 			return (-1);
 		if (WIFEXITED(status)) {//execve failed
@@ -330,7 +328,6 @@ int	ft_last_fork(t_data *data)
 		int status;
     	waitpid(pid, &status, 0);
 		
-		printf("status de l'enfant %d\n", status);
 		if (status == 0)// ne pas changer exit_code soit pcq il a deja etais modif en amont avec une err soit pcq tout est good
 			return (-1);
 		if (WIFEXITED(status)) {//execve failed

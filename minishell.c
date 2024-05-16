@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/15 18:08:42 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/16 01:20:52 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ int	launch_exec(t_data *data)
 		ft_close(data->cmd);
 		data->cmd = data->cmd->next;
 	}
-	printf("EXIT_STATUS = %d\n", data->exit_code);
 	if (data->exit_code != 0)
 		return (-1);
 	return (0);

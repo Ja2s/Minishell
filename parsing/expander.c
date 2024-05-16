@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/15 16:14:53 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:25:42 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,26 +184,27 @@ void	negative_checker(char *rl)
 
 	i = 0;
 	doll_heredoc(&rl);
-	while (rl[i++])
+	while (rl[i])
 	{
-		if (rl[i] == 34)
+		if (rl[i] && rl[i] == 34)
 		{
 			i++;
-			while (rl[i] != 34)
+			while (rl[i] && rl[i] != 34)
 			{
 				double_negativer(i, &rl);
 				i++;
 			}
 		}
-		if (rl[i] == 39)
+		if (rl[i] && rl[i] == 39)
 		{
 			i++;
-			while (rl[i] != 39)
+			while (rl[i] && rl[i] != 39)
 			{
  				simple_negativer(i, &rl);
 				i++;
 			}
 		}
+		i++;
 	}
 }
 

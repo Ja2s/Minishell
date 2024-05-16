@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:39:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/14 20:28:42 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/16 01:28:12 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,14 +104,14 @@ char	*line_extractor_cote(t_env *mini_env)
 		line[len] = mini_env->name[len];
 		len++;
 	}
-	line[len++] = '=';
-	line[len++] = '"';
 	if (mini_env->value)
 	{
+		line[len++] = '=';
+		line[len++] = '"';
 		while (mini_env->value[i])
 			line[len++] = mini_env->value[i++];
+		line[len++] = '"';
 	}
-	line[len++] = '"';
 	line[len] = '\0';
 	return (line);
 }

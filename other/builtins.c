@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/15 17:58:02 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:07:07 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ void	env_cmd(t_env *env)
 	mini_env = env;
 	while (mini_env)
 	{
-		printf("%s=%s\n", mini_env->name, mini_env->value);
+		if (mini_env->value)
+			printf("%s=%s\n", mini_env->name, mini_env->value);
 		mini_env = mini_env->next;
-		//free la liste si cest copy dans le cas de export et non de minin env (if choice == ...)
 	}
 }
 
@@ -179,6 +179,8 @@ int	ft_builtins(t_cmd *lst)
 				printf(" ");// Ajoute un espace entre les arguments
 		}
 		if (lst->args[1] && ft_strncmp(lst->args[1], "-n", 2) != 0)
+			printf("\n");
+		else if (!lst->args[1])
 			printf("\n");
 		return (1);
 	}
