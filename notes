@@ -11,3 +11,13 @@ syntaxe error &, (),
 Echo cas 89 a Gerer
 
 Tests <= 100 : OK
+
+backslash a gerer? exemple (\$HOME = $HOME)?
+
+cas 124 a verifier (echo $9HOME == HOME)
+
+cas 129 a verifier (echo $hola*) maffiche * doit il rien afficher?
+
+cas 150 echo $"" affiche $ au lieu de \n pourquoi? echo $ est sense affihcher $
+	echo $"HOME" maffiche $HOME au lieu de HOME
+	echo $''HOME maffiche $HOME au lieu de HOME

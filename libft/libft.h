@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 12:00:26 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/02 15:49:44 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:59:12 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		ft_isprint(int c);
 int		ft_isdigit(int c);
 int		ft_isascii(int c);
 int		ft_isalpha(int c);
-int		ft_isalnum(int c);
+int		ft_isalnum(int c, int choice);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 int		ft_atoi(const char *nptr);

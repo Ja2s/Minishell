@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/16 11:25:42 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:59:26 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,6 +230,30 @@ void	free_expand(t_expand **var)
 		free(*var);
 }
 
+int	doll_echo(char *output, int i)
+{
+	if (output[i] == '$' && (ft_isspace(output[i + 1]) == 1 || ft_isalnum(output[i + 1], 1) == 0))
+	{
+		while (output[i] && output[i] != 'o')
+			i--;
+		if (output[i] == 'o')
+		{
+			i--;
+			if (output[i] == 'h')
+			{
+				i--;
+				if (output[i] == 'c')
+				{
+					i--;
+					if (output[i] == 'e')
+						return (1);
+				}
+			}
+		}
+	}
+	return (0);
+}
+
 char *dolls_expander(char *rl, t_env *mini_env, t_data *data) 
 {
 	t_expand	*var;
@@ -246,7 +270,9 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 		return (NULL);
 	while (output[i])
 	{
-		if (output[i] == '$' && output[i + 1] != '?')
+		if (output[i] == '$' && doll_echo(output, i) == 1)
+			i++;
+		else if (output[i] == '$' && output[i + 1] != '?')
 		{
 			expand_initializer(&var);
 			if (!var)
@@ -255,7 +281,7 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 			pos_doll = i;
 			var->name_end = var->name_start;
 			while (output[var->name_end] && output[var->name_end] > 32 &&\
-			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39 && output[var->name_end] != '\\')
+			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39 && output[var->name_end] != '\\' && ft_isalnum(output[var->name_end], 0) == 1)
 				var->name_end++;
 			var->name_len = var->name_end - var->name_start;
 			var->name = ft_substr(output, var->name_start, var->name_len);

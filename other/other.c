@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   other.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:35:20 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/13 16:31:58 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:39:42 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,13 @@ int	ft_printf_struct(t_cmd *cmd)
 		else
 			return (-1);
 	}
+	return (0);
+}
+
+int	ft_isspace(char c)
+{
+	if (c == '\f' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == ' ')
+		return (1);
 	return (0);
 }
 
