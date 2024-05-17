@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/16 01:50:10 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:13:11 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ int	parser(t_data *data)
 	data->var.rl = dolls_expander(data->var.rl, data->mini_env, data);
 	if (!data->var.rl)
 		return (exit_status(data, 1, "\033[31mMalloc error from [dolls_expander]\n\033[0m"), -1);
+	if (data->var.rl[0] == '\0')
+		return (-1);
 	data->var.pipes = ft_split(data->var.rl, '|');
 	if (!data->var.pipes)
 		return (exit_status(data, 1, "\033[31mMalloc error from [ft_split]\n\033[0m"), -1);

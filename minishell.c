@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/17 13:52:18 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:45:30 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_unset(t_env **mini_env, t_cmd *cmd)
 	{
 		while (tmp->next && ft_strcmp(tmp->next->name, cmd->args[i]) != 0)
 			tmp = tmp->next;
-		if (tmp && ft_strcmp(tmp->next->name, cmd->args[i]) == 0)
+		if (tmp && tmp->next && ft_strcmp(tmp->next->name, cmd->args[i]) == 0)
 		{
 			swap = tmp->next;
 			tmp->next = tmp->next->next;
@@ -34,7 +34,6 @@ void	ft_unset(t_env **mini_env, t_cmd *cmd)
 		}
 		i++;
 	}
-	
 }
 
 int	ft_builtins_env(t_data *data)

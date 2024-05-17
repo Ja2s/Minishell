@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/17 13:54:42 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:15:17 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_expand
 	char	*value;
 	int 	nb_numbers;
 	int		code_copy;
+	int		in_cote;
 }			t_expand;
 
 typedef struct s_var
