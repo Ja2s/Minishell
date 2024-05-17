@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntaxe_errors.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:07:14 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/16 13:11:18 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/17 13:11:43 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int	double_pipe_checker(char *rl)
 			return (-1);
 		if (rl[i] == '|')
 		{
+			i++;
 			while (ft_isspace(rl[i]) == 1)
 				i++;
 			if (rl[i] == '|')

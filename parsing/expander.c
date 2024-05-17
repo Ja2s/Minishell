@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/16 12:59:26 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/17 14:41:40 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,9 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 			pos_doll = i;
 			var->name_end = var->name_start;
 			while (output[var->name_end] && output[var->name_end] > 32 &&\
-			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39 && output[var->name_end] != '\\' && ft_isalnum(output[var->name_end], 0) == 1)
+			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39 && output[var->name_end] != '\\' && ft_isalnum(output[var->name_end], 0) == 1 && ft_isdigit(output[var->name_end]) == 0)
+				var->name_end++;
+			if (ft_isdigit(output[var->name_end]) == 1)
 				var->name_end++;
 			var->name_len = var->name_end - var->name_start;
 			var->name = ft_substr(output, var->name_start, var->name_len);

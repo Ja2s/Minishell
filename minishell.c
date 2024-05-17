@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/16 01:20:52 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/17 13:52:18 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,21 @@ void	ft_unset(t_env **mini_env, t_cmd *cmd)
 	
 }
 
-int	ft_builtins_env(t_cmd *cmd, t_env *mini_env)
+int	ft_builtins_env(t_data *data)
 {
-	if (ft_strcmp(cmd->args[0], "export") == 0)
+	if (ft_strcmp(data->cmd->args[0], "export") == 0)
 	{
-		ft_export(&mini_env, cmd);
+		ft_export(data, &data->mini_env, data->cmd);
 			return (1);
 	}
-	else if (ft_strcmp(cmd->args[0], "unset") == 0)
+	else if (ft_strcmp(data->cmd->args[0], "unset") == 0)
 	{
-		ft_unset(&mini_env, cmd);
+		ft_unset(&data->mini_env, data->cmd);
 		return (1);
 	}
-	else if (ft_strcmp(cmd->args[0], "env") == 0)
+	else if (ft_strcmp(data->cmd->args[0], "env") == 0)
 	{
-		env_cmd(mini_env);
+		env_cmd(data->mini_env);
 		return (1);
 	}
 	return (0);
@@ -80,7 +80,7 @@ int	launch_exec(t_data *data)
 			if (pipe(data->pipe_fd) == -1)
 				exit_status(data, 1, "pipe failed\n");
 		//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
-		if (ft_builtins_env(data->cmd, data->mini_env) == 0)
+		if (ft_builtins_env(data) == 0)
 		{
 			int check_access = ft_check_access(data);
 			if (check_access == -1)  //4 Cmd check

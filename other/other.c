@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   other.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:35:20 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/16 12:39:42 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/17 13:54:31 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,12 @@ void	free_pipes(char **pipes)
 }
 
 void	exit_status(t_data *data, int code, char *message)
+{
+	data->exit_code = code;
+	write(2, message, ft_strlen(message));
+}
+
+void	exit_status_n_free(t_data *data, int code, char *message)
 {
 	data->exit_code = code;
 	write(2, message, ft_strlen(message));

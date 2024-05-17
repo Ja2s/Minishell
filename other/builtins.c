@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/16 11:07:07 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/17 14:00:36 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int	ft_export_display(t_env *mini_env)
 	return (0);
 }
 
-int	ft_export(t_env **mini_env, t_cmd *cmd)
+int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 {
 	t_env	*new_elem;
 	int		i;
@@ -130,20 +130,29 @@ int	ft_export(t_env **mini_env, t_cmd *cmd)
 		i = 1;
 		while (cmd->args[i])
 		{
-			variable = NULL;
-			new_elem = malloc(sizeof(t_env));
-			if (!new_elem)
-				return (-1);
-			variable = ft_split(cmd->args[i], '=');
-			if (!variable || !variable[0])
-				return (free(new_elem), -1);
-			new_elem->name = ft_strdup(variable[0]);
-			if (variable[1])
-				new_elem->value = ft_strdup(variable[1]);
-			ft_envadd_back(mini_env, new_elem);
-			free(variable[0]);
-			free(variable[1]);
-			free(variable);
+			if (ft_isdigit(cmd->args[i][0]) == 0)
+			{	
+				variable = NULL;
+				new_elem = malloc(sizeof(t_env));
+				if (!new_elem)
+					return (-1);
+				variable = ft_split(cmd->args[i], '=');
+				if (!variable || !variable[0])
+					return (free(new_elem), -1);
+				new_elem->name = ft_strdup(variable[0]);
+				if (variable[1])
+					new_elem->value = ft_strdup(variable[1]);
+				ft_envadd_back(mini_env, new_elem);
+				free(variable[0]);
+				free(variable[1]);
+				free(variable);
+			}
+			else
+			{
+				exit_status_n_free(data, 1, "not a valid identifier: ");
+				write(2, cmd->args[i], ft_strlen(cmd->args[i]));
+				write(2,"\n", 1);
+			}
 			i++;
 		}
 	}
