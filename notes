@@ -16,4 +16,16 @@ backslash a gerer? exemple (\$HOME = $HOME)?
 
 cas 129 a verifier (echo $hola*) maffiche * doit il rien afficher?
 
-verifier si la variable existe avant de la creer pour pas avoir de doublons
+cas 160 (echo "'$HO''ME'") me renvoie '''ME' au lieu de ''ME'
+
+cas 204 ($) le supprime retour demande (command not found : $)
+
+cas 205 ($HOME) Its a directory - attendu 
+
+cas 211 /!\ SIGNAUX----------------------------------------- 223
+
+cas 237 export | grep je crois que le builtin nentre pas dans les forks
+
+cas 245 _HOLA=bonjour, autoriser les underscore en plus des isalpha
+
+cas 248 export HOL@=bonjour, not a valid identifier (les caracteres speciaux ne doivent pas etre dans le nom)

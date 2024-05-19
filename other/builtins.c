@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/17 14:00:36 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/19 18:53:49 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,25 @@ int	ft_export_display(t_env *mini_env)
 	return (0);
 }
 
+int	check_variable(t_env **mini_env, char *name, char *value)
+{
+	t_env *tmp;
+
+	tmp = (*mini_env);
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->name, name) == 0)
+		{
+			if (value)
+				tmp->value = ft_strdup(value);
+			else
+				tmp->value = NULL;
+			return(1);
+		}
+		tmp = tmp->next;
+	}
+}
+
 int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 {
 	t_env	*new_elem;
@@ -130,19 +149,22 @@ int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 		i = 1;
 		while (cmd->args[i])
 		{
-			if (ft_isdigit(cmd->args[i][0]) == 0)
-			{	
+			if (ft_isalpha(cmd->args[i][0]) != 0)
+			{
 				variable = NULL;
-				new_elem = malloc(sizeof(t_env));
-				if (!new_elem)
-					return (-1);
 				variable = ft_split(cmd->args[i], '=');
 				if (!variable || !variable[0])
 					return (free(new_elem), -1);
-				new_elem->name = ft_strdup(variable[0]);
-				if (variable[1])
-					new_elem->value = ft_strdup(variable[1]);
-				ft_envadd_back(mini_env, new_elem);
+				if (check_variable(mini_env, variable[0], variable[i]) == 0)
+				{
+					new_elem = malloc(sizeof(t_env));
+					if (!new_elem)
+						return (-1);
+					new_elem->name = ft_strdup(variable[0]);
+					if (variable[1])
+						new_elem->value = ft_strdup(variable[1]);
+					ft_envadd_back(mini_env, new_elem);
+				}
 				free(variable[0]);
 				free(variable[1]);
 				free(variable);

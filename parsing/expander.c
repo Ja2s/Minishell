@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/17 16:28:19 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/19 17:50:45 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,8 +356,8 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 				rl[i] = output[i];
 				i++;
 			}
-			if (var->in_cote > 0)
-				negative_checker_sp(&var->value);
+			if (var->value && var->in_cote > 0)
+			 	negative_checker_sp(&var->value);
 			p = 0;
 			if(var->value)
 			{
@@ -378,7 +378,8 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 			rl[i] = '\0';
 			output = ft_strdup(rl);
 			i = pos_doll + var->value_len;
-			command_positiver(var->value);
+			if (var->value && rl[0])
+			 	command_positiver(var->value);
 		}
 		else if (output[i] == '$' && output[i + 1] == '?')
 		{
