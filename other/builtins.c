@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/19 18:53:49 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:59:12 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,12 +134,43 @@ int	check_variable(t_env **mini_env, char *name, char *value)
 		}
 		tmp = tmp->next;
 	}
+	return (0);
+}
+
+int	ft_isalpha_export(int c)
+{
+	if (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) ||\
+	c == '_')
+		return (1);
+	else
+		return (0);
+}
+
+int	spec_export(char *cmd)
+{
+	int i;
+
+	i = 0;
+	if (!cmd[0])
+		return (1);
+	while (cmd[i])
+	{
+		if (cmd[0] == '=')
+			return (1);
+		if (i > 0 && cmd[i] == '=')
+			return(0);
+		if (ft_isalpha_export(cmd[i]) == 0)
+			return(1);
+		i++;
+	}
+	return (0);
 }
 
 int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 {
 	t_env	*new_elem;
 	int		i;
+	int		x;
 	char	**variable;
 	
 	if (!cmd->args[1])
@@ -149,7 +180,7 @@ int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 		i = 1;
 		while (cmd->args[i])
 		{
-			if (ft_isalpha(cmd->args[i][0]) != 0)
+			if (spec_export(cmd->args[i]) == 0)
 			{
 				variable = NULL;
 				variable = ft_split(cmd->args[i], '=');
@@ -163,6 +194,12 @@ int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 					new_elem->name = ft_strdup(variable[0]);
 					if (variable[1])
 						new_elem->value = ft_strdup(variable[1]);
+					x = 2;
+					while (variable[x])
+					{
+						new_elem->value = ft_strjoin(new_elem->value, "=");
+						new_elem->value = ft_strjoin(new_elem->value, variable[x]);
+					}
 					ft_envadd_back(mini_env, new_elem);
 				}
 				free(variable[0]);

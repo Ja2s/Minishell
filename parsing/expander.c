@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/19 17:50:45 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:06:17 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,11 +224,20 @@ void	expand_initializer(t_expand **var)
 void	free_expand(t_expand **var)
 {
 	if ((*var)->name)
+	{
 		free((*var)->name);
+		(*var)->name = NULL;
+	}
 	if ((*var)->value)
+	{
 		free((*var)->value);
+		(*var)->value = NULL;
+	}
 	if (*var)
+	{
 		free(*var);
+		(*var) = NULL;
+	}
 }
 
 int	doll_echo(char *output, int i)
@@ -324,7 +333,7 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 	{
 		if (output[i] == '$' && output[i + 1] && (output[i + 1] == 34 || output[i + 1] == 39))
 			output = del_doll(output, i);
-		else if (output[i] == '$' && doll_echo(output, i) == 1)
+		else if (output[i] == '$' && (doll_echo(output, i) == 1 || output[i - 1] == '\0'))
 			i++;
 		else if (output[i] == '$' && output[i + 1] != '?')
 		{

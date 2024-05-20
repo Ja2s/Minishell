@@ -14,11 +14,9 @@ Tests <= 100 : OK
 
 backslash a gerer? exemple (\$HOME = $HOME)?
 
+cas echo $HO9ME print ME au lieu de rien, faux???
+
 cas 129 a verifier (echo $hola*) maffiche * doit il rien afficher?
-
-cas 160 (echo "'$HO''ME'") me renvoie '''ME' au lieu de ''ME'
-
-cas 204 ($) le supprime retour demande (command not found : $)
 
 cas 205 ($HOME) Its a directory - attendu 
 
@@ -26,6 +24,5 @@ cas 211 /!\ SIGNAUX----------------------------------------- 223
 
 cas 237 export | grep je crois que le builtin nentre pas dans les forks
 
-cas 245 _HOLA=bonjour, autoriser les underscore en plus des isalpha
+cas 296 export HOLA="'" quand je echo $HOLA -> la ' est supprimee
 
-cas 248 export HOL@=bonjour, not a valid identifier (les caracteres speciaux ne doivent pas etre dans le nom)
