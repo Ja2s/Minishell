@@ -3,34 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/17 16:45:30 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/21 14:27:46 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-void	ft_unset(t_env **mini_env, t_cmd *cmd)
+void	ft_unset(t_data **data)
 {
 	t_env	*tmp;
 	t_env	*swap;
 	int		i;
 
 	i = 1;
-	tmp = (*mini_env);
-	while (cmd->args[i])
+	tmp = (*data)->mini_env;
+	while ((*data)->cmd->args[i])
 	{
-		while (tmp->next && ft_strcmp(tmp->next->name, cmd->args[i]) != 0)
-			tmp = tmp->next;
-		if (tmp && tmp->next && ft_strcmp(tmp->next->name, cmd->args[i]) == 0)
+		if (spec_export((*data)->cmd->args[i]) == 0)
 		{
-			swap = tmp->next;
-			tmp->next = tmp->next->next;
-			free(swap->name);
-			free(swap->value);
-			free(swap);
+			while (tmp->next && ft_strcmp(tmp->next->name, (*data)->cmd->args[i]) != 0)
+				tmp = tmp->next;
+			if (tmp && tmp->next && ft_strcmp(tmp->next->name, (*data)->cmd->args[i]) == 0)
+			{
+				swap = tmp->next;
+				tmp->next = tmp->next->next;
+				free(swap->name);
+				free(swap->value);
+				free(swap);
+			}
+		}
+		else
+		{
+			exit_status_n_free((*data), 1, "unset: not a valid identifier: ");
+			write(2, (*data)->cmd->args[i], ft_strlen((*data)->cmd->args[i]));
+			write(2,"\n", 1);
 		}
 		i++;
 	}
@@ -45,7 +54,7 @@ int	ft_builtins_env(t_data *data)
 	}
 	else if (ft_strcmp(data->cmd->args[0], "unset") == 0)
 	{
-		ft_unset(&data->mini_env, data->cmd);
+		ft_unset(&data);
 		return (1);
 	}
 	else if (ft_strcmp(data->cmd->args[0], "env") == 0)

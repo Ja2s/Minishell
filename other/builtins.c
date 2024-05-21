@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/20 16:59:12 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/21 15:08:54 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ int	check_variable(t_env **mini_env, char *name, char *value)
 int	ft_isalpha_export(int c)
 {
 	if (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) ||\
-	c == '_')
+	c == '_' )
 		return (1);
 	else
 		return (0);
@@ -153,13 +153,15 @@ int	spec_export(char *cmd)
 	i = 0;
 	if (!cmd[0])
 		return (1);
+	if (cmd[0] >= '1' && cmd[0] <= '9')
+		return (1);
+	if (cmd[0] == '=')
+		return (1);
 	while (cmd[i])
 	{
-		if (cmd[0] == '=')
-			return (1);
 		if (i > 0 && cmd[i] == '=')
 			return(0);
-		if (ft_isalpha_export(cmd[i]) == 0)
+		if (ft_isalpha_export(cmd[i]) == 0 && ft_isdigit(cmd[i]) == 0)
 			return(1);
 		i++;
 	}
@@ -208,7 +210,7 @@ int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 			}
 			else
 			{
-				exit_status_n_free(data, 1, "not a valid identifier: ");
+				exit_status_n_free(data, 1, "export: not a valid identifier: ");
 				write(2, cmd->args[i], ft_strlen(cmd->args[i]));
 				write(2,"\n", 1);
 			}

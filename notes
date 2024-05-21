@@ -1,28 +1,58 @@
-tri douteux sur export (exemple: lol, loll, lol2, lol3)
 
-probleme en cas de | avec un builtin en premiere, (exemple "env | grep TERM")
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
 
-probleme valgrind en cas de "export" apres avoir creer une nouvelle variable
+RAYANE--	probleme en cas de pipe avec un builtin en premiere, (exemple "env | grep TERM")
 
-cas des '/' qui devrait renvoyer is a directory
+RAYANE--	cas des '/' qui devrait renvoyer is a directory
 
-syntaxe error &, (), 
+RAYANE--	[205] ($HOME) Its a directory - attendu 
 
-Echo cas 89 a Gerer
+RAYANE--	Echo [89] a Gerer
 
-Tests <= 100 : OK
+RAYANE--	[237] export | grep je crois que le builtin nentre pas dans les forks
 
-backslash a gerer? exemple (\$HOME = $HOME)?
+RAYANE--	[334] de unset PATH, ensuite ls, segfault au lieu de No such file or directory
 
-cas echo $HO9ME print ME au lieu de rien, faux???
+RAYANE--	[>382] ex: /bin/echo = command path ok au lieu dexec
 
-cas 129 a verifier (echo $hola*) maffiche * doit il rien afficher?
+RAYANE--	[392] pwd -p = invalid option
+	{
+		399 > cd, a tester
+		reprise >>>> cas 640 (avant full test cd, exit ou builtin avec pipe donc a tester)
+	}
 
-cas 205 ($HOME) Its a directory - attendu 
+RAYANE--	[679]	> ">pwd" doit creer le fichier pwd 
 
-cas 211 /!\ SIGNAUX----------------------------------------- 223
+RAYANE--	[680]	> "< pwd" ne fait rien - resultat attendu : "bash: pwd: No such file or directory"
 
-cas 237 export | grep je crois que le builtin nentre pas dans les forks
+RAYANE--	[692]	> ">>hola" doit creer le fichier hola 
 
-cas 296 export HOLA="'" quand je echo $HOLA -> la ' est supprimee
+RAYANE--	[706]	> ">srcs/bonjour >srcs/hello <prout" ne fait rien - resultat attemdu : "bash: prout: No such file or directory"
 
+JORDAN--	tri douteux sur export (exemple: lol, loll, lol2, lol3)
+
+
+JORDAN--	probleme valgrind en cas de "export" apres avoir creer une nouvelle variable
+
+
+JORDAN--	syntaxe error &, (), 
+
+JORDAN--	backslash a gerer? exemple (\$HOME = $HOME)?
+
+JORDAN--	cas echo $HO9ME print ME au lieu de rien, faux???
+
+JORDAN--	[129] a verifier (echo $hola*) maffiche * doit il rien afficher?
+
+JORDAN--	[296] export HOLA="'" quand je echo $HOLA -> la "'" est supprimee
+
+JORDAN--	[755]	> SEGFAULT avec cat <<hd <<hd <<hd (>1 heredeoc)
+					> ">$HOLA" 			Doit creer le fichier "bonjour cava" et me creer juste "bonjour"
+										|| bash = redirection ambigue ????
+
+JORDAN--	[728]	> "export HOLA="bonjour cava""
+
+JORDAN--	[759]	> "<< $"$hola"$$"b"" doit donner comme delimiter "$hola$$b" et me donne dans mon cas "b"
+
+JORDAN--	[761]	> "echo hola <<< bonjour" est sense fonctionner - resultat attendu : "hola"
+
+																	SI DOUTES, CONFIRMER AVEC LE VRAI BASH |||||||||||||||||||||||||||||

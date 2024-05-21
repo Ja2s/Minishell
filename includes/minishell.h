@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/17 16:15:17 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/21 14:17:01 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,5 +174,6 @@ int		ft_export(t_data *data, t_env **mini_env, t_cmd *cmd);
 char	**ft_list_to_tab_cote(t_env *mini_env);
 int		ft_isspace(char c);
 void	exit_status_n_free(t_data *data, int code, char *message);
+int		spec_export(char *cmd);
 
 #endif

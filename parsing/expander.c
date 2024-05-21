@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/20 16:06:17 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/21 17:12:34 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,12 @@ void	doll_heredoc(char **rl)
 				while ((*rl)[i] == ' ' || (*rl)[i] == 39 || (*rl)[i] == 34)
 					i++;
 				if ((*rl)[i] == '$')
-					(*rl)[i] = (*rl)[i] * -1;
+				{
+					if ((*rl)[i + 1] == 34 || (*rl)[i + 1] == 39)
+						(*rl) = ft_substr((*rl), i, 1);
+					else
+						(*rl)[i] = (*rl)[i] * -1;
+				}
 			}
 		}
 		else
@@ -315,6 +320,7 @@ void	in_cote_checker(t_expand **var, char *output, int i)
 	}	
 }
 
+
 char *dolls_expander(char *rl, t_env *mini_env, t_data *data) 
 {
 	t_expand	*var;
@@ -333,8 +339,11 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 	{
 		if (output[i] == '$' && output[i + 1] && (output[i + 1] == 34 || output[i + 1] == 39))
 			output = del_doll(output, i);
-		else if (output[i] == '$' && (doll_echo(output, i) == 1 || output[i - 1] == '\0'))
-			i++;
+		else if (output[i] == '$' && (output[i - 1] == '\0' || output[i - 1] == ' ' || output[i - 1] == '$') && (output[i + 1] == '\0' || output[i + 1] == ' ' || output[i + 1] == '$'))
+		{
+			//output[i] == '$' && (doll_echo(output, i) == 1 || output[i - 1] == '\0')
+			i++;	
+		}
 		else if (output[i] == '$' && output[i + 1] != '?')
 		{
 			expand_initializer(&var);
