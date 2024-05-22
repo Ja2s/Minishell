@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/21 17:58:04 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/21 14:17:01 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_expand
 	char	*value;
 	int 	nb_numbers;
 	int		code_copy;
+	int		in_cote;
 }			t_expand;
 
 typedef struct s_var
@@ -68,7 +69,6 @@ typedef struct s_cmd
 	int				expand_heredoc;
 	int				end_heredoc;
 	int				fd_str_rand;
-	int				del_one;
 	char			**heredoc_content;
 	char			**delimiter;
 	char			**redirecter;
@@ -145,17 +145,13 @@ int		heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del);
 int		heredoc_checker(char *pipes, t_cmd **cmd);
 void	free_pipes(char **pipes);
 void	command_positiver(char *pipes);
-int		ft_builtins_env(t_data *data, int i);
-void	env_cmd(t_data *data);
-void	ft_unset(t_env **mini_env, t_cmd *cmd);
+void	env_cmd(t_env *env);
 char	*ft_getenv(char *name, t_env *mini_env);
 char	*line_extractor(t_env *mini_env);
 int		ft_envsize(t_env *mini_env);
 char	**ft_list_to_tab(t_env *mini_env);
 int		ft_builtins(t_cmd *lst);
 int		ft_heredoc(t_data *data);
-void	ft_free_all_heredoc(t_data *data);
-void	ft_free_all_heredoc(t_data *data);
 void	ft_display_heredoc(t_cmd *lst);
 int		minishell_starter(char **env, t_data *data);
 int 	prompt_customer(t_data *data);
@@ -177,7 +173,7 @@ void	ft_envadd_back(t_env **env, t_env *new);
 int		ft_export(t_data *data, t_env **mini_env, t_cmd *cmd);
 char	**ft_list_to_tab_cote(t_env *mini_env);
 int		ft_isspace(char c);
-int		ft_cd(t_data *data);
 void	exit_status_n_free(t_data *data, int code, char *message);
+int		spec_export(char *cmd);
 
 #endif

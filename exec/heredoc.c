@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/22 15:45:53 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/21 16:20:18 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,51 +48,7 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 	if (!tab)
 		return (NULL);
 	tab[i + 1] = NULL;
-	free(lst->heredoc_content);
 	return (tab);
-}
-
-void	ft_free_all_heredoc(t_data *data)
-{
-	int	i;
-	t_cmd	*lst;
-
-	lst = data->cmd;
-	while (lst)
-	{
-		if (lst->heredoc_content)
-		{
-			i = 0;
-			while (lst->heredoc_content[i])
-			{
-				free(lst->heredoc_content[i]);
-				i++;
-			}
-			free(lst->heredoc_content);
-			lst->heredoc_content = NULL;
-		}
-		lst = lst->next;
-	}
-}
-
-void	ft_free_heredoc(t_data *data)
-{
-	int	i;
-	t_cmd	*lst;
-
-	i = 0;
-	lst = data->cmd;
-	printf("end heredoc\n");
-	if (lst->heredoc_content)
-	{
-		while (lst->heredoc_content[i])
-		{
-			free(lst->heredoc_content[i]);
-			i++;
-		}
-		free(lst->heredoc_content);
-		lst->heredoc_content = NULL;
-	}
 }
 
 int ft_heredoc(t_data *data) 
@@ -103,37 +59,28 @@ int ft_heredoc(t_data *data)
 
 	lst = data->cmd;
     lst->heredoc_content = NULL;
-	lst->del_one = 0;
 	while (lst)
 	{
 		while (i < lst->nb_del && lst->heredoc == true) 
 		{
 			line = readline(">");
-			if (ft_strcmp(line, lst->delimiter[i]) == 0)
+			while (ft_strcmp(line, lst->delimiter[i]) != 0)
 			{
-				free(line);
-				lst->heredoc_content = malloc(1 * sizeof(char *));
-				lst->heredoc_content[0] = NULL;
-				lst->del_one = 1;
-			}
-			else
-			{
-				lst->del_one = 0;
-				while (ft_strcmp(line, lst->delimiter[i]) != 0)
-				{
-					if (lst->expand_heredoc == 1)
-						line = dolls_expander(line, data->mini_env, data);
-					lst->heredoc_content = ft_realloc(line, lst);
-					free(line);  // Libère la mémoire allouée par readline
-					if (!lst->heredoc_content)
-						return(exit_status(data, 1, "Malloc error from [ft_heredoc]\n"), -1);
-					line = readline(">");
-				}
-				free(line);  // Libère la mémoire allouée par readline	
+				if (lst->expand_heredoc == 1)
+					line = dolls_expander(line, data->mini_env, data);
+				lst->heredoc_content = ft_realloc(line, lst);
+				if (!lst->heredoc_content)
+					return(exit_status(data, 1, "Malloc error from [ft_heredoc]\n"), -1);
+				free(line);  // Libère la mémoire allouée par readline
+				line = readline(">");
 			}
 			i++;
 			if (i  < lst->nb_del)
-				ft_free_heredoc(data);
+			{
+				printf("end heredoc\n");
+				//ft_free_heredoc(lst)
+				lst->heredoc_content = NULL; //delete old heredoc
+			}
 		}
 		i = 0;
 		lst = lst->next;

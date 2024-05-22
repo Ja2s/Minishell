@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_nd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/22 15:58:36 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/17 11:35:32 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	final_parse(t_data *data)
 		while (data->cmd->redirecter[i])
 			command_positiver(data->cmd->redirecter[i++]);	
 	}
-	//ft_printf_struct(data->cmd);
+	ft_printf_struct(data->cmd);
 	if (launch_exec(data) == -1)
 		return (-1);
 	data->exit_code = 0;

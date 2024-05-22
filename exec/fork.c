@@ -3,14 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/21 18:07:50 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/16 01:20:32 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	ft_fd_rand_heredoc(t_cmd *lst)
+{
+	char str_rand[6 + 1]; // +1 pour le caractère nul
+	char charset[] = "aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789";
+	int fd_rand;
+	int	i;
+
+	fd_rand = open("/dev/urandom", O_RDONLY);
+	if (fd_rand == -1) 
+	{
+		perror("Erreur lors de l'ouverture de /dev/urandom");
+		return 1;
+	}
+	if (read(fd_rand, str_rand, 6) == -1)//read dans str_rand 5 caractere de dev/urandom
+	{
+		perror("Erreur lors de la lecture de /dev/urandom");
+		close(fd_rand);
+		return 1;
+	}
+	close(fd_rand);
+	//str_rand[0] = '.';
+	i = 0;
+	while (i < 6)
+	{
+		str_rand[i] = charset[str_rand[i] % (sizeof(charset) - 1)];
+		i++;
+	}
+	str_rand[6] = '\0';
+	lst->fd_str_rand = open(str_rand, O_CREAT | O_RDWR, 0777);//open du fichier avec un nom random
+	if (lst->fd_str_rand == -1) {
+		perror("Erreur lors de la création du fichier");
+		return 1;
+	}
+	i = 0;
+	while (lst->heredoc_content[i])
+	{
+		write(lst->fd_str_rand, lst->heredoc_content[i], ft_strlen(lst->heredoc_content[i]));
+		write(lst->fd_str_rand, "\n", 1);
+		i++;
+	}
+	return 0;
+}
 
 int	ft_fd_heredoc(t_cmd *lst)
 {
@@ -20,47 +63,21 @@ int	ft_fd_heredoc(t_cmd *lst)
 	if (lst->fd_str_rand == -1) 
 	{
 		perror("Erreur lors de la création du fichier");
-		return (-1);
+		return -1;
 	}
 	i = 0;
-	if (lst->del_one == 1)
-		return (write(lst->fd_str_rand, "\0", 1), 0);
 	while (lst->heredoc_content[i])
 	{
 		write(lst->fd_str_rand, lst->heredoc_content[i], ft_strlen(lst->heredoc_content[i]));
-		i++;
 		write(lst->fd_str_rand, "\n", 1);
+		i++;
 	}
 	close(lst->fd_str_rand);
 	return 0;
 }
 
-/*******************************************************************************************************/
 
-int	ft_builtins_env_fork(t_data *data)
-{
-	if (ft_strcmp(data->cmd->args[0], "export") == 0)
-	{
-		ft_export(data, &data->mini_env, data->cmd);
-		return (1);
-	}
-	else if (ft_strcmp(data->cmd->args[0], "unset") == 0)
-	{
-		ft_unset(&data->mini_env, data->cmd);
-		return (1);
-	}
-	else if (ft_strcmp(data->cmd->args[0], "env") == 0)
-	{
-		env_cmd(data);
-		return (1);
-	}
-	else if (ft_strcmp(data->cmd->args[0], "cd") == 0)
-	{
-		ft_cd(data);
-		return (1);
-	}
-	return (0);
-}
+/*******************************************************************************************************/
 
 int	ft_first_fork(t_data *data)
 {
@@ -70,14 +87,14 @@ int	ft_first_fork(t_data *data)
 	pid = fork();
 	if (pid < 0)
 	{
-		perror("fork first failed :");
+		perror("fork first failed :");	
 		exit(EXIT_FAILURE);
 	}
 	if (pid == 0) //Children
 	{
 		lst = data->cmd;
 		//1. SI il y a un infile ET quil est en dernier  sil y en a un et quil est en dernier
-		if (lst->redirecter && lst->fd_infile > 0 && lst->end_heredoc == 0)	// < f1
+		if (lst->redirecter && lst->fd_infile > 0 && lst->end_heredoc == 0)// < f1
 		{//recupere les donner dans fd_infile au lieu de lentree standard
 			if (dup2(lst->fd_infile, STDIN_FILENO) == -1)
 			{
@@ -86,7 +103,7 @@ int	ft_first_fork(t_data *data)
 			}
 		}
 		//2. SINON SI il y a un heredoc et quil est en dernier 
-		if (lst->nb_del > 0 && lst->end_heredoc == 1)			// << eof
+		else if (lst->heredoc_content && lst->end_heredoc == 1)// << eof
 		{//appelle ft qui cp heredoc_content dans un fichier temporaire
 			if (ft_fd_heredoc(lst) == -1)
 				exit(EXIT_FAILURE);
@@ -118,9 +135,7 @@ int	ft_first_fork(t_data *data)
 		}
 		if (ft_builtins(lst) != 0)
 			exit(0);
-		if (ft_builtins_env_fork(data) != 0)	
-			exit (0);
-		if (data->exit_code != 0 || ft_strcmp(data->cmd->args[0], "exit") == 0)
+		if (data->exit_code != 0)
 			exit(EXIT_SUCCESS);
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		perror("execve 1 : failed ");
@@ -129,12 +144,12 @@ int	ft_first_fork(t_data *data)
 	else if (pid > 0)
 	{
 		int status;
-		waitpid(pid, &status, 0);
-
+    	waitpid(pid, &status, 0);
+		
 		if (status == 0)
 			return (-1);
 		if (WIFEXITED(status)) {//execve failed
-			printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
+			printf("Command failed with exit status: %d\n", WIFEXITED(status));
 			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
 			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
 			return (-1);
@@ -216,9 +231,7 @@ int	ft_middle_fork(t_data *data)
 		}
 		if (ft_builtins(lst) != 0)
 			exit(0);
-		if (ft_builtins_env_fork(data) != 0)
-			exit (0);
-		if (data->exit_code != 0 || ft_strcmp(data->cmd->args[0], "exit") == 0)
+		if (data->exit_code != 0)
 			exit(EXIT_SUCCESS);
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		perror("execve 2 failed : ");
@@ -229,11 +242,11 @@ int	ft_middle_fork(t_data *data)
 	{
 		int status;
     	waitpid(pid, &status, 0);
-	
+
 		if (status == 0)
 			return (-1);
 		if (WIFEXITED(status)) {//execve failed
-			printf("Command mid failed with exit status: %d\n", WIFEXITED(status));
+			printf("Command failed with exit status: %d\n", WIFEXITED(status));
 			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
 			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
 			return (-1);
@@ -304,9 +317,7 @@ int	ft_last_fork(t_data *data)
 		}
 		if (ft_builtins(lst) != 0)
 			exit(0);
-		if (ft_builtins_env_fork(data) != 0)
-			exit (0);
-		if (data->exit_code != 0 || ft_strcmp(data->cmd->args[0], "exit") == 0)
+		if (data->exit_code != 0)
 			exit(EXIT_SUCCESS);
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		perror("execve 3 : failed ");
@@ -316,11 +327,11 @@ int	ft_last_fork(t_data *data)
 	{
 		int status;
     	waitpid(pid, &status, 0);
-
+		
 		if (status == 0)// ne pas changer exit_code soit pcq il a deja etais modif en amont avec une err soit pcq tout est good
 			return (-1);
 		if (WIFEXITED(status)) {//execve failed
-			printf("Command last failed with exit status: %d\n", WIFEXITED(status));
+			printf("Command failed with exit status: %d\n", WIFEXITED(status));
 			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
 			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
 			return (-1);
