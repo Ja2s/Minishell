@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:24:55 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/14 13:57:50 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/21 15:59:10 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ int	ft_check_access(t_data *data)
 		return (-2);
 	lst->i = 0;
 	if (lst->args[0])
-	while (ft_strncmp(data->var.mini_env[lst->i], "PATH=", 5))
+	while (data->var.mini_env[lst->i] && ft_strncmp(data->var.mini_env[lst->i], "PATH=", 5))
 		lst->i++;
+	if (data->var.mini_env[lst->i] == NULL)
+		return (display_error_cmd(lst), -1);
 	lst->split_path = ft_split(data->var.mini_env[lst->i], ':');
 	if (!lst->split_path)
 		return (-2);
