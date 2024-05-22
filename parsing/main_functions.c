@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/17 01:29:03 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/22 14:33:15 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ int	prompt_customer(t_data *data)
 	if (data->var.pwd == NULL)
 		return (exit_status(data, 1, "\033[31mError from [getcwd]\n\033[0m"), -1);
 	printf ("\033[90m%s\033[0m", data->var.pwd);
-	data->var.rl = readline("\e[33m$> \e[37m");
+	data->var.rl = readline("\001\e[33m\002$> \001\e[37m\002");
 	if (data->var.rl == NULL)
-		return (exit_status(data, 1, "\033[31mError from [readline]\n\033[0m"), -1);
+		return (exit_status(data, 1, "\033[31mError from [readliene]\n\033[0m"), -1);
 	if (data->var.rl[0])
 		add_history(data->var.rl);
 	return (0);
@@ -41,8 +41,6 @@ int	parser(t_data *data)
 	data->var.rl = dolls_expander(data->var.rl, data->mini_env, data);
 	if (!data->var.rl)
 		return (exit_status(data, 1, "\033[31mMalloc error from [dolls_expander]\n\033[0m"), -1);
-	if (!data->var.rl[0])
-		return (-1);
 	data->var.pipes = ft_split(data->var.rl, '|');
 	if (!data->var.pipes)
 		return (exit_status(data, 1, "\033[31mMalloc error from [ft_split]\n\033[0m"), -1);
