@@ -29,29 +29,20 @@ RAYANE--	[692]	> ">>hola" doit creer le fichier hola
 
 RAYANE--	[706]	> ">srcs/bonjour >srcs/hello <prout" ne fait rien - resultat attemdu : "bash: prout: No such file or directory"
 
+RAYANE--	[755]	> SEGFAULT avec cat <<hd <<hd <<hd (>1 heredeoc)
+
 JORDAN--	tri douteux sur export (exemple: lol, loll, lol2, lol3)
 
-
 JORDAN--	probleme valgrind en cas de "export" apres avoir creer une nouvelle variable
-
-
-JORDAN--	syntaxe error &, (), 
-
-JORDAN--	backslash a gerer? exemple (\$HOME = $HOME)?
-
-JORDAN--	cas echo $HO9ME print ME au lieu de rien, faux???
 
 JORDAN--	[129] a verifier (echo $hola*) maffiche * doit il rien afficher?
 
 JORDAN--	[296] export HOLA="'" quand je echo $HOLA -> la "'" est supprimee
 
-JORDAN--	[755]	> SEGFAULT avec cat <<hd <<hd <<hd (>1 heredeoc)
-					> ">$HOLA" 			Doit creer le fichier "bonjour cava" et me creer juste "bonjour"
+JORDAN--			> ">$HOLA" 			Doit creer le fichier "bonjour cava" et me creer juste "bonjour"
 										|| bash = redirection ambigue ????
 
 JORDAN--	[728]	> "export HOLA="bonjour cava""
-
-JORDAN--	[759]	> "<< $"$hola"$$"b"" doit donner comme delimiter "$hola$$b" et me donne dans mon cas "b"
 
 JORDAN--	[761]	> "echo hola <<< bonjour" est sense fonctionner - resultat attendu : "hola"
 

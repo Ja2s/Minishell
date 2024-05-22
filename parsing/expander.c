@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/21 17:12:34 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:36:18 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,9 @@ int	env_copyer(char **envp, t_env **mini_env)
 void	doll_heredoc(char **rl)
 {
 	int	i;
+	int x;
 	
+	x = '$' * -1;
 	i = 0;
 	while ((*rl)[i])
 	{
@@ -156,12 +158,20 @@ void	doll_heredoc(char **rl)
 				i++;
 				while ((*rl)[i] == ' ' || (*rl)[i] == 39 || (*rl)[i] == 34)
 					i++;
-				if ((*rl)[i] == '$')
+				while ((*rl)[i])
 				{
-					if ((*rl)[i + 1] == 34 || (*rl)[i + 1] == 39)
-						(*rl) = ft_substr((*rl), i, 1);
+					if ((*rl)[i] == '$')
+					{
+						if (((*rl)[i + 1] == 34 || (*rl)[i + 1] == 39) && (*rl)[i - 1] != x)
+						{
+							ft_memmove(&(*rl)[i], &(*rl)[i+1], strlen((*rl)) - i);
+							i--;
+						}
+						else
+							(*rl)[i] = (*rl)[i] * -1;
+					}
 					else
-						(*rl)[i] = (*rl)[i] * -1;
+						i++;
 				}
 			}
 		}
@@ -353,8 +363,8 @@ char *dolls_expander(char *rl, t_env *mini_env, t_data *data)
 			var->name_start = i + 1;
 			pos_doll = i;
 			var->name_end = var->name_start;
-			while (output[var->name_end] && output[var->name_end] > 32 &&\
-			 output[var->name_end] != '$' && output[var->name_end] != 34 && output[var->name_end] != 39 && output[var->name_end] != '\\' && ft_isalnum(output[var->name_end], 0) == 1 && ft_isdigit(output[var->name_end]) == 0)
+			while (output[var->name_end] && ft_isspace(output[var->name_end]) == 0 && ((ft_isalnum(output[var->name_end], 0) == 1) ||\
+			 output[var->name_end] == '_'))
 				var->name_end++;
 			if (ft_isdigit(output[var->name_end]) == 1)
 				var->name_end++;
