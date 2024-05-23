@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/23 14:12:16 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/23 23:29:32 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ typedef struct s_expand
 	int		code_copy;
 	int		in_cote;
 	bool	in_redirecter;
+	char	*output;
+	int		p;
+	int		i;
+	int		pos_doll;
 }			t_expand;
 
 typedef struct s_var
@@ -132,7 +136,7 @@ int		args_memory_alloc(char **input, t_cmd **cmd);
 int		memory_alloc(char **input, t_cmd **cmd);
 int		stock_input(char **input, t_cmd **cmd);
 void	negative_checker(char *rl);
-void	expand_initializer(t_expand **var);
+int		expand_initializer(t_expand **var);
 char	*dolls_expander(char *rl, t_env *mini_env, t_data *data);
 int		redirect_counter(char *pipes);
 int		redirecter(char *pipes, t_cmd **cmd);

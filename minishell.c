@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/23 14:11:30 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:44:37 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ int	ft_cd(t_data *data)
 		return (-1);
 	}
 	//export oldpwd = old_pwd
-	//check_variable(mini_env, "OLDPWD", old_pwd);
 	return (0);
 }
 
@@ -153,14 +152,14 @@ int	launch_exec(t_data *data)
 	i = 0;
 	int len_lst = ft_lstlen(data->cmd);
 	if (ft_heredoc(data) == -1 || !data->cmd->args[0])
-		return (ft_free_all_heredoc(begin), -1);
+		return (ft_redirecter(data), ft_free_all_heredoc(begin), -1);
 	//ft_display_heredoc(data->cmd);
 	while (data->cmd)
 	{
 		data->exit_code = 0;
 		i++;
 		if (data->cmd->redirecter)	//2. redirecter check
-		ft_redirecter(data);
+			ft_redirecter(data);
 		if (data->cmd->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe
 			if (pipe(data->pipe_fd) == -1)
 				exit_status(data, 1, "pipe failed\n");

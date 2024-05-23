@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/22 23:51:27 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/23 22:54:03 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,16 @@ void	data_initializer(t_data *data)
 	data->ambigous = 0;
 }
 
-int redirecter_finisher(t_data *data)
+int	redirecter_finisher(t_data *data)
 {
 	int		i;
 
 	i = 0;
-	data->cmd->red_copy = input_copyer(data->cmd->redirecter, data->cmd->red_copy);
+	data->cmd->red_copy = \
+	input_copyer(data->cmd->redirecter, data->cmd->red_copy);
 	data->cmd->redirecter = data->cmd->red_copy;
 	data->cmd->red_copy = NULL;
-	return (0);	
+	return (0);
 }
 
 int	final_parse(t_data *data)
@@ -97,21 +98,22 @@ int	final_parse(t_data *data)
 
 	i = 0;
 	if (node_creator(data) == -1)
-		return (exit_status(data, 1, "\033[31mMalloc error from [node_creator]\n\033[0m"), -1);
+		return (exit_status(data, 1, \
+		"\033[31mMalloc error from [node_creator]\n\033[0m"), -1);
 	while (data->cmd->args[i])
 		command_positiver(data->cmd->args[i++]);
 	i = 0;
 	if (data->cmd->nb_del > 0)
 	{
 		while (i < data->cmd->nb_del)
-			command_positiver(data->cmd->delimiter[i++]);	
+			command_positiver(data->cmd->delimiter[i++]);
 	}
 	i = 0;
 	if (data->cmd->nb_red > 0)
 	{
 		redirecter_finisher(data);
 		while (data->cmd->redirecter[i])
-			command_positiver(data->cmd->redirecter[i++]);	
+			command_positiver(data->cmd->redirecter[i++]);
 	}
 	ft_printf_struct(data->cmd);
 	if (launch_exec(data) == -1)

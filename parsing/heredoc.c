@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:38:50 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/22 19:28:32 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/23 22:56:12 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
 {
 	int	start;
 	int	p;
-	int x;
+	int	x;
 
 	x = 0;
 	p = i;
@@ -96,13 +96,14 @@ int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
 		(*cmd)->delimiter[del] = ft_substr(pipes, start, p - start);
 		while ((*cmd)->delimiter[del][x])
 		{
-			if ((*cmd)->delimiter[del][x] == 34 || (*cmd)->delimiter[del][x] == 39)
+			if ((*cmd)->delimiter[del][x] == 34 || \
+			(*cmd)->delimiter[del][x] == 39)
 			{
 				(*cmd)->delimiter[del] = heredoc_w_cote((*cmd)->delimiter[del]);
 				if (!(*cmd)->delimiter[del])
 					return (-1);
 				(*cmd)->expand_heredoc = 0;
-				break;
+				break ;
 			}
 			else
 				(*cmd)->expand_heredoc = 1;

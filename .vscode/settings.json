@@ -6,6 +6,7 @@
 		"stdbool.h": "c",
 		"string.h": "c",
 		"minishell.h": "c",
-		"type_traits": "c"
+		"type_traits": "c",
+		"typeinfo": "c"
 	}
 }

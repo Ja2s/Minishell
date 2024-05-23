@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:15:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/22 22:03:08 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/23 23:13:09 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,12 +141,30 @@ int	env_copyer(char **envp, t_env **mini_env)
 	return (0);
 }
 
+int	doll_heredoc_helper(char **rl, int i)
+{
+	int	x;
+
+	x = '$' * -1;
+	if ((*rl)[i] == '$')
+	{
+		if (((*rl)[i + 1] == 34 || (*rl)[i + 1] == 39) && (*rl)[i - 1] != x)
+		{
+			ft_memmove(&(*rl)[i], &(*rl)[i + 1], strlen((*rl)) - i);
+			i--;
+		}
+		else
+			(*rl)[i] = (*rl)[i] * -1;
+	}
+	else
+		i++;
+	return (i);
+}
+
 void	doll_heredoc(char **rl)
 {
 	int	i;
-	int x;
-	
-	x = '$' * -1;
+
 	i = 0;
 	while ((*rl)[i])
 	{
@@ -159,20 +177,7 @@ void	doll_heredoc(char **rl)
 				while ((*rl)[i] == ' ' || (*rl)[i] == 39 || (*rl)[i] == 34)
 					i++;
 				while ((*rl)[i])
-				{
-					if ((*rl)[i] == '$')
-					{
-						if (((*rl)[i + 1] == 34 || (*rl)[i + 1] == 39) && (*rl)[i - 1] != x)
-						{
-							ft_memmove(&(*rl)[i], &(*rl)[i+1], strlen((*rl)) - i);
-							i--;
-						}
-						else
-							(*rl)[i] = (*rl)[i] * -1;
-					}
-					else
-						i++;
-				}
+					i = doll_heredoc_helper(rl, i);
 			}
 		}
 		else
@@ -182,13 +187,15 @@ void	doll_heredoc(char **rl)
 
 void	double_negativer(int i, char **rl)
 {
-	if ((*rl)[i] == ' ' || (*rl)[i] == '<' || (*rl)[i] == '>' || (*rl)[i] == 39 || (*rl)[i] == '|')
+	if ((*rl)[i] == ' ' || (*rl)[i] == '<' || \
+	(*rl)[i] == '>' || (*rl)[i] == 39 || (*rl)[i] == '|')
 		(*rl)[i] = (*rl)[i] * -1;
 }
 
 void	simple_negativer(int i, char **rl)
 {
-	if ((*rl)[i] == ' ' || (*rl)[i] == '$' || (*rl)[i] == '<' || (*rl)[i] == '>' || (*rl)[i] == '|' || (*rl)[i] == 34)
+	if ((*rl)[i] == ' ' || (*rl)[i] == '$' || (*rl)[i] == '<' || \
+	(*rl)[i] == '>' || (*rl)[i] == '|' || (*rl)[i] == 34)
 		(*rl)[i] = (*rl)[i] * -1;
 }
 
@@ -197,9 +204,9 @@ void	negative_checker(char *rl)
 {
 	int		i;
 
-	i = 0;
+	i = -1;
 	doll_heredoc(&rl);
-	while (rl[i])
+	while (rl[++i])
 	{
 		if (rl[i] && rl[i] == 34)
 		{
@@ -215,17 +222,18 @@ void	negative_checker(char *rl)
 			i++;
 			while (rl[i] && rl[i] != 39)
 			{
- 				simple_negativer(i, &rl);
+				simple_negativer(i, &rl);
 				i++;
 			}
 		}
-		i++;
 	}
 }
 
-void	expand_initializer(t_expand **var)
+int	expand_initializer(t_expand **var)
 {
 	(*var) = malloc(sizeof(t_expand));
+	if (!*var)
+		return (-1);
 	(*var)->name_start = 0;
 	(*var)->name_end = 0;
 	(*var)->name_len = 0;
@@ -236,7 +244,13 @@ void	expand_initializer(t_expand **var)
 	(*var)->nb_numbers = 0;
 	(*var)->in_cote = -1;
 	(*var)->in_redirecter = false;
+	(*var)->output = NULL;
+	(*var)->i = 0;
+	(*var)->p = 0;
+	(*var)->pos_doll = 0;
+	return (0);
 }
+
 void	free_expand(t_expand **var)
 {
 	if ((*var)->name)
@@ -258,7 +272,8 @@ void	free_expand(t_expand **var)
 
 int	doll_echo(char *output, int i)
 {
-	if (output[i] == '$' && (ft_isspace(output[i + 1]) == 1 || ft_isalnum(output[i + 1], 1) == 0))
+	if (output[i] == '$' && (ft_isspace(output[i + 1]) == \
+	1 || ft_isalnum(output[i + 1], 1) == 0))
 	{
 		while (output[i] && output[i] != 'o')
 			i--;
@@ -301,7 +316,7 @@ char	*del_doll(char *output, int i)
 		x++;
 		i++;
 	}
-	return(free(output), tmp);
+	return (free(output), tmp);
 }
 
 void	negative_checker_sp(char **rl)
@@ -312,7 +327,7 @@ void	negative_checker_sp(char **rl)
 	doll_heredoc(&(*rl));
 	while ((*rl)[i])
 	{
-		if(ft_isspace((*rl)[i]) == 1)
+		if (ft_isspace((*rl)[i]) == 1)
 			(*rl)[i] = (*rl)[i] * -1;
 		i++;
 	}
@@ -323,12 +338,12 @@ void	in_cote_checker(t_expand **var, char *output, int i)
 	while (i > 0)
 	{
 		if (output[i] == '"')
-		 	(*var)->in_cote = (*var)->in_cote * - 1;
+			(*var)->in_cote = (*var)->in_cote * -1;
 		i--;
-	}	
+	}
 }
 
-void	in_redirection_checker(t_expand **var,char *output, int i)
+void	in_redirection_checker(t_expand **var, char *output, int i)
 {
 	while (i >= 0)
 	{
@@ -338,7 +353,7 @@ void	in_redirection_checker(t_expand **var,char *output, int i)
 	}
 }
 
-int space_in_value_checker(t_expand *var)
+int	space_in_value_checker(t_expand *var)
 {
 	int	i;
 
@@ -355,138 +370,189 @@ int space_in_value_checker(t_expand *var)
 	return (0);
 }
 
-char *dolls_expander(char *rl, t_env *mini_env, t_data *data) 
+int	exitcode_expander_init(t_expand **var, t_data **data, char **rl)
+{
+	if (!var)
+		return (-1);
+	(*var)->name_start = (*var)->i + 1;
+	(*var)->name_end = (*var)->name_start + 1;
+	(*var)->name_len = (*var)->name_end - (*var)->name_start;
+	(*var)->name = ft_substr((*var)->output, \
+	(*var)->name_start, (*var)->name_len);
+	if (!(*var)->name)
+		return (-1);
+	(*var)->value = ft_itoa((*data)->exit_code);
+	if ((*var)->value)
+		(*var)->value_len = ft_strlen((*var)->value);
+	*rl = ft_calloc(((*var)->value_len - (*var)->name_len + \
+	ft_strlen((*var)->output) + 1), sizeof(char));
+	if (!rl)
+		return (-1);
+	(*var)->i = 0;
+	return (0);
+}
+
+int	exitcode_expander_finish(t_expand **var, char **rl)
+{
+	while ((*var)->output[(*var)->p])
+	{
+		(*rl)[(*var)->i] = (*var)->output[(*var)->p];
+		(*var)->i++;
+		(*var)->p++;
+	}
+	(*rl)[(*var)->i] = '\0';
+	(*var)->output = ft_strdup(*rl);
+	if (!(*var)->output)
+		return (-1);
+	(*var)->i = (*var)->pos_doll;
+	return (0);
+}
+
+int	exitcode_expander(t_expand **var, t_data **data, char *rl)
+{
+	if (exitcode_expander_init(var, data, &rl) == -1)
+		return (-1);
+	while ((*var)->i < ((*var)->name_start - 1))
+	{
+		rl[(*var)->i] = (*var)->output[(*var)->i];
+		(*var)->i++;
+	}
+	(*var)->p = 0;
+	if ((*var)->value)
+	{
+		while ((*var)->value[(*var)->p])
+		{
+			rl[(*var)->i] = (*var)->value[(*var)->p];
+			(*var)->i++;
+			(*var)->p++;
+		}
+	}
+	(*var)->p = (*var)->name_end;
+	if (exitcode_expander_finish(var, &rl) == -1)
+		return (-1);
+}
+
+void	end_name_search(t_expand **var)
+{
+	while ((*var)->output[(*var)->name_end] && \
+	ft_isspace((*var)->output[(*var)->name_end]) == 0 && \
+	((ft_isalnum((*var)->output[(*var)->name_end], 0) == 1) || \
+	(*var)->output[(*var)->name_end] == '_'))
+		(*var)->name_end++;
+}
+
+void	expand_on_output(t_expand **var, char **rl)
+{
+	(*var)->i = 0;
+	while ((*var)->i < ((*var)->name_start - 1))
+	{
+		(*rl)[(*var)->i] = (*var)->output[(*var)->i];
+		(*var)->i++;
+	}
+	if ((*var)->value && (*var)->in_cote > 0)
+		negative_checker_sp(&(*var)->value);
+	(*var)->p = 0;
+	if ((*var)->value)
+	{
+		while ((*var)->value[(*var)->p])
+		{
+			(*rl)[(*var)->i] = (*var)->value[(*var)->p];
+			(*var)->i++;
+			(*var)->p++;
+		}
+	}
+	(*var)->p = (*var)->name_end;
+	while ((*var)->output[(*var)->p])
+	{
+		(*rl)[(*var)->i] = (*var)->output[(*var)->p];
+		(*var)->i++;
+		(*var)->p++;
+	}
+}
+
+int	basic_expander_helper(t_expand **var, t_data *data, char **rl)
+{
+	in_cote_checker(&(*var), (*var)->output, (*var)->i);
+	in_redirection_checker(&(*var), (*var)->output, (*var)->i);
+	if (!(*var))
+		return (-1);
+	(*var)->name_start = (*var)->i + 1;
+	(*var)->pos_doll = (*var)->i;
+	(*var)->name_end = (*var)->name_start;
+	end_name_search(var);
+	(*var)->name_len = (*var)->name_end - (*var)->name_start;
+	(*var)->name = ft_substr((*var)->output, (*var)->name_start, (*var)->name_len);
+	if (!(*var)->name)
+		return (-1);
+	(*var)->value = ft_getenv((*var)->name, data->mini_env);
+	if ((*var)->value)
+	{
+		(*var)->value_len = ft_strlen((*var)->value);
+		if (space_in_value_checker((*var)) == -1)
+			return (data->ambigous = 1, -1);
+	}
+	*rl = ft_calloc(((*var)->value_len - (*var)->name_len + ft_strlen((*var)->output) + 1), sizeof(char));
+	if (!rl)
+		return (-1);
+	expand_on_output(var, rl);
+	(*rl)[(*var)->i] = '\0';
+	return (0);
+}
+
+int	basic_expander(char *rl, t_expand **var, t_data *data)
+{
+	if (basic_expander_helper(var, data, &rl) == -1)
+		return (-1);
+	(*var)->output = ft_strdup(rl);
+	if ((*var)->value && rl[0])
+		command_positiver((*var)->value);
+	(*var)->i = ((*var)->pos_doll + (*var)->value_len - 1);
+}
+
+int	if_condition_expand(t_expand *var, int choice)
+{
+	if (choice == 1)
+	{
+		if (var->output[var->i] == '$' && var->output[var->i] && var->output[var->i] == 34 || var->output[var->i] == 39)
+			return (1);
+	}
+	else if (choice == 2)
+	{
+		if (var->output[var->i] == '$' && (var->output[var->i + 1] == '\0' || \
+		ft_isspace(var->output[var->i + 1]) == 1))
+			return (1);
+		if (var->output[var->i] == '$' && var->output[var->i + 1] == '$')
+		{
+			var->i++;
+			return (1);
+		}
+	}
+	return (0);
+}
+
+char	*dolls_expander(char *rl, t_env *mini_env, t_data *data)
 {
 	t_expand	*var;
-	char		*output;
-	int			p;
-	int			i;
-	int			pos_doll;
-	
-	output = NULL;
-	i = 0;
-	if (rl)
-		output = ft_strdup(rl);
-	if (!output)
+
+	if (expand_initializer(&var) == -1)
 		return (NULL);
-	while (output[i])
+	if (rl)
+		var->output = ft_strdup(rl);
+	if (!var->output)
+		return (NULL);
+	while (var->i < (int)ft_strlen(var->output))
 	{
-		if (output[i] == '$' && output[i + 1] && (output[i + 1] == 34 || output[i + 1] == 39))
-			output = del_doll(output, i);
-		else if (output[i] == '$' && output[i + 1] && i > 0 && (output[i - 1] == '\0' ||\
-		 output[i - 1] == ' ' || output[i - 1] == '$') && (output[i + 1] == '\0' || output[i + 1] == ' ' || output[i + 1] == '$'))
-		{
-			//output[i] == '$' && (doll_echo(output, i) == 1 || output[i - 1] == '\0')
-			i++;	
-		}
-		else if (output[i] == '$' && output[i + 1] != '?')
-		{
-			expand_initializer(&var);
-			in_cote_checker(&var, output, i);
-			in_redirection_checker(&var, output, i);
-			if (!var)
-				return (NULL);
-			var->name_start = i + 1;
-			pos_doll = i;
-			var->name_end = var->name_start;
-			while (output[var->name_end] && ft_isspace(output[var->name_end]) == 0 && ((ft_isalnum(output[var->name_end], 0) == 1) ||\
-			 output[var->name_end] == '_'))
-				var->name_end++;
-			if (ft_isdigit(output[var->name_end]) == 1)
-				var->name_end++;
-			var->name_len = var->name_end - var->name_start;
-			var->name = ft_substr(output, var->name_start, var->name_len);
-			if (!var->name)
-				return (NULL);
-			var->value = ft_getenv(var->name, mini_env);
-			if (var->value)
-			{
-				var->value_len = ft_strlen(var->value);
-				if (space_in_value_checker(var) == -1)
-					return (data->ambigous = 1, NULL);
-			}
-			rl = ft_calloc((var->value_len - var->name_len + ft_strlen(output) + 1), sizeof(char));
-			if (!rl)
-				return(NULL);
-			i = 0;
-			while (i < (var->name_start - 1))
-			{
-				rl[i] = output[i];
-				i++;
-			}
-			if (var->value && var->in_cote > 0)
-			 	negative_checker_sp(&var->value);
-			p = 0;
-			if(var->value)
-			{
-				while (var->value[p])
-				{
-					rl[i] = var->value[p];
-					i++;
-					p++;
-				}
-			}
-			p = var->name_end;
-			while (output[p])
-			{
-				rl[i] = output[p];
-				i++;
-				p++;
-			}
-			rl[i] = '\0';
-			output = ft_strdup(rl);
-			i = pos_doll + var->value_len;
-			if (var->value && rl[0])
-			 	command_positiver(var->value);
-		}
-		else if (output[i] == '$' && output[i + 1] == '?')
-		{
-			expand_initializer(&var);
-			var->code_copy = data->exit_code;
-			var->nb_numbers = 0;
-			if (!var)
-				return (NULL);
-			var->name_start = i + 1;
-			var->name_end = var->name_start + 1;
-			var->name_len = var->name_end - var->name_start;
-			var->name = ft_substr(output, var->name_start, var->name_len);
-			if (!var->name)
-				return (NULL);
-			var->value = ft_itoa(data->exit_code);
-			if (var->value)
-				var->value_len = ft_strlen(var->value);
-			rl = ft_calloc((var->value_len - var->name_len + ft_strlen(output) + 1), sizeof(char));
-			if (!rl)
-				return(NULL);
-			i = 0;
-			while (i < (var->name_start - 1))
-			{
-				rl[i] = output[i];
-				i++;
-			}
-			p = 0;
-			if(var->value)
-			{
-				while (var->value[p])
-				{
-					rl[i] = var->value[p];
-					i++;
-					p++;
-				}
-			}
-			p = var->name_end;
-			while (output[p])
-			{
-				rl[i] = output[p];
-				i++;
-				p++;
-			}
-			rl[i] = '\0';
-			output = ft_strdup(rl);
-			i = 0;	
-		}
+		var->value_len = 0;
+		if (if_condition_expand(var, 1) == 1)
+			var->output = del_doll(var->output, var->i);
+		else if (if_condition_expand(var, 2) == 1)
+			var->i++;
+		else if (var->output[var->i] == '$' && var->output[var->i + 1] != '?')
+			basic_expander(rl, &var, data);
+		else if (var->output[var->i] == '$' && var->output[var->i + 1] == '?')
+			exitcode_expander(&var, &data, rl);
 		else
-			i++;
+			var->i++;
 	}
-	return (free(rl), output);	
+	return (free(rl), var->output);
 }
