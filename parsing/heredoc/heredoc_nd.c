@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:51:56 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 17:18:06 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/24 17:45:08 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int	heredoc_memory_allocer(char *pipes, t_cmd **cmd)
 		(*cmd)->delimiter = malloc(sizeof (char *) * (*cmd)->nb_del);
 	if (!(*cmd)->delimiter && (*cmd)->nb_del > 0)
 		return (-1);
+	end_heredoc(pipes, cmd);
 	return (0);
 }
 
@@ -75,12 +76,10 @@ char	*heredoc_w_cote(char *src)
 	return (dest);
 }
 
-void	init_var(t_int *var)
+void	heredoc_copyer_init(t_cmd **cmd, t_int *var, int i)
 {
-	var->p = 0;
-	var->start = 0;
-	var->x = 0;
-	var->len = 0;
+	(*cmd)->heredoc = true;
+	(*var).p = i + 1;
 }
 
 int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
@@ -88,8 +87,7 @@ int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
 	t_int	var;
 
 	init_var(&var);
-	(*cmd)->heredoc = true;
-	var.p = i + 1;
+	heredoc_copyer_init(cmd, &var, i);
 	while (pipes[var.p] && pipes[var.p] == ' ')
 		var.p++;
 	var.start = var.p;

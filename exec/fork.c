@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/23 14:10:35 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 18:11:01 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ int	ft_middle_fork(t_data *data)
 			}
 		}
 		//2. SINON SI il y a bien un next
-		if (lst->next)
+		else if (lst->next)
 		{//met la data de la sortie de lexecve dans lextremiter decriture du pipe
 			if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
 			{

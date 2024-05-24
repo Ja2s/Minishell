@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:38:50 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 16:51:46 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/24 17:52:15 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,15 @@ void	end_heredoc(char *pipes, t_cmd **cmd)
 	}
 }
 
+void	init_var(t_int *var)
+{
+	var->p = 0;
+	var->start = 0;
+	var->x = 0;
+	var->len = 0;
+	var->i = 0;
+}
+
 int	heredoc_checker(char *pipes, t_cmd **cmd)
 {
 	int	i;
@@ -40,7 +49,6 @@ int	heredoc_checker(char *pipes, t_cmd **cmd)
 	i = 0;
 	if (heredoc_memory_allocer(pipes, cmd) == -1)
 		return (-1);
-	end_heredoc(pipes, cmd);
 	while (pipes[i])
 	{
 		if (pipes[i] && pipes[i] == '<')

@@ -30,7 +30,8 @@ SRC         =	$(EXEC_SRC)dislpay_err.c \
 				$(PARSING_SRC)/main_functions/main_functions_rd.c \
 				$(PARSING_SRC)/heredoc/heredoc.c \
 				$(PARSING_SRC)/heredoc/heredoc_nd.c \
-            	$(PARSING_SRC)redirection.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
 				$(PARSING_SRC)syntaxe_errors_nd.c 
 
 PARSING_SRC = parsing/
