@@ -31,6 +31,8 @@ RAYANE--	[706]	> ">srcs/bonjour >srcs/hello <prout" ne fait rien - resultat atte
 
 RAYANE--	[755]	> SEGFAULT avec cat <<hd <<hd <<hd (>1 heredeoc)
 
+RAYANE--			> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+
 JORDAN--	tri douteux sur export (exemple: lol, loll, lol2, lol3)
 
 JORDAN--	[296] export HOLA="'" quand je echo $HOLA -> la "'" est supprimee

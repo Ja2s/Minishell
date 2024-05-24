@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/23 23:30:16 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:18:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 int	minishell_starter(char **env, t_data *data)
 {
+	setup_signal_handlers();
 	data_initializer(data);
-	//printf_title();
+	printf_title();
 	if (env_copyer(env, &data->mini_env) == -1)
 		return (exit_status(data, 1, \
 		"\033[31mMalloc error from [env_copyer]\n\033[0m"), -1);
@@ -41,7 +42,7 @@ int	prompt_customer(t_data *data)
 int	parser(t_data *data)
 {
 	negative_checker(data->var.rl);
-	data->var.rl = dolls_expander(data->var.rl, data->mini_env, data);
+	data->var.rl = dolls_expander(data->var.rl, data);
 	if (!data->var.rl && data->ambigous == 0)
 		return (exit_status(data, 1, \
 		"\033[31mMalloc error from [dolls_expander]\n\033[0m"), -1);

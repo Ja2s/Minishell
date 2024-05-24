@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/23 23:29:32 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 17:21:43 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <errno.h>
 # include <sys/wait.h>
 # include <stdbool.h>
+# include <signal.h>
 
 
 typedef struct s_expand
@@ -102,6 +103,14 @@ typedef struct s_data
 	int			ambigous;
 }			t_data;
 
+typedef struct s_int
+{
+	int			start;
+	int			x;
+	int			p;
+	int			len;
+}			t_int;
+
 t_cmd	*ft_lstnew_minishell(void);
 t_cmd	*ft_lstlast_minishell(t_cmd *lst);
 void    ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
@@ -137,7 +146,7 @@ int		memory_alloc(char **input, t_cmd **cmd);
 int		stock_input(char **input, t_cmd **cmd);
 void	negative_checker(char *rl);
 int		expand_initializer(t_expand **var);
-char	*dolls_expander(char *rl, t_env *mini_env, t_data *data);
+char	*dolls_expander(char *rl, t_data *data);
 int		redirect_counter(char *pipes);
 int		redirecter(char *pipes, t_cmd **cmd);
 int		len_calculator(char	*pipes);
@@ -187,5 +196,27 @@ void	ft_unset(t_data **data);
 int		ft_cd(t_data *data);
 void	ft_free_heredoc(t_data *data);
 void	ft_free_all_heredoc(t_data *data);
+int		if_condition_expand(t_expand *var, int choice);
+char	*value_extractor(char *env);
+char	*name_extractor(char *env);
+char	*env_extractor(char	*env, int choice);
+int		doll_heredoc_helper(char **rl, int i);
+void	doll_heredoc(char **rl);
+void	double_negativer(int i, char **rl);
+void	simple_negativer(int i, char **rl);
+void	free_expand(t_expand **var);
+char	*del_doll(char *output, int i);
+void	negative_checker_sp(char **rl);
+void	in_cote_checker(t_expand **var, char *output, int i);
+void	in_redirection_checker(t_expand **var, char *output, int i);
+int		space_in_value_checker(t_expand *var);
+int		exitcode_expander(t_expand **var, t_data **data, char *rl);
+void	expand_nd(t_expand **var);
+void	setup_signal_handlers();
+int		skip_cote(char *rl, int i, int choice);
+int		redirecter_finisher(t_data *data);
+int		condition_n_one(t_expand *var);
+int		condition_n_two(t_expand *var);
+
 
 #endif

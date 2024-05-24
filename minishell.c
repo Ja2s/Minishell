@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/23 16:44:37 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 13:13:38 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,26 @@ int	launch_exec(t_data *data)
 	if (data->exit_code != 0)
 		return (-1);
 	return (0);
+}
+
+void handle_sigint(int sig) 
+{
+    (void)sig;              // Pour éviter les avertissements de variable non utilisée
+    write(STDOUT_FILENO, "\n", 1);
+    rl_replace_line("", 0); // Effacer la ligne actuelle
+    rl_on_new_line();       // Repositionner le curseur sur une nouvelle ligne
+    rl_redisplay();         // Redisplay le prompt
+}
+
+void setup_signal_handlers()
+{
+    struct sigaction sa;
+
+    // Configurer le gestionnaire pour SIGINT (Ctrl+C)
+    sa.sa_handler = handle_sigint;   // Appelle la fonction de gestion pour SIGINT
+    sigemptyset(&sa.sa_mask);        // Ne bloquer aucun signal pendant l'exécution de handle_sigint
+    sa.sa_flags = SA_RESTART;        // Réessayer les appels interrompus
+    sigaction(SIGINT, &sa, NULL);    // Appliquer cette action pour SIGINT
 }
 
 int	main(int argc, char **argv, char **envp)

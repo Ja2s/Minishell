@@ -4,15 +4,34 @@ CC          = cc
 
 CFLAGS      = -g3 -Wextra -Werror
 
-SRC         = $(EXEC_SRC)dislpay_err.c $(EXEC_SRC)check_access.c \
-              $(EXEC_SRC)redirection.c $(EXEC_SRC)fork.c minishell.c \
-              $(OTHER_SRC)other.c $(OTHER_SRC)builtins.c $(OTHER_SRC)lst_add.c \
-              $(EXEC_SRC)heredoc.c $(OTHER_SRC)env.c \
-              $(PARSING_SRC)syntaxe_errors.c $(PARSING_SRC)utilities.c \
-              $(PARSING_SRC)utilities_nd.c $(PARSING_SRC)commands_stocker.c \
-              $(PARSING_SRC)expander.c $(PARSING_SRC)heredoc.c \
-              $(PARSING_SRC)redirection.c $(PARSING_SRC)main_functions.c \
-              $(PARSING_SRC)main_functions_nd.c $(PARSING_SRC)syntaxe_errors_nd.c 
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)redirection.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
 
 PARSING_SRC = parsing/
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntaxe_errors.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 11:07:14 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/23 22:49:03 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:12:38 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,23 +45,6 @@ int	simple_cote_checker(char *rl, bool *cot, int *i)
 		return (-1);
 	*i = p;
 	return (0);
-}
-
-int	skip_cote(char *rl, int i, int choice)
-{
-	if (choice == 2)
-	{
-		i++;
-		while (rl[i] != 34)
-			i++;
-	}
-	else if (choice == 1)
-	{
-		i++;
-		while (rl[i] != 39)
-			i++;
-	}
-	return (i);
 }
 
 int	double_pipe_checker(char *rl)

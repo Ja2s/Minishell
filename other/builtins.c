@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/23 00:14:47 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 16:49:15 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int ft_copy_env(t_env **copy, t_env *mini_env)
 	return (0);
 }
 
-int swap_sort_env(char ***tab, int i, int p)
+int swap_sort_env(char ***tab, int i)
 {
 	char	*tmp;
 
@@ -84,13 +84,13 @@ void	sort_env(char ***tab)
 	{
 		p = 0;
 		if ((*tab)[i][p] > (*tab)[i + 1][p])
-			i = swap_sort_env(tab, i, p);
+			i = swap_sort_env(tab, i);
 		else if ((*tab)[i][p] == (*tab)[i + 1][p])
 		{
 			while ((*tab)[i][p] && (*tab)[i + 1][p] && (*tab)[i][p] == (*tab)[i + 1][p])
 				p++;
 			if ((*tab)[i][p] > (*tab)[i + 1][p])
-				i = swap_sort_env(tab, i, p);
+				i = swap_sort_env(tab, i);
 			else
 				i++;
 		}
@@ -175,7 +175,7 @@ int	stock_variable(t_data **data, int i)
 	variable = ft_split((*data)->cmd->args[i], '=');
 	if (!variable || !variable[0])
 		return (new_elem = NULL, -1);
-	if (check_variable(&(*data)->mini_env, variable[0], variable[i]) == 0)
+	if (check_variable(&(*data)->mini_env, variable[0], variable[1]) == 0)
 	{
 		new_elem = env_new();
 		if (!new_elem)

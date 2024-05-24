@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/23 14:06:09 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 10:26:58 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int ft_heredoc(t_data *data)
 				while (ft_strcmp(line, lst->delimiter[i]) != 0)
 				{
 					if (lst->expand_heredoc == 1)
-						line = dolls_expander(line, data->mini_env, data);
+						line = dolls_expander(line, data);
 					lst->heredoc_content = ft_realloc(line, lst);
 					free(line);  // Libère la mémoire allouée par readline
 					if (!lst->heredoc_content)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntaxe_errors_nd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:38:52 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/23 00:43:33 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/24 17:02:22 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,23 @@ int	rafter_checker_two(char *rl, int p)
 	return (i);
 }
 
+int	skip_cote(char *rl, int i, int choice)
+{
+	if (choice == 2)
+	{
+		i++;
+		while (rl[i] != 34)
+			i++;
+	}
+	else if (choice == 1)
+	{
+		i++;
+		while (rl[i] != 39)
+			i++;
+	}
+	return (i);
+}
+
 int	rafters_checker(char *rl)
 {
 	int	i;
@@ -61,8 +78,6 @@ int	rafters_checker(char *rl)
 			i++;
 			if (rl[i] == '<' || rl[i] == '>')
 				i++;
-			// if (rl[i] == '<')
-			// 	i++;
 			while (rl[i] == ' ')
 				i++;
 			if (rl[i] == '\0' || rl[i] == '<' || rl[i] == '>' || rl[i] == '|')
