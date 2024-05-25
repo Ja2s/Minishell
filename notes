@@ -33,26 +33,29 @@ RAYANE--	[755]	> SEGFAULT avec cat <<hd <<hd <<hd (>1 heredeoc)
 
 RAYANE--			> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
 
-JORDAN--	tri douteux sur export (exemple: lol, loll, lol2, lol3)
-
 JORDAN--	[296] export HOLA="'" quand je echo $HOLA -> la "'" est supprimee
 
-JORDAN--	[761]	> "echo hola <<< bonjour" est sense fonctionner - resultat attendu : "hola"
 
 																	SI DOUTES, CONFIRMER AVEC LE VRAI BASH |||||||||||||||||||||||||||||
 
 >>>>>>>>>>>>>>>>>>>>>>			NORMINETTE			<<<<<<<<<<<<<<<<<<<<<<<<
+ parsing/ : NORMED
 
-other
-|___ builtins.c -NORMED
-|___ env.c		-NORMED
-|___ lst_add.c	-NORMED
-|___ other.c	-NORMED
 
-ALL NORMED_____________
 
-parsing
-|___ commands_stocker.c	-NORMED
-|___ utilities.c		-NORMED
-|___ utilities_nd.c		-NORMED
-|___ syntaxe_errors.c	-NORMED
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

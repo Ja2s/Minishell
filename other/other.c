@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:35:20 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/22 23:57:58 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/25 15:45:43 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,13 +101,12 @@ void	free_pipes(char **pipes)
 	if (pipes)
 	{
 		while (pipes[i])
-			i++;
-		while (i > 0)
 		{
 			free(pipes[i]);
-			i--;
+			i++;
 		}
 		free(pipes);
+		pipes = NULL;
 	}
 }
 

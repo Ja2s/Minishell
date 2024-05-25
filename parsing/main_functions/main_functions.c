@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/24 14:18:52 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/25 15:51:48 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 int	minishell_starter(char **env, t_data *data)
 {
 	setup_signal_handlers();
-	data_initializer(data);
 	printf_title();
+	data_initializer(data);
 	if (env_copyer(env, &data->mini_env) == -1)
 		return (exit_status(data, 1, \
 		"\033[31mMalloc error from [env_copyer]\n\033[0m"), -1);
@@ -31,6 +31,7 @@ int	prompt_customer(t_data *data)
 		"\033[31mError from [getcwd]\n\033[0m"), -1);
 	data->var.rl = readline(ft_strjoin(data->var.pwd, \
 	"\001\e[33m\002$> \001\e[37m\002"));
+	free(data->var.pwd);
 	if (data->var.rl == NULL)
 		return (exit_status(data, 1, \
 		"\033[31mError from [readline]\n\033[0m"), -1);

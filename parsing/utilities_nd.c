@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utilities_nd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:46:02 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/04/29 12:50:51 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/25 15:50:46 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	ft_lstdelone(t_cmd *lst)
 {
 	if (lst)
 	{
+		
 		args_free(lst);
 		red_free(lst);
 		del_free(lst);

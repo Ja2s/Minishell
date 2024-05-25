@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:17:49 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 13:49:25 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/25 16:20:05 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,7 @@ int	basic_expander_helper(t_expand **var, t_data *data, char **rl)
 		return (-1);
 	(*var)->value = ft_getenv((*var)->name, data->mini_env);
 	if ((*var)->value)
-	{
-		(*var)->value_len = ft_strlen((*var)->value);
-		if (space_in_value_checker((*var)) == -1)
-			return (data->ambigous = 1, -1);
-	}
+		negative_checker_variable(var, &data);
 	*rl = ft_calloc(((*var)->value_len - (*var)->name_len + \
 	ft_strlen((*var)->output) + 1), sizeof(char));
 	if (!rl)

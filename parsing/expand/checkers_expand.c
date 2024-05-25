@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checkers_expand.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 11:36:48 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/25 02:14:54 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,23 @@ int	space_in_value_checker(t_expand *var)
 			i++;
 		}
 	}
+	return (0);
+}
+
+
+int	negative_checker_variable(t_expand **var, t_data **data)
+{
+	int	i;
+
+	i = 0;
+	(*var)->value_len = ft_strlen((*var)->value);
+	while ((*var)->value[i])
+	{
+		if ((*var)->value[i] == 34 || ((*var)->value[i]) == 39)
+			(*var)->value[i] = ((*var)->value[i]) * -1;
+		i++;
+	}
+	if (space_in_value_checker((*var)) == -1)
+		return ((*data)->ambigous = 1, -1);
 	return (0);
 }

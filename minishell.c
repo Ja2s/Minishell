@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 13:13:38 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/25 16:18:17 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,11 +227,24 @@ void setup_signal_handlers()
     sigaction(SIGINT, &sa, NULL);    // Appliquer cette action pour SIGINT
 }
 
+void	free_env(t_env *env)
+{
+	t_env *tmp;
+    while (env)
+    {
+        tmp = env;
+        env = env->next;
+        free(tmp->name);
+        free(tmp->value);
+        free(tmp);
+    }
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	int		i;
 	t_data	data;
-
+	
 	(void)argc;
 	(void)argv;
 	i = 0;
@@ -245,18 +258,18 @@ int	main(int argc, char **argv, char **envp)
 			if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
 			{
 				if (parser(&data) == 0)
+				{
 					if (final_parse(&data) == -1)
 					{
 						ft_lstclear(&data.cmd);
 						free_pipes(data.var.pipes);
-						free(data.var.pwd);
+						free_pipes(data.var.input);
+						free_pipes(data.var.input_copy);
 					}
+				}
 			}
 		}
 	}
+	free_env(data.mini_env);
 	rl_clear_history();
 }
-
-//launch_exec | bultins
-
-//faire < (syntaxe err) puis ls

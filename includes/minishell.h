@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 18:16:59 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/25 02:15:12 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,5 +221,6 @@ int			condition_n_two(t_expand *var);
 void		end_heredoc(char *pipes, t_cmd **cmd);
 void		init_var(t_int *var);
 int			redirecter_helper(char *pipes, t_cmd **cmd, t_int *var);
+int			negative_checker_variable(t_expand **var, t_data **data);
 
 #endif
