@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 17:34:55 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:52:28 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,10 @@ int	launch_exec(t_data *data)
 		if (data->cmd->args[1])
 			exit_status = ft_atoi(data->cmd->args[1]); // Convert argument to exit status
 		ft_lstclear(&data->cmd);
+		//free_pipes(data->var.input);
+		//free_pipes(data->var.input_copy);
+		free_pipes(data->var.mini_env);
+		// free_pipes(data->var.pipes);
 		exit(exit_status); // Exit the shell with the given status
 	}
 	begin = data;

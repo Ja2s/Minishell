@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/27 17:17:35 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:38:08 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*copy_w_cote(char *src, char *dest)
 			dest[p++] = src[i++];
 	}
 	dest[p] = '\0';
-	return (dest);
+	return (free(src), dest);
 }
 
 char	**input_copyer(char **input, char **input_copy)

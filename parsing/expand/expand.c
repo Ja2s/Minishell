@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:17:49 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 16:20:05 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:53:00 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,5 +114,6 @@ char	*dolls_expander(char *rl, t_data *data)
 		else
 			var->i++;
 	}
+	free(var->name);
 	return (free(rl), var->output);
 }
