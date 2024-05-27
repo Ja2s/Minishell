@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_nd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/27 17:38:08 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:01:40 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*copy_w_cote(char *src, char *dest)
 			dest[p++] = src[i++];
 	}
 	dest[p] = '\0';
-	return (free(src), dest);
+	return (dest);
 }
 
 char	**input_copyer(char **input, char **input_copy)
@@ -62,6 +62,7 @@ char	**input_copyer(char **input, char **input_copy)
 		input_copy[i] = copy_w_cote(input[i], input_copy[i]);
 		i++;
 	}
+	free_pipes(input);
 	return (input_copy);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 17:33:47 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:15:54 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,6 @@ int			doll_heredoc_helper(char **rl, int i);
 void		doll_heredoc(char **rl);
 void		double_negativer(int i, char **rl);
 void		simple_negativer(int i, char **rl);
-void		free_expand(t_expand **var);
 char		*del_doll(char *output, int i);
 void		negative_checker_sp(char **rl);
 void		in_cote_checker(t_expand **var, char *output, int i);

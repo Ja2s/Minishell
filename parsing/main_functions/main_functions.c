@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/25 15:51:48 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:30:31 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,27 @@ int	minishell_starter(char **env, t_data *data)
 	return (0);
 }
 
-int	prompt_customer(t_data *data)
+int	prompt_customer(t_data *data) 
 {
-	data->var.pwd = getcwd(NULL, 0);
-	if (data->var.pwd == NULL)
-		return (exit_status(data, 1, \
-		"\033[31mError from [getcwd]\n\033[0m"), -1);
-	data->var.rl = readline(ft_strjoin(data->var.pwd, \
-	"\001\e[33m\002$> \001\e[37m\002"));
-	free(data->var.pwd);
-	if (data->var.rl == NULL)
-		return (exit_status(data, 1, \
-		"\033[31mError from [readline]\n\033[0m"), -1);
-	if (data->var.rl[0])
-		add_history(data->var.rl);
-	return (0);
+    char *prompt;
+
+    data->var.pwd = getcwd(NULL, 0); // Allocation de mémoire pour le répertoire de travail
+    if (data->var.pwd == NULL)
+        return (exit_status(data, 1, \
+        "\033[31mError from [getcwd]\n\033[0m"), -1);
+	prompt = ft_strjoin(data->var.pwd, "\001\e[33m\002$> \001\e[37m\002"); // Allocation de mémoire pour le prompt
+    if (!prompt) 
+        return (free(data->var.pwd), exit_status(data, 1, \
+		"\033[31mError from [ft_strjoin]\n\033[0m"), -1);
+    data->var.rl = readline(prompt);
+    free(prompt);
+    free(data->var.pwd);
+    if (data->var.rl == NULL)
+        return (exit_status(data, 1, \
+        "\033[31mError from [readline]\n\033[0m"), -1);
+    if (data->var.rl[0])
+        add_history(data->var.rl);
+    return (0);
 }
 
 int	parser(t_data *data)
@@ -103,7 +109,6 @@ int	node_creator(t_data *data)
 			}
 			else
 				return (-1);
-			free(data->var.input_copy);
 		}
 		else
 			return (-1);

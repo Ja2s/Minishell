@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:17:49 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 17:53:00 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:18:25 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,20 @@ int	basic_expander(char *rl, t_expand **var, t_data *data)
 	return (0);
 }
 
+void	free_expand(t_expand **var)
+{
+	free((*var)->name);
+	free((*var)->value);
+	free((*var)->output);
+	free((*var));
+	(*var) = NULL;
+}
+
 char	*dolls_expander(char *rl, t_data *data)
 {
 	t_expand	*var;
-
+	char		*result;
+	
 	if (expand_initializer(&var) == -1)
 		return (NULL);
 	if (rl)
@@ -114,6 +124,7 @@ char	*dolls_expander(char *rl, t_data *data)
 		else
 			var->i++;
 	}
-	free(var->name);
-	return (free(rl), var->output);
+	result = ft_strdup(var->output);
+	free_expand(&var);
+	return (free(rl), result);
 }

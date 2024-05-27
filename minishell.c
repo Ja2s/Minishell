@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 17:52:28 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:33:56 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,11 +142,9 @@ int	launch_exec(t_data *data)
 		int exit_status = 0;
 		if (data->cmd->args[1])
 			exit_status = ft_atoi(data->cmd->args[1]); // Convert argument to exit status
-		ft_lstclear(&data->cmd);
+		ft_lstclear(&data->tmp);
+		printf("DATA->CMD : %p\n", data->cmd);
 		//free_pipes(data->var.input);
-		//free_pipes(data->var.input_copy);
-		free_pipes(data->var.mini_env);
-		// free_pipes(data->var.pipes);
 		exit(exit_status); // Exit the shell with the given status
 	}
 	begin = data;

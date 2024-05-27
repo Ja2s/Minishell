@@ -6,7 +6,7 @@
 /*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:51:59 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 01:53:55 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:30:18 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,6 @@ int	stock_input(char **input, t_cmd **cmd)
 	if (memory_alloc(input, cmd) == -1)
 		return (-1);
 	command_stocker(input, cmd);
+	free_pipes(input);
 	return (0);
 }
