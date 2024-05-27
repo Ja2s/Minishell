@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helper_expand.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:19:19 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 16:06:39 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 11:43:05 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	expand_initializer(t_expand **var)
 void	free_expand(t_expand **expand)
 {
 	if (!expand || !*expand)
-		return;
+		return ;
 	if ((*expand)->name)
 	{
 		free((*expand)->name);
@@ -77,10 +77,7 @@ void	free_expand(t_expand **expand)
 		free((*expand)->value);
 		(*expand)->value = NULL;
 	}
-	// free(*expand);
-	// *expand = NULL;
 }
-
 
 char	*del_doll(char *output, int i)
 {

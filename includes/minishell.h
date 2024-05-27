@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 02:15:12 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:33:47 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ int			spec_export(char *cmd);
 void		ft_unset(t_data **data);
 int			ft_cd(t_data *data);
 void		ft_free_heredoc(t_data *data);
-void		ft_free_all_heredoc(t_data *data);
+void		ft_free_all_heredoc(t_cmd *cmd);
 int			if_condition_expand(t_expand *var, int choice);
 char		*value_extractor(char *env);
 char		*name_extractor(char *env);
@@ -222,5 +222,6 @@ void		end_heredoc(char *pipes, t_cmd **cmd);
 void		init_var(t_int *var);
 int			redirecter_helper(char *pipes, t_cmd **cmd, t_int *var);
 int			negative_checker_variable(t_expand **var, t_data **data);
+void		free_cmd(t_cmd *begin);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 16:18:17 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:34:55 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ int	launch_exec(t_data *data)
 {
 	int		i;
 	t_data	*begin;
+	//t_cmd	**start;
 
 	// Check if the command is "exit" and handle it before anything else
 	
@@ -141,10 +142,11 @@ int	launch_exec(t_data *data)
 		int exit_status = 0;
 		if (data->cmd->args[1])
 			exit_status = ft_atoi(data->cmd->args[1]); // Convert argument to exit status
-		//ft_free_data(data); // Free any allocated memory
+		ft_lstclear(&data->cmd);
 		exit(exit_status); // Exit the shell with the given status
 	}
 	begin = data;
+	//start = data->cmd;
 	data->var.mini_env = ft_list_to_tab(data->mini_env);
 	if (!data->var.mini_env)
 		return (-1);
@@ -152,7 +154,7 @@ int	launch_exec(t_data *data)
 	i = 0;
 	int len_lst = ft_lstlen(data->cmd);
 	if (ft_heredoc(data) == -1 || !data->cmd->args[0])
-		return (ft_redirecter(data), ft_free_all_heredoc(begin), -1);
+		return (ft_redirecter(data), ft_free_all_heredoc(begin->cmd), -1);
 	//ft_display_heredoc(data->cmd);
 	while (data->cmd)
 	{
@@ -201,7 +203,7 @@ int	launch_exec(t_data *data)
 		ft_close(data->cmd);
 		data->cmd = data->cmd->next;
 	}
-	ft_free_all_heredoc(begin);
+	free_pipes(data->var.mini_env);
 	if (data->exit_code != 0)
 		return (-1);
 	return (0);
@@ -263,9 +265,8 @@ int	main(int argc, char **argv, char **envp)
 					{
 						ft_lstclear(&data.cmd);
 						free_pipes(data.var.pipes);
-						free_pipes(data.var.input);
-						free_pipes(data.var.input_copy);
 					}
+					ft_lstclear(&data.cmd);
 				}
 			}
 		}

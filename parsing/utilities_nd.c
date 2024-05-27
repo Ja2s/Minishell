@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utilities_nd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:46:02 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 15:50:46 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:32:14 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	ft_lstdelone(t_cmd *lst)
 {
 	if (lst)
 	{
-		
 		args_free(lst);
 		red_free(lst);
 		del_free(lst);
@@ -36,6 +35,7 @@ void	ft_lstdelone(t_cmd *lst)
 		path_cmd_free(lst);
 		slash_cmd_free(lst);
 		free(lst);
+		printf ("all cleaned\n");
 	}
 }
 

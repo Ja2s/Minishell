@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_rd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 14:15:55 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 16:20:41 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:35:51 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@ void	redirecter_positiver(t_data **data)
 
 int	final_parse(t_data *data)
 {
+	t_data *tmp;
+
+	tmp = data;
 	if (node_creator(data) == -1)
 		return (exit_status(data, 1, \
 		"\033[31mMalloc error from [node_creator]\n\033[0m"), -1);
@@ -52,9 +55,10 @@ int	final_parse(t_data *data)
 		redirecter_finisher(data);
 		redirecter_positiver(&data);
 	}
-	if (launch_exec(data) == -1)
+	if (launch_exec(tmp) == -1)
 		return (-1);
 	data->exit_code = 0;
+	//free_cmd(data->cmd);
 	ft_lstclear(&data->cmd);
 	free_pipes(data->var.pipes);
 	return (0);

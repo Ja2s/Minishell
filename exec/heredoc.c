@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 10:26:58 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/27 17:33:18 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 	return (tab);
 }
 
-void	ft_free_all_heredoc(t_data *data)
+void	ft_free_all_heredoc(t_cmd *cmd)
 {
 	int	i;
 	t_cmd	*lst;
 
-	lst = data->cmd;
+	lst = cmd;
 	while (lst)
 	{
 		if (lst->heredoc_content)
@@ -74,24 +74,24 @@ void	ft_free_all_heredoc(t_data *data)
 	}
 }
 
-void	ft_free_heredoc(t_data *data)
+void    ft_free_heredoc(t_data *data)
 {
-	int	i;
-	t_cmd	*lst;
+    int    i;
+    t_cmd    *lst;
 
-	i = 0;
-	lst = data->cmd;
-	printf("end heredoc\n");
-	if (lst->heredoc_content)
-	{
-		while (lst->heredoc_content[i])
-		{
-			free(lst->heredoc_content[i]);
-			i++;
-		}
-		free(lst->heredoc_content);
-		lst->heredoc_content = NULL;
-	}
+    i = 0;
+    lst = data->cmd;
+    printf("end heredoc\n");
+    if (lst->heredoc_content)
+    {
+        while (lst->heredoc_content[i])
+        {
+            free(lst->heredoc_content[i]);
+            i++;
+        }
+        free(lst->heredoc_content);
+        lst->heredoc_content = NULL;
+    }
 }
 
 int ft_heredoc(t_data *data) 

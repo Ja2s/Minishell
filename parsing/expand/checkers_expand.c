@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checkers_expand.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/25 02:14:54 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/27 11:42:08 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ int	space_in_value_checker(t_expand *var)
 	}
 	return (0);
 }
-
 
 int	negative_checker_variable(t_expand **var, t_data **data)
 {
