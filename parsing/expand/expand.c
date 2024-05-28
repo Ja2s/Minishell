@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:17:49 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 22:18:25 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/28 17:02:39 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,28 +75,49 @@ int	basic_expander_helper(t_expand **var, t_data *data, char **rl)
 	return (0);
 }
 
-int	basic_expander(char *rl, t_expand **var, t_data *data)
+int basic_expander(char *rl, t_expand **var, t_data *data)
 {
-	if (basic_expander_helper(var, data, &rl) == -1)
-		return (-1);
-	if (rl)
-		(*var)->output = ft_strdup(rl);
-	if ((*var)->value && rl[0])
-		command_positiver((*var)->value);
-	if ((*var)->value_len > 0)
-		(*var)->i = ((*var)->pos_doll + (*var)->value_len - 1);
-	else
-		(*var)->i = ((*var)->pos_doll + (*var)->value_len);
-	return (0);
+    char *new_rl;
+    
+	new_rl = rl;
+	if (basic_expander_helper(var, data, &new_rl) == -1)
+    {
+        free(new_rl);
+        return (-1);
+    }
+    if (new_rl)
+    {
+        free((*var)->output);
+        (*var)->output = ft_strdup(new_rl);
+        free(new_rl);
+    }
+    if ((*var)->value && rl[0])
+        command_positiver((*var)->value);
+    if ((*var)->value_len > 0)
+        (*var)->i = ((*var)->pos_doll + (*var)->value_len - 1);
+    else
+        (*var)->i = ((*var)->pos_doll + (*var)->value_len);
+    return (0);
 }
 
-void	free_expand(t_expand **var)
+
+void	free_expand(t_expand *var)
 {
-	free((*var)->name);
-	free((*var)->value);
-	free((*var)->output);
-	free((*var));
-	(*var) = NULL;
+	if (var->name)
+	{
+		free(var->name);
+		var->name = NULL;
+	}
+	if (var->value)
+	{
+		free(var->value);
+		var->value = NULL;
+	}
+	if (var->output)
+	{
+		free(var->output);
+		var->output = NULL;
+	}
 }
 
 char	*dolls_expander(char *rl, t_data *data)
@@ -125,6 +146,8 @@ char	*dolls_expander(char *rl, t_data *data)
 			var->i++;
 	}
 	result = ft_strdup(var->output);
-	free_expand(&var);
+	free_expand(var);
+	free(var);
+	var = NULL;
 	return (free(rl), result);
 }

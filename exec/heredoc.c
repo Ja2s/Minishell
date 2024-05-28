@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 17:33:18 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/28 16:11:58 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 			return (NULL);
 		tab[i] = ft_strdup(rl);
 		if (!tab)
-			return (NULL);
+			return (free_pipes(tab), NULL);
 		tab[i + 1] = NULL;
 		return (tab);
 	}

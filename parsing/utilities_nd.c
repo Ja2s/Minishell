@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:46:02 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 17:32:14 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/28 15:57:18 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,44 @@ void	slash_cmd_free(t_cmd *lst)
 
 void	ft_lstdelone(t_cmd *lst)
 {
+	printf("LA ON ENTRE DANS LSTDELONE\n");
 	if (lst)
 	{
-		args_free(lst);
-		red_free(lst);
-		del_free(lst);
-		split_path_free(lst);
-		path_cmd_free(lst);
-		slash_cmd_free(lst);
+		if (lst->args)
+		{
+			free_pipes(lst->args);
+			lst->args = NULL;
+		}
+		if (lst->delimiter)
+		{
+			free_pipes(lst->delimiter);
+			lst->delimiter = NULL;
+		}
+		if (lst->redirecter)
+		{
+			free_pipes(lst->redirecter);
+			lst->redirecter = NULL;
+		}
+		if (lst->split_path)
+		{
+			free_pipes(lst->split_path);
+			lst->split_path = NULL;
+		}
+		if (lst->heredoc_content)
+		{
+			free_pipes(lst->heredoc_content);
+			lst->heredoc_content = NULL;
+		}
+		if (lst->slash_cmd)
+		{
+			free(lst->slash_cmd);
+			lst->slash_cmd = NULL;
+		}
+		if (lst->path_cmd)
+		{
+			free(lst->path_cmd);
+			lst->path_cmd = NULL;
+		}
 		free(lst);
 		printf ("all cleaned\n");
 	}
@@ -43,6 +73,7 @@ void	ft_lstclear(t_cmd **lst)
 {
 	t_cmd	*tmp;
 
+	printf("LA ON ENTRE DANS LSTCLEAR\n");
 	while (*lst)
 	{
 		tmp = (*lst)->next;

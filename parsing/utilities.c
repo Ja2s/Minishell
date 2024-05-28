@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utilities.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:38:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/08 13:50:01 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/28 11:04:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	args_free(t_cmd *lst)
 	int	i;
 
 	i = 0;
-	while (i < lst->nb_args)
+	while (i < lst->nb_args + 1)
 	{
 		free(lst->args[i]);
 		i++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/27 22:30:31 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/28 13:18:13 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int	parser(t_data *data)
 		return (exit_status(data, 1, \
 		"\033[31mMalloc error from [ft_split]\n\033[0m"), -1);
 	free(data->var.rl);
+	data->var.rl = NULL;
 	return (0);
 }
 

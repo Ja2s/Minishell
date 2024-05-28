@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 22:33:56 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/05/28 16:45:18 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,88 +128,81 @@ int	ft_builtins_env(t_data *data, int i)
 	return (0);
 }
 
-int	launch_exec(t_data *data)
+int launch_exec(t_data *data)
 {
-	int		i;
-	t_data	*begin;
-	//t_cmd	**start;
+    int     i;
+    t_data  *begin;
+    t_cmd   *current_cmd; // Utilisez un pointeur local pour parcourir les commandes
 
-	// Check if the command is "exit" and handle it before anything else
-	
-	if (data->cmd->args[0] && data->cmd->next == NULL && ft_strcmp(data->cmd->args[0], "exit") == 0)
-	{
-		// Optionally handle arguments to exit (like exit status)
-		int exit_status = 0;
-		if (data->cmd->args[1])
-			exit_status = ft_atoi(data->cmd->args[1]); // Convert argument to exit status
-		ft_lstclear(&data->tmp);
-		printf("DATA->CMD : %p\n", data->cmd);
-		//free_pipes(data->var.input);
-		exit(exit_status); // Exit the shell with the given status
-	}
-	begin = data;
-	//start = data->cmd;
-	data->var.mini_env = ft_list_to_tab(data->mini_env);
-	if (!data->var.mini_env)
-		return (-1);
-	data->save_pipe = 0;
-	i = 0;
-	int len_lst = ft_lstlen(data->cmd);
-	if (ft_heredoc(data) == -1 || !data->cmd->args[0])
-		return (ft_redirecter(data), ft_free_all_heredoc(begin->cmd), -1);
-	//ft_display_heredoc(data->cmd);
-	while (data->cmd)
-	{
-		data->exit_code = 0;
-		i++;
-		if (data->cmd->redirecter)	//2. redirecter check
-			ft_redirecter(data);
-		if (data->cmd->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe
-			if (pipe(data->pipe_fd) == -1)
-				exit_status(data, 1, "pipe failed\n");
+    if (data->cmd->args[0] && data->cmd->next == NULL && ft_strcmp(data->cmd->args[0], "exit") == 0)
+    {
+        int exit_status = 0;
+        if (data->cmd->args[1])
+            exit_status = ft_atoi(data->cmd->args[1]); // Convertir l'argument en statut de sortie
+        ft_lstclear(&data->tmp);
+        exit(exit_status); // Quitter le shell avec le statut donné
+    }
+    begin = data;
+    data->var.mini_env = ft_list_to_tab(data->mini_env);
+    if (!data->var.mini_env)
+        return (-1);
+    data->save_pipe = 0;
+    i = 0;
+    int len_lst = ft_lstlen(data->cmd);
+    if (ft_heredoc(data) == -1 || !data->cmd->args[0])
+        return (ft_redirecter(data), ft_free_all_heredoc(begin->cmd), -1);
 
+    current_cmd = data->cmd; // Travaillez avec current_cmd au lieu de data->cmd
+    while (current_cmd)
+    {
+        data->exit_code = 0;
+        i++;
+        if (current_cmd->redirecter) // Vérifiez les redirections
+            ft_redirecter(data);
+        if (current_cmd->next != NULL) // Vérifiez les pipes
+            if (pipe(data->pipe_fd) == -1)
+                exit_status(data, 1, "pipe failed\n");
 
-		int check_access = ft_is_builtins_no_access(data);
-		if (ft_builtins_env(data, i) == 0)//cas ou la partie suivante ne doit pas etre faite, heredoc sans cmd, builtings
-		{
-			if (check_access == 0)
-			{
-				check_access = ft_check_access(data);
-				if (check_access == -1)  //4 Cmd check
-					exit_status(data, 127, "");
-				else if (check_access == -2)  //4 Cmd check
-					exit_status(data, 127, "malloc error from [ft_check_access]");
-			}
-			if (i == 1)
-			{	//5. exec (cmd_first) | cmd_middle... | cmd_last
-				//printf("go exec first\n");
-				ft_first_fork(data);
-				if (data->pipe_fd[1] > 3)
-					close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
-				data->save_pipe = data->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
-			}
-			else if (i < len_lst)
-			{	//6. exec cmd_first | (cmd_middle...) | cmd_last
-				//printf("go exec mid\n");
-				ft_middle_fork(data);
-				close(data->pipe_fd[1]);
-				data->save_pipe = data->pipe_fd[0];
-			}
-			else if (i == len_lst)
-			{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
-				//printf("go exec last\n");
-				ft_last_fork(data);
-				close(data->pipe_fd[0]);
-			}
-		}
-		ft_close(data->cmd);
-		data->cmd = data->cmd->next;
-	}
-	free_pipes(data->var.mini_env);
-	if (data->exit_code != 0)
-		return (-1);
-	return (0);
+        int check_access = ft_is_builtins_no_access(data);
+        if (ft_builtins_env(data, i) == 0) // Cas où la partie suivante ne doit pas être faite
+        {
+            if (check_access == 0)
+            {
+                check_access = ft_check_access(data);
+                if (check_access == -1)
+                    exit_status(data, 127, "");
+                else if (check_access == -2)
+                    exit_status(data, 127, "malloc error from [ft_check_access]");
+            }
+            if (i == 1)
+            {
+                ft_first_fork(data);
+                if (data->pipe_fd[1] > 3)
+                    close(data->pipe_fd[1]); // Fermez l'écriture pour éviter une attente indéfinie
+                data->save_pipe = data->pipe_fd[0]; // Sauvegardez la lecture pour le prochain canal
+            }
+            else if (i < len_lst)
+            {
+                ft_middle_fork(data);
+                close(data->pipe_fd[1]);
+                data->save_pipe = data->pipe_fd[0];
+            }
+            else if (i == len_lst)
+            {
+                ft_last_fork(data);
+                close(data->pipe_fd[0]);
+            }
+        }
+        ft_close(current_cmd);
+        current_cmd = current_cmd->next; // Avancez current_cmd, pas data->cmd
+    }
+    free_pipes(data->var.mini_env);
+	data->var.mini_env = NULL;
+    if (data->exit_code != 0)
+        return (-1);
+    return (0);
 }
+
 
 void handle_sigint(int sig) 
 {
@@ -234,13 +227,24 @@ void setup_signal_handlers()
 void	free_env(t_env *env)
 {
 	t_env *tmp;
-    while (env)
+	t_env *lst;
+	
+	lst = env;
+    while (lst)
     {
-        tmp = env;
-        env = env->next;
-        free(tmp->name);
-        free(tmp->value);
-        free(tmp);
+        tmp = lst->next;
+		if (lst->name)
+		{
+        	free(lst->name);
+			lst->name = NULL;
+		}
+		if (lst->value)
+		{
+        	free(tmp->value);
+			lst->value = NULL;
+		}
+        free(lst);
+		lst = tmp;
     }
 }
 
@@ -268,7 +272,6 @@ int	main(int argc, char **argv, char **envp)
 						ft_lstclear(&data.cmd);
 						free_pipes(data.var.pipes);
 					}
-					ft_lstclear(&data.cmd);
 				}
 			}
 		}
