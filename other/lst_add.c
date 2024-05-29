@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/14 16:01:47 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/05/28 20:54:09 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,36 +32,12 @@ void	ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new)
 		*lst = new;
 }
 
-void	int_initalizer(t_cmd **new_elem)
+t_cmd    *ft_lstnew_minishell(void)
 {
-	(*new_elem)->i = 0;
-	(*new_elem)->nb_red = 0;
-	(*new_elem)->nb_del = 0;
-	(*new_elem)->nb_args = 0;
-	(*new_elem)->nb_flags = 0;
-	(*new_elem)->fd_infile = 0;
-	(*new_elem)->fd_outfile = 0;
-	(*new_elem)->end_heredoc = 0;
-	(*new_elem)->expand_heredoc = 1;
-}
+    t_cmd    *new_elem;
 
-t_cmd	*ft_lstnew_minishell(void)
-{
-	t_cmd	*new_elem;
-
-	new_elem = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!new_elem)
-		return (NULL);
-	int_initalizer(&new_elem);
-	new_elem->heredoc = false;
-	new_elem->args = NULL;
-	new_elem->next = NULL;
-	new_elem->start = NULL;
-	new_elem->path_cmd = NULL;
-	new_elem->delimiter = NULL;
-	new_elem->slash_cmd = NULL;
-	new_elem->redirecter = NULL;
-	new_elem->split_path = NULL;
-	new_elem->heredoc_content = NULL;
-	return (new_elem);
+    new_elem = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
+    if (!new_elem)
+        return (NULL);
+    return (new_elem);
 }

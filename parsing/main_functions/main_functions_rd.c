@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_rd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 14:15:55 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 11:35:08 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/28 20:46:38 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ int	final_parse(t_data *data)
 	}
 	if (launch_exec(tmp) == -1)
 		return (-1);
-	printf("DATA->CMD = %p\n", data->cmd);
-	printf("DATA->CMD = %s\n", data->cmd->args[0]);
 	data->exit_code = 0;
 	ft_lstclear(&data->cmd);
 	free_pipes(data->var.pipes);

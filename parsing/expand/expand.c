@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:17:49 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 17:02:39 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 18:16:09 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,19 @@ int basic_expander(char *rl, t_expand **var, t_data *data)
     return (0);
 }
 
+void	free_expand_opt(t_expand *var)
+{
+	if (var->name)
+	{
+		free(var->name);
+		var->name = NULL;
+	}
+	if (var->value)
+	{
+		free(var->value);
+		var->value = NULL;
+	}
+}
 
 void	free_expand(t_expand *var)
 {
@@ -139,9 +152,15 @@ char	*dolls_expander(char *rl, t_data *data)
 		else if (if_condition_expand(var, 2) == 1)
 			var->i++;
 		else if (var->output[var->i] == '$' && var->output[var->i + 1] != '?')
+		{
 			basic_expander(rl, &var, data);
+			free_expand_opt(var);
+		}
 		else if (var->output[var->i] == '$' && var->output[var->i + 1] == '?')
+		{
 			exitcode_expander(&var, &data, rl);
+			free_expand_opt(var);
+		}
 		else
 			var->i++;
 	}

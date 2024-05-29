@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utilities_nd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:46:02 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 15:57:18 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/28 21:20:11 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	slash_cmd_free(t_cmd *lst)
 
 void	ft_lstdelone(t_cmd *lst)
 {
-	printf("LA ON ENTRE DANS LSTDELONE\n");
 	if (lst)
 	{
 		if (lst->args)
@@ -65,7 +64,6 @@ void	ft_lstdelone(t_cmd *lst)
 			lst->path_cmd = NULL;
 		}
 		free(lst);
-		printf ("all cleaned\n");
 	}
 }
 
@@ -73,7 +71,6 @@ void	ft_lstclear(t_cmd **lst)
 {
 	t_cmd	*tmp;
 
-	printf("LA ON ENTRE DANS LSTCLEAR\n");
 	while (*lst)
 	{
 		tmp = (*lst)->next;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_nd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/28 17:03:10 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/28 21:23:46 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	command_positiver(char *pipes)
 	size_t	i;
 
 	i = 0;
-	printf("VALUE IS: %s\n", pipes);
 	while (pipes[i])
 	{
 		if (pipes[i] < 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_expand.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:23:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 11:24:25 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 16:06:49 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ char	*name_extractor(char *env)
 		str[i] = env[i];
 		i++;
 	}
+	str[i] = '\0';
 	return (str);
 }
 

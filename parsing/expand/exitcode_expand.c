@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exitcode_expand.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:10:06 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 11:14:59 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 18:02:54 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	exitcode_expander_init(t_expand **var, t_data **data, char **rl)
 	(*var)->value = ft_itoa((*data)->exit_code);
 	if ((*var)->value)
 		(*var)->value_len = ft_strlen((*var)->value);
-	*rl = ft_calloc(((*var)->value_len - (*var)->name_len + \
+	(*rl) = ft_calloc(((*var)->value_len - (*var)->name_len + \
 	ft_strlen((*var)->output) + 1), sizeof(char));
 	if (!rl)
 		return (-1);
@@ -43,6 +43,7 @@ int	exitcode_expander_finish(t_expand **var, char **rl)
 		(*var)->p++;
 	}
 	(*rl)[(*var)->i] = '\0';
+	free((*var)->output);
 	(*var)->output = ft_strdup(*rl);
 	if (!(*var)->output)
 		return (-1);
@@ -72,5 +73,6 @@ int	exitcode_expander(t_expand **var, t_data **data, char *rl)
 	(*var)->p = (*var)->name_end;
 	if (exitcode_expander_finish(var, &rl) == -1)
 		return (-1);
+	free(rl);
 	return (0);
 }

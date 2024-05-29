@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:58:25 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 17:13:40 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 16:06:31 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,9 @@ t_env	*env_new(void)
 {
 	t_env	*new_elem;
 
-	new_elem = malloc(sizeof(t_env));
+	new_elem = ft_calloc(1, sizeof (t_env));
 	if (!new_elem)
 		return (NULL);
-	new_elem->name = NULL;
-	new_elem->next = NULL;
-	new_elem->value = NULL;
 	return (new_elem);
 }
 

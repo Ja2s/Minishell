@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:39:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 16:38:23 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 16:47:55 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,15 @@ int	check_len(t_env *mini_env, int choice)
 	int	len;
 	if (choice == 1)
 	{
-		if (mini_env->value)
+		//printf("name : |%s|\n Value : |%s|\n", mini_env->name, mini_env->value);
+		if (mini_env->name && mini_env->value)
 			len = (ft_strlen(mini_env->name) + ft_strlen(mini_env->value) + 2);
 		else
 			len = (ft_strlen(mini_env->name) + 2);
 	}
 	if (choice == 2)
 	{
-		if (mini_env->value)
+		if (mini_env->name && mini_env->value)
 			len = (ft_strlen(mini_env->name) + ft_strlen(mini_env->value) + 4);
 		else
 			len = (ft_strlen(mini_env->name) + 4);
@@ -40,7 +41,7 @@ char	*line_extractor(t_env *mini_env)
 
 	i = 0;
 	len = check_len(mini_env, 1);
-	line = malloc(sizeof(char) * len);
+	line = ft_calloc(len + 1, sizeof(char));
 	if (!line)
 		return (NULL);
 	len = 0;
@@ -55,7 +56,6 @@ char	*line_extractor(t_env *mini_env)
 		while (mini_env->value[i])
 			line[len++] = mini_env->value[i++];
 	}
-	line[len] = '\0';
 	return (line);
 }
 
@@ -84,7 +84,8 @@ char	**ft_list_to_tab(t_env *mini_env)
 	i = 0;
 	tab = NULL;
 	tmp = mini_env;
-	len = ft_envsize(mini_env);
+	len = ft_envsize(tmp);
+	tmp = mini_env;
 	tab = ft_calloc(len + 1, sizeof(char *));
 	//verif malloc
 	if (!tab)

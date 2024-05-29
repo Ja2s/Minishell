@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/28 13:18:13 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 18:33:41 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,16 +51,16 @@ int	parser(t_data *data)
 	negative_checker(data->var.rl);
 	data->var.rl = dolls_expander(data->var.rl, data);
 	if (!data->var.rl && data->ambigous == 0)
-		return (exit_status(data, 1, \
+		return (free(data->var.rl), exit_status(data, 1, \
 		"\033[31mMalloc error from [dolls_expander]\n\033[0m"), -1);
 	if (!data->var.rl && data->ambigous == 1)
-		return (exit_status(data, 1, \
+		return (free(data->var.rl), exit_status(data, 1, \
 		"ambigous redirect\n"), -1);
 	if (!data->var.rl[0])
-		return (-1);
+		return (free(data->var.rl), -1);
 	data->var.pipes = ft_split(data->var.rl, '|');
 	if (!data->var.pipes)
-		return (exit_status(data, 1, \
+		return (free(data->var.rl), exit_status(data, 1, \
 		"\033[31mMalloc error from [ft_split]\n\033[0m"), -1);
 	free(data->var.rl);
 	data->var.rl = NULL;

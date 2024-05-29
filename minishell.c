@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 16:45:18 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 18:32:13 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,10 +142,12 @@ int launch_exec(t_data *data)
         ft_lstclear(&data->tmp);
         exit(exit_status); // Quitter le shell avec le statut donné
     }
+
     begin = data;
     data->var.mini_env = ft_list_to_tab(data->mini_env);
     if (!data->var.mini_env)
         return (-1);
+
     data->save_pipe = 0;
     i = 0;
     int len_lst = ft_lstlen(data->cmd);
@@ -153,15 +155,20 @@ int launch_exec(t_data *data)
         return (ft_redirecter(data), ft_free_all_heredoc(begin->cmd), -1);
 
     current_cmd = data->cmd; // Travaillez avec current_cmd au lieu de data->cmd
+	current_cmd->next = data->cmd->next;
     while (current_cmd)
     {
         data->exit_code = 0;
         i++;
+
         if (current_cmd->redirecter) // Vérifiez les redirections
             ft_redirecter(data);
+
         if (current_cmd->next != NULL) // Vérifiez les pipes
+        {
             if (pipe(data->pipe_fd) == -1)
                 exit_status(data, 1, "pipe failed\n");
+        }
 
         int check_access = ft_is_builtins_no_access(data);
         if (ft_builtins_env(data, i) == 0) // Cas où la partie suivante ne doit pas être faite
@@ -174,6 +181,7 @@ int launch_exec(t_data *data)
                 else if (check_access == -2)
                     exit_status(data, 127, "malloc error from [ft_check_access]");
             }
+
             if (i == 1)
             {
                 ft_first_fork(data);
@@ -193,15 +201,17 @@ int launch_exec(t_data *data)
                 close(data->pipe_fd[0]);
             }
         }
+
         ft_close(current_cmd);
         current_cmd = current_cmd->next; // Avancez current_cmd, pas data->cmd
     }
     free_pipes(data->var.mini_env);
-	data->var.mini_env = NULL;
+    data->var.mini_env = NULL;
     if (data->exit_code != 0)
         return (-1);
     return (0);
 }
+
 
 
 void handle_sigint(int sig) 
@@ -224,27 +234,25 @@ void setup_signal_handlers()
     sigaction(SIGINT, &sa, NULL);    // Appliquer cette action pour SIGINT
 }
 
-void	free_env(t_env *env)
+void free_env(t_env *env)
 {
-	t_env *tmp;
-	t_env *lst;
-	
-	lst = env;
-    while (lst)
+    t_env *tmp;
+
+    while (env)
     {
-        tmp = lst->next;
-		if (lst->name)
-		{
-        	free(lst->name);
-			lst->name = NULL;
-		}
-		if (lst->value)
-		{
-        	free(tmp->value);
-			lst->value = NULL;
-		}
-        free(lst);
-		lst = tmp;
+        tmp = env->next;
+        if (env->name)
+        {
+            free(env->name);
+            env->name = NULL;
+        }
+        if (env->value)
+        {
+            free(env->value);
+            env->value = NULL;
+        }
+        free(env);
+        env = tmp;
     }
 }
 
@@ -271,6 +279,11 @@ int	main(int argc, char **argv, char **envp)
 					{
 						ft_lstclear(&data.cmd);
 						free_pipes(data.var.pipes);
+						if (data.var.mini_env)
+						{
+							free_pipes(data.var.mini_env);
+							data.var.mini_env = NULL;
+						}
 					}
 				}
 			}

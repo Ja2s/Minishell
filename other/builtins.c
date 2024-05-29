@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 16:49:15 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/29 17:17:36 by gavairon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,17 @@ void	env_cmd(t_env *env)
 char	*ft_getenv(char *name, t_env *mini_env)
 {
 	t_env	*env;
+	char *tmp;
+	tmp = NULL;
 
 	env = mini_env;
 	while (env)
 	{
 		if (ft_strcmp(name, env->name) == 0)
-			return (env->value);
+		{
+			tmp = ft_strdup(env->value);
+			return (tmp);
+		}
 		env = env->next;
 	}
 	return (NULL);
