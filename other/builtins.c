@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/29 17:17:36 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:36:16 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,17 +241,30 @@ int	ft_pwd(void)
 void	ft_echo(t_cmd *lst)
 {
 	int	i;
+	int	i_print;
+	int	j;
 
 	i = 1;
+	i_print = 1;
 	while (lst->args[i] && ft_strncmp(lst->args[i], "-n", 2) == 0)
+	{
+		j = 1;
+		while (lst->args[i][j] == 'n')
+			j++;
+		if (lst->args[i][j] == '\0')
+			i_print++;
+		else
+			break;
 		i++;
-	while (lst->args[i])
+	}
+	i = i_print;
+	while (lst->args[i])//affichage
 	{
 		printf("%s", lst->args[i]);
 		if (lst->args[++i])
 			printf(" ");// Ajoute un espace entre les arguments
 	}
-	if (lst->args[1] && ft_strncmp(lst->args[1], "-n", 2) != 0)
+	if (i_print == 1)
 		printf("\n");
 	else if (!lst->args[1])
 		printf("\n");
@@ -269,9 +282,6 @@ int	ft_builtins(t_cmd *lst)
 		return (1);
 	}
 	else if (ft_strcmp(lst->args[0], "echo") == 0)
-	{
-		ft_echo(lst);
-		return (1);
-	}
+		return (ft_echo(lst), 1);
 	return (0);
 }

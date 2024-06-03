@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 14:04:23 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:39:15 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@
 # include <sys/wait.h>
 # include <stdbool.h>
 # include <signal.h>
+# include <sys/stat.h>
 
+extern volatile sig_atomic_t g_sig;
 
 typedef struct s_expand
 {
@@ -117,12 +119,12 @@ t_cmd		*ft_lstlast_minishell(t_cmd *lst);
 void    	ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int			ft_lstlen(t_cmd *elem);
 int			ft_redirecter(t_data *data);
-int			ft_check_access(t_data *data);
-int			ft_first_fork(t_data *data);
-int			ft_middle_fork(t_data *data);
-int			ft_last_fork(t_data *data);
+int			ft_check_access(t_data *data, t_cmd *lst);
+int			ft_first_fork(t_data *data, t_cmd *lst);
+int			ft_middle_fork(t_data *data, t_cmd *lst);
+int			ft_last_fork(t_data *data, t_cmd *lst);
 void    	display_error_cmd(t_cmd *elem);
-void    	display_no_such(t_cmd *elem);
+void    	display_no_such(char *str);
 void    	ft_free_access(t_cmd *elem);
 void    	ft_free_token(t_cmd *elem);
 void    	ft_free_lst(t_cmd *lst);
@@ -196,7 +198,7 @@ int			spec_export(char *cmd);
 void		ft_unset(t_data **data);
 int			ft_cd(t_data *data);
 void		ft_free_heredoc(t_data *data);
-void		ft_free_all_heredoc(t_cmd *cmd);
+void		ft_free_all_heredoc(t_data *begin);
 int			if_condition_expand(t_expand *var, int choice);
 char		*value_extractor(char *env);
 char		*name_extractor(char *env);
@@ -212,7 +214,6 @@ void		in_redirection_checker(t_expand **var, char *output, int i);
 int			space_in_value_checker(t_expand *var);
 int			exitcode_expander(t_expand **var, t_data **data, char *rl);
 void		expand_nd(t_expand **var);
-void		setup_signal_handlers();
 int			skip_cote(char *rl, int i, int choice);
 int			redirecter_finisher(t_data *data);
 int			condition_n_one(t_expand *var);
@@ -221,6 +222,10 @@ void		end_heredoc(char *pipes, t_cmd **cmd);
 void		init_var(t_int *var);
 int			redirecter_helper(char *pipes, t_cmd **cmd, t_int *var);
 int			negative_checker_variable(t_expand **var, t_data **data);
-void		free_cmd(t_cmd *begin);
+int			check_variable(t_env **mini_env, char *name, char *value);
+void		display_is_dir(t_cmd *lst);
+int			ft_is_builtins_no_access(t_cmd *lst);
+
+
 
 #endif

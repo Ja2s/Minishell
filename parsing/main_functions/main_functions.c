@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/29 18:33:41 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:38:57 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	minishell_starter(char **env, t_data *data)
 {
-	setup_signal_handlers();
 	printf_title();
 	data_initializer(data);
 	if (env_copyer(env, &data->mini_env) == -1)
@@ -36,7 +35,14 @@ int	prompt_customer(t_data *data)
         return (free(data->var.pwd), exit_status(data, 1, \
 		"\033[31mError from [ft_strjoin]\n\033[0m"), -1);
     data->var.rl = readline(prompt);
-    free(prompt);
+    if (data->var.rl == NULL)
+		return (exit_status(data, 1, "exit\n"), -1);
+	if (g_sig)
+	{
+		exit_status(data, 130, "");
+		g_sig = 0;
+	}
+	free(prompt);
     free(data->var.pwd);
     if (data->var.rl == NULL)
         return (exit_status(data, 1, \

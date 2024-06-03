@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 16:11:58 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:32:36 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ char	**ft_realloc(char *rl, t_cmd *lst)
 	return (tab);
 }
 
-void	ft_free_all_heredoc(t_cmd *cmd)
+void	ft_free_all_heredoc(t_data *begin)
 {
 	int	i;
 	t_cmd	*lst;
 
-	lst = cmd;
+	lst = begin->cmd;
 	while (lst)
 	{
 		if (lst->heredoc_content)
@@ -64,6 +64,7 @@ void	ft_free_all_heredoc(t_cmd *cmd)
 			i = 0;
 			while (lst->heredoc_content[i])
 			{
+				printf("ciao |%s|", lst->heredoc_content[i]);
 				free(lst->heredoc_content[i]);
 				i++;
 			}
@@ -94,6 +95,19 @@ void    ft_free_heredoc(t_data *data)
     }
 }
 
+void handle_sigint_heredoc(int sig) 
+{
+    (void)sig;
+    g_sig = 1;
+	printf("^C");
+    rl_done = 1; // Interrompt readline proprement
+}
+
+int	rl_hook_function()
+{
+	signal(SIGINT, handle_sigint_heredoc);
+	return (0);
+}
 int ft_heredoc(t_data *data) 
 {
     int i = 0;  // Indice du nombre de Heredocs
@@ -103,11 +117,25 @@ int ft_heredoc(t_data *data)
 	lst = data->cmd;
     lst->heredoc_content = NULL;
 	lst->del_one = 0;
+	rl_callback_handler_install("", NULL);
+	rl_event_hook = rl_hook_function;
 	while (lst)
 	{
 		while (i < lst->nb_del && lst->heredoc == true) 
 		{
 			line = readline(">");
+			if (g_sig) {
+				exit_status(data, 130, "");
+				free(line);
+				rl_callback_handler_remove(); // Retirer le gestionnaire de readline
+				//signal(SIGINT, handle_sigint_main); // Restaure le gestionnaire de signal SIGINT principal
+				return -1; // Quitter la fonction si un signal SIGINT a été reçu
+			}
+			if (line == NULL)
+			{
+				printf("bash: warning: here-document delimited by end-of-file (wanted `%s')\n", lst->delimiter[i]);
+				line = ft_strdup(lst->delimiter[i]);
+			}
 			if (ft_strcmp(line, lst->delimiter[i]) == 0)
 			{
 				free(line);
@@ -127,6 +155,19 @@ int ft_heredoc(t_data *data)
 					if (!lst->heredoc_content)
 						return(exit_status(data, 1, "Malloc error from [ft_heredoc]\n"), -1);
 					line = readline(">");
+					if (line == NULL)
+					{
+						printf("bash: warning: here-document delimited by end-of-file (wanted `%s')\n", lst->delimiter[i]);
+						line = ft_strdup(lst->delimiter[i]);
+					}
+					if (g_sig) 
+					{
+						exit_status(data, 130, "");
+						free(line);
+						rl_callback_handler_remove(); // Retirer le gestionnaire de readline
+						//signal(SIGINT, handle_sigint_main); // Restaure le gestionnaire de signal SIGINT principal
+						return -1; // Quitter la fonction si un signal SIGINT a été reçu
+					}
 				}
 				free(line);  // Libère la mémoire allouée par readline	
 			}
@@ -137,6 +178,8 @@ int ft_heredoc(t_data *data)
 		i = 0;
 		lst = lst->next;
 	}
+	rl_callback_handler_remove(); // Retirer le gestionnaire de readline
+	//signal(SIGINT, handle_sigint_main); // Restaure le gestionnaire de signal SIGINT principal
     return (0);
 }
 

@@ -6,81 +6,82 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:19:08 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/03 16:00:20 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 13:26:38 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	display_error_cmd(t_cmd *var)
+void	display_error_cmd(t_cmd *lst)
 {
-	ft_putstr_fd("minishell: commande not found: ", 2);
-	ft_putstr_fd(var->args[0], 2);
+	ft_putstr_fd(lst->args[0], 2);
+	ft_putstr_fd(": commande not found", 2);
 	write(2, "\n", 1);
 }
 
-void	display_no_such(t_cmd *var)
+void	display_no_such(char *str)
 {
-	ft_putstr_fd("minishell: no such file or directory: ", 2);
-	ft_putstr_fd(var->args[0], 2);
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd(": No such file or directory", 2);
 	write(2, "\n", 1);
 }
 
-void	ft_free_access(t_cmd *var)
+void	ft_free_access(t_cmd *lst)
 {
 	int	i;
 
 	i = 0;
-	if (var->split_path != NULL)
+	if (lst->split_path != NULL)
 	{
-		while (var->split_path[i] !=  NULL)
+		while (lst->split_path[i] !=  NULL)
 		{
-			free(var->split_path[i]);
-			var->split_path[i] = NULL;
+			free(lst->split_path[i]);
+			lst->split_path[i] = NULL;
 			i++;
 		}
-		free(var->split_path);
+		free(lst->split_path);
 	}
-	if (var->path_cmd != NULL)
+	if (lst->path_cmd != NULL)
 	{
-		free(var->path_cmd);
-		var->path_cmd = NULL;
+		free(lst->path_cmd);
+		lst->path_cmd = NULL;
 	}
-	if (var->slash_cmd != NULL)
+	if (lst->slash_cmd != NULL)
 	{
-		free(var->slash_cmd);
-		var->slash_cmd = NULL;
+		free(lst->slash_cmd);
+		lst->slash_cmd = NULL;
 	}
 }
 
-void	ft_free_token(t_cmd *var)
+void	ft_free_token(t_cmd *lst)
 {
 	int	i;
 
 	i = 0;
-	if (var->args)
+	if (lst->args)
 	{
-		while (var->args[i])
+		while (lst->args[i])
 		{
-			printf("args[%d] = |%s|  ", i, var->args[i]);
-			free(var->args[i]);
-			var->args[i] = NULL;
+			printf("args[%d] = |%s|  ", i, lst->args[i]);
+			free(lst->args[i]);
+			lst->args[i] = NULL;
 			i++;
 		}
-		free(var->args);
+		free(lst->args);
 	}
 	i = 0;
 	printf("\n");
-	if (var->redirecter)
+	if (lst->redirecter)
 	{
-		while (var->redirecter[i])
+		while (lst->redirecter[i])
 		{
 			printf("redi[%d]  ", i);
-			free(var->redirecter[i]);
-			var->redirecter[i] = NULL;
+			free(lst->redirecter[i]);
+			lst->redirecter[i] = NULL;
 			i++;
 		}
-		free(var->redirecter);
+		free(lst->redirecter);
 	}
 }
 

@@ -8,6 +8,7 @@
 		"minishell.h": "c",
 		"type_traits": "c",
 		"typeinfo": "c",
-		"order": "c"
+		"order": "c",
+		"signal.h": "c"
 	}
 }

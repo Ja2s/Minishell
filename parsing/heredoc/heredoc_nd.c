@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_nd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:51:56 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 21:15:40 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:01:32 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	heredoc_memory_allocer(char *pipes, t_cmd **cmd)
 {
 	(*cmd)->nb_del = heredoc_counter(pipes);
 	if ((*cmd)->nb_del > 0)
-		(*cmd)->delimiter = ft_calloc((*cmd)->nb_del, sizeof (char *) + 1);
+		(*cmd)->delimiter = ft_calloc((*cmd)->nb_del + 1, sizeof (char *));
 	if (!(*cmd)->delimiter && (*cmd)->nb_del > 0)
 		return (-1);
 	end_heredoc(pipes, cmd);

@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/29 18:32:13 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/03 15:24:43 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+// Définition de la variable globale
+volatile sig_atomic_t g_sig = 0;
 
 void	ft_unset(t_data **data)
 {
@@ -57,182 +60,153 @@ int	ft_cd(t_data *data)
 		while (data->var.mini_env[i] && ft_strncmp(data->var.mini_env[i], "OLDPWD=", 7) != 0)
 			i++;
 		if (!data->var.mini_env[i])
-			return (-1);
+			return (display_error_cmd(data->cmd), -1);
 		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
 		{
 			perror("chdir OLDPWD failed ");
 			return (-1);
 		}
-		
 	}
 	else if (!data->cmd->args[1])
 	{
 		while (data->var.mini_env[i] && ft_strncmp(data->var.mini_env[i], "HOME=", 5) != 0)
 			i++;
 		if (!data->var.mini_env[i])
-			return (-1);
+			return (display_error_cmd(data->cmd), -1);
 		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
 		{
 			perror("chdir home failed ");
 			return (-1);
 		}
-		//export oldpwd = old_pwd
-		
 	}
 	else if (chdir(data->cmd->args[1]) == -1)
 	{
 		perror("chdir failed ");
 		return (-1);
 	}
-	//export oldpwd = old_pwd
+	check_variable(&data->mini_env, "OLDPWD", old_pwd);
 	return (0);
 }
 
-int	ft_is_builtins_no_access(t_data *data)
+int	ft_is_builtins_no_access(t_cmd *lst)
 {
-	if (ft_strcmp(data->cmd->args[0], "export") == 0)
+	if (ft_strcmp(lst->args[0], "export") == 0)
 		return (1);
-	else if (ft_strcmp(data->cmd->args[0], "unset") == 0)
+	else if (ft_strcmp(lst->args[0], "unset") == 0)
 		return (1);
-	else if (ft_strcmp(data->cmd->args[0], "cd") == 0)
+	else if (ft_strcmp(lst->args[0], "cd") == 0)
 		return (1);
-	else if (ft_strcmp(data->cmd->args[0], "exit") == 0)
+	else if (ft_strcmp(lst->args[0], "exit") == 0)
 		return (1);
 	return (0);
 }
 
-
-
-int	ft_builtins_env(t_data *data, int i)
+int	ft_builtins_env(t_cmd *lst, t_data *data, int i)
 {
-	if (ft_strcmp(data->cmd->args[0], "export") == 0 && i == 1 && !data->cmd->next)
-	{
-		ft_export(data, &data->mini_env, data->cmd);
-			return (1);
-	}
-	else if (ft_strcmp(data->cmd->args[0], "unset") == 0  && i == 1 && !data->cmd->next)
-	{
-		ft_unset(&data);
-		return (1);
-	}
-	else if (ft_strcmp(data->cmd->args[0], "env") == 0 && i == 1 && !data->cmd->next)
-	{
-		env_cmd(data->mini_env);
-		return (1);
-	}
-	else if (ft_strcmp(data->cmd->args[0], "cd") == 0 && i == 1 && !data->cmd->next)
-	{
-		ft_cd(data);
-		return (1);
-	}
+	if (ft_strcmp(lst->args[0], "export") == 0 && i == 1 && !lst->next)
+			return (ft_export(data, &data->mini_env, lst), 1);
+	else if (ft_strcmp(lst->args[0], "unset") == 0  && i == 1 && !lst->next)
+		return (ft_unset(&data), 1);
+	else if (ft_strcmp(lst->args[0], "env") == 0 && i == 1 && !lst->next)
+		return (env_cmd(data->mini_env), 1);
+	else if (ft_strcmp(lst->args[0], "cd") == 0 && i == 1 && !lst->next)
+		return (ft_cd(data), 1);
 	return (0);
 }
 
-int launch_exec(t_data *data)
+void	ft_exit_prog(t_data *data)
 {
-    int     i;
-    t_data  *begin;
-    t_cmd   *current_cmd; // Utilisez un pointeur local pour parcourir les commandes
+	int exit_status = 0;
+	if (data->cmd->args[1])
+		exit_status = ft_atoi(data->cmd->args[1]); // Convert argument to exit status
+	//ft_free_data(data); // Free any allocated memory
+	exit(exit_status); // Exit the shell with the given status
+}
 
-    if (data->cmd->args[0] && data->cmd->next == NULL && ft_strcmp(data->cmd->args[0], "exit") == 0)
-    {
-        int exit_status = 0;
-        if (data->cmd->args[1])
-            exit_status = ft_atoi(data->cmd->args[1]); // Convertir l'argument en statut de sortie
-        ft_lstclear(&data->tmp);
-        exit(exit_status); // Quitter le shell avec le statut donné
-    }
+void	ft_stat_check(int check_access, t_data *data, t_cmd *lst)
+{
+	struct stat statbuf;
+	if (check_access == 0){
+		if (stat(lst->path_cmd, &statbuf) == -1)
+			printf("command not found ?");
+		if (S_ISDIR(statbuf.st_mode))
+		{
+			exit_status(data, 126, "");
+			display_is_dir(lst);
+		}
+	}
+}
 
-    begin = data;
-    data->var.mini_env = ft_list_to_tab(data->mini_env);
-    if (!data->var.mini_env)
-        return (-1);
+int	launch_exec(t_data *data)
+{
+	int		i;
+	t_data	*begin;
+	t_cmd	*lst;
 
-    data->save_pipe = 0;
-    i = 0;
-    int len_lst = ft_lstlen(data->cmd);
-    if (ft_heredoc(data) == -1 || !data->cmd->args[0])
-        return (ft_redirecter(data), ft_free_all_heredoc(begin->cmd), -1);
-
-    current_cmd = data->cmd; // Travaillez avec current_cmd au lieu de data->cmd
-	current_cmd->next = data->cmd->next;
-    while (current_cmd)
-    {
-        data->exit_code = 0;
-        i++;
-
-        if (current_cmd->redirecter) // Vérifiez les redirections
-            ft_redirecter(data);
-
-        if (current_cmd->next != NULL) // Vérifiez les pipes
-        {
-            if (pipe(data->pipe_fd) == -1)
-                exit_status(data, 1, "pipe failed\n");
-        }
-
-        int check_access = ft_is_builtins_no_access(data);
-        if (ft_builtins_env(data, i) == 0) // Cas où la partie suivante ne doit pas être faite
-        {
-            if (check_access == 0)
-            {
-                check_access = ft_check_access(data);
-                if (check_access == -1)
-                    exit_status(data, 127, "");
-                else if (check_access == -2)
-                    exit_status(data, 127, "malloc error from [ft_check_access]");
-            }
-
-            if (i == 1)
-            {
-                ft_first_fork(data);
-                if (data->pipe_fd[1] > 3)
-                    close(data->pipe_fd[1]); // Fermez l'écriture pour éviter une attente indéfinie
-                data->save_pipe = data->pipe_fd[0]; // Sauvegardez la lecture pour le prochain canal
-            }
-            else if (i < len_lst)
-            {
-                ft_middle_fork(data);
-                close(data->pipe_fd[1]);
-                data->save_pipe = data->pipe_fd[0];
-            }
-            else if (i == len_lst)
-            {
-                ft_last_fork(data);
-                close(data->pipe_fd[0]);
-            }
-        }
-
-        ft_close(current_cmd);
-        current_cmd = current_cmd->next; // Avancez current_cmd, pas data->cmd
-    }
-    free_pipes(data->var.mini_env);
+	// Check if the command is "exit" and handle it before anything else
+	if (data->cmd->args[0] && data->cmd->next == NULL && ft_strcmp(data->cmd->args[0], "exit") == 0)
+		ft_exit_prog(data);
+	begin = data;
+	lst = begin->cmd;
+	data->var.mini_env = ft_list_to_tab(data->mini_env);
+	if (!data->var.mini_env)
+		return (-1);
+	data->save_pipe = 0;
+	i = 0;
+	int len_lst = ft_lstlen(lst);
+	if (ft_heredoc(data) == -1)
+		return (ft_free_all_heredoc(begin), -1);
+	//ft_display_heredoc(data->cmd);
+	while (lst)
+	{
+		data->exit_code = 0;
+		i++;
+		if (lst->redirecter)	//2. redirecter check
+			ft_redirecter(data);
+		if (lst->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe
+			if (pipe(data->pipe_fd) == -1)
+				exit_status(data, 1, "pipe failed\n");
+		if (lst->args[0])
+		{
+			int check_access = ft_is_builtins_no_access(lst);
+			if (ft_builtins_env(lst, data, i) == 0)
+				if (check_access == 0)
+					ft_stat_check(ft_check_access(data, lst), data, lst);
+			if (i == 1)
+			{	//5. exec (cmd_first) | cmd_middle... | cmd_last
+				//printf("go exec first\n");
+				ft_first_fork(data, lst);
+				if (data->pipe_fd[1] > 3)
+					close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
+				data->save_pipe = data->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
+			}
+			else if (i < len_lst)
+			{	//6. exec cmd_first | (cmd_middle...) | cmd_last
+				//printf("go exec mid\n");
+				ft_middle_fork(data, lst);
+				close(data->pipe_fd[1]);
+				data->save_pipe = data->pipe_fd[0];
+			}
+			else if (i == len_lst)
+			{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
+				//printf("go exec last\n");
+				ft_last_fork(data, lst);
+				close(data->pipe_fd[0]);
+			}
+		}
+		ft_close(data->cmd);
+		lst = lst->next;
+	}
+	free_pipes(data->var.mini_env);
     data->var.mini_env = NULL;
-    if (data->exit_code != 0)
-        return (-1);
-    return (0);
+	//printf("begin->cmd = |%s|\nlst = |%p|\ndata->cmd = |%s|\nl", begin->cmd->heredoc_content[0], lst, data->cmd->heredoc_content[0]);
+	ft_free_all_heredoc(data);
+	if (data->exit_code != 0)
+		return (-1);
+	return (0);
 }
 
 
-
-void handle_sigint(int sig) 
-{
-    (void)sig;              // Pour éviter les avertissements de variable non utilisée
-    write(STDOUT_FILENO, "\n", 1);
-    rl_replace_line("", 0); // Effacer la ligne actuelle
-    rl_on_new_line();       // Repositionner le curseur sur une nouvelle ligne
-    rl_redisplay();         // Redisplay le prompt
-}
-
-void setup_signal_handlers()
-{
-    struct sigaction sa;
-
-    // Configurer le gestionnaire pour SIGINT (Ctrl+C)
-    sa.sa_handler = handle_sigint;   // Appelle la fonction de gestion pour SIGINT
-    sigemptyset(&sa.sa_mask);        // Ne bloquer aucun signal pendant l'exécution de handle_sigint
-    sa.sa_flags = SA_RESTART;        // Réessayer les appels interrompus
-    sigaction(SIGINT, &sa, NULL);    // Appliquer cette action pour SIGINT
-}
 
 void free_env(t_env *env)
 {
@@ -256,6 +230,16 @@ void free_env(t_env *env)
     }
 }
 
+void handle_sigint_main(int sig) 
+{
+	(void)sig;              // Pour éviter les avertissements de variable non utilisée
+	write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0); // Effacer la ligne actuelle
+	rl_on_new_line();       // Repositionner le curseur sur une nouvelle ligne
+	rl_redisplay();         // Redisplay le prompt
+	g_sig = 1;
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	int		i;
@@ -269,6 +253,8 @@ int	main(int argc, char **argv, char **envp)
 		return (printf("Malloc error\n"), -1);
 	while (1)
 	{
+		signal(SIGINT, handle_sigint_main);
+		signal(SIGQUIT, SIG_IGN); // Ignorer le signal SIGQUIT
 		if (prompt_customer(&data) == 0)
 		{
 			if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
@@ -288,6 +274,9 @@ int	main(int argc, char **argv, char **envp)
 				}
 			}
 		}
+		else
+			//free()
+			break ;
 	}
 	free_env(data.mini_env);
 	rl_clear_history();

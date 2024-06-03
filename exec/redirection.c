@@ -36,51 +36,45 @@ int	ft_redirecter(t_data *data)
 	lst->fd_infile = -1;
 	lst->fd_outfile = -1;	
 	i = 0;
-	if (data->cmd->nb_red > 0)
+	while (lst->redirecter[i])
 	{
-		while (lst->redirecter[i])
+		j = 0;
+		while (lst->redirecter[i][j])
 		{
-			j = 0;
-			while (lst->redirecter[i][j])
+			if (lst->redirecter[i][j] == '>' && lst->redirecter[i][j + 1] == '>') // >> 
 			{
-				if (lst->redirecter[i][j] == '>' && lst->redirecter[i][j + 1] == '>') // >> 
-				{
-					j += 2;
-					while (lst->redirecter[i][j] == ' ')//skip space
-						j++;
-					//check si je dois close l'ancien en cas de redirecter multiple
-					lst->fd_outfile = open(lst->redirecter[i] + j, O_CREAT | O_WRONLY | O_APPEND, 0777);
-					if (lst->fd_outfile == -1)
-						return(exit_status(data, 1, " :Open failed (>>)\n"), ft_close(lst), -1);
-					break;
-				}
-				else if (lst->redirecter[i][j] == '>')// > 
-				{
+				j += 2;
+				while (lst->redirecter[i][j] == ' ')//skip space
 					j++;
-					while (lst->redirecter[i][j] == ' ')
-						j++;
-					//check si je dois close l'ancien en cas de redirecter multiple
-					lst->fd_outfile = open(lst->redirecter[i] + j, O_CREAT | O_WRONLY | O_TRUNC, 0777);
-					if (lst->fd_outfile == -1)
-						return(exit_status(data, 1, " :Open failed (>)\n"), ft_close(lst), -1);
-					break;
-				}
-				else if (lst->redirecter[i][j] == '<')// <
-				{
-					j++;
-					while (lst->redirecter[i][j] == ' ')
-						j++;
-					lst->fd_infile = open(lst->redirecter[i] + j, O_RDONLY, 0777);
-					if (lst->fd_infile == -1) {
-						write (2, lst->redirecter[i] + j, ft_strlen(lst->redirecter[i] + j));
-						perror(" (<)");
-						return(exit_status(data, 1, ""), ft_close(lst), -1);
-					}
-					break;
-				}
+				//check si je dois close l'ancien en cas de redirecter multiple
+				lst->fd_outfile = open(lst->redirecter[i] + j, O_CREAT | O_WRONLY | O_APPEND, 0777);
+				if (lst->fd_outfile == -1)
+					return(exit_status(data, 1, ""), display_no_such(lst->redirecter[i] + j), ft_close(lst), -1);
+				break;
 			}
-			i++;
+			else if (lst->redirecter[i][j] == '>')// > 
+			{
+				j++;
+				while (lst->redirecter[i][j] == ' ')
+					j++;
+				//check si je dois close l'ancien en cas de redirecter multiple
+				lst->fd_outfile = open(lst->redirecter[i] + j, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+				if (lst->fd_outfile == -1)
+					return(exit_status(data, 1, ""), display_no_such(lst->redirecter[i] + j), ft_close(lst), -1);
+				break;
+			}
+			else if (lst->redirecter[i][j] == '<')// <
+			{
+				j++;
+				while (lst->redirecter[i][j] == ' ')
+					j++;
+				lst->fd_infile = open(lst->redirecter[i] + j, O_RDONLY, 0777);
+				if (lst->fd_infile == -1)
+					return(exit_status(data, 1, ""), display_no_such(lst->redirecter[i] + j), ft_close(lst), -1);
+				break;
+			}
 		}
+		i++;
 	}
 	return (0);
 }

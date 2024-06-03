@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/05/24 18:11:01 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 13:17:00 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,30 @@ int	ft_builtins_env_fork(t_data *data)
 	return (0);
 }
 
-int	ft_first_fork(t_data *data)
+void	handle_sigint_fork(int sig) 
+{
+	(void)sig;              // Pour éviter les avertissements de variable non utilisée
+	printf("\n");
+	g_sig = 1;
+}
+
+void	handle_sigquit_fork(int sig) 
+{
+	(void)sig;              // Pour éviter les avertissements de variable non utilisée
+	g_sig = 2;
+}
+
+int	ft_first_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
-	t_cmd	*lst;
 
+	signal(SIGINT, handle_sigint_fork);
+	signal(SIGQUIT, handle_sigquit_fork);
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork first failed :");
-		exit(EXIT_FAILURE);
-	}
+		return (perror("fork first failed :"), -1);
 	if (pid == 0) //Children
 	{
-		lst = data->cmd;
 		//1. SI il y a un infile ET quil est en dernier  sil y en a un et quil est en dernier
 		if (lst->redirecter && lst->fd_infile > 0 && lst->end_heredoc == 0)	// < f1
 		{//recupere les donner dans fd_infile au lieu de lentree standard
@@ -131,6 +141,10 @@ int	ft_first_fork(t_data *data)
 		int status;
 		waitpid(pid, &status, 0);
 
+		if (g_sig)
+			return (exit_status(data, 130, ""), g_sig = 0, -1);
+		if (g_sig == 2)
+			return(exit_status(data, 131, "^\\Quit (core dumped)\n"), g_sig = 0, -1);
 		if (status == 0)
 			return (-1);
 		if (WIFEXITED(status)) {//execve failed
@@ -141,7 +155,7 @@ int	ft_first_fork(t_data *data)
 		}
 		if (WIFSIGNALED(status)) {
 			int signal_number = WTERMSIG(status);
-			printf("Command terminated by signal: %d\n", signal_number);
+			//printf("Command terminated by signal: %d\n", signal_number);
 			// Ici, vous pouvez ajuster votre logique en fonction du signal reçu
 		}
 	}
@@ -150,10 +164,9 @@ int	ft_first_fork(t_data *data)
 
 /******************************************************************************************************/
 
-int	ft_middle_fork(t_data *data)
+int	ft_middle_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
-	t_cmd *lst;
 
 	pid = fork();
 	if (pid < 0)
@@ -163,7 +176,6 @@ int	ft_middle_fork(t_data *data)
 	}
 	else if (pid == 0)
 	{
-		lst = data->cmd;
 		//1. SI il y a un infile ET quil est en dernier  sil y en a un et quil est en dernier
 		if (lst->redirecter && lst->fd_infile > 0 && lst->end_heredoc == 0)// < f1
 		{//recupere les donner dans fd_infile au lieu de lentree standard
@@ -249,10 +261,9 @@ int	ft_middle_fork(t_data *data)
 
 /********************************************************************************************************/
 
-int	ft_last_fork(t_data *data)
+int	ft_last_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
-	t_cmd	*lst;
 
 	pid = fork();
 	if (pid < 0){
@@ -261,7 +272,6 @@ int	ft_last_fork(t_data *data)
 	}
 	if (pid == 0)
 	{
-		lst = data->cmd;
 		//1. prend soit dans infile en prioriter sil y en a un
 		if (lst->redirecter && lst->fd_infile > 0 && lst->end_heredoc == 0)// < f1
 		{
