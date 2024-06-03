@@ -50,7 +50,7 @@ SEGFAULT > "export lol", > "echo $lol"
 
 
 
-
+ls | 
 
 
 
