@@ -43,6 +43,11 @@ JORDAN--	[296] export HOLA="'" quand je echo $HOLA -> la "'" est supprimee
 
 
 
+SEGFAULT > "export lol", > "echo $lol" 
+
+1 byte leak si juste "ENTREE"
+
+
 
 
 

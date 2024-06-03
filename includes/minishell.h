@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 14:39:15 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:50:26 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ typedef struct s_cmd
 	int				end_heredoc;
 	int				fd_str_rand;
 	int				del_one;
-	char			**heredoc_content;
+	char			*heredoc_content;
 	char			**delimiter;
 	char			**redirecter;
 	char			**red_copy;
@@ -197,8 +197,8 @@ void		exit_status_n_free(t_data *data, int code, char *message);
 int			spec_export(char *cmd);
 void		ft_unset(t_data **data);
 int			ft_cd(t_data *data);
-void		ft_free_heredoc(t_data *data);
-void		ft_free_all_heredoc(t_data *begin);
+void		ft_free_heredoc(t_cmd *begin);
+void		ft_free_all_heredoc(t_cmd *begin);
 int			if_condition_expand(t_expand *var, int choice);
 char		*value_extractor(char *env);
 char		*name_extractor(char *env);

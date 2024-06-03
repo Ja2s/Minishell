@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 14:36:16 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:12:23 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,16 @@ char	*ft_getenv(char *name, t_env *mini_env)
 	{
 		if (ft_strcmp(name, env->name) == 0)
 		{
-			tmp = ft_strdup(env->value);
-			return (tmp);
+			if (env->value)
+			{
+				tmp = ft_strdup(env->value);
+				return (tmp);
+			}
+			else
+			{
+				tmp = ft_strdup("");
+				return(tmp);
+			}
 		}
 		env = env->next;
 	}
@@ -131,9 +139,17 @@ int	check_variable(t_env **mini_env, char *name, char *value)
 		if (ft_strcmp(tmp->name, name) == 0)
 		{
 			if (value)
+			{
+				free(tmp->value);
 				tmp->value = ft_strdup(value);
+				if(!tmp->value)
+					return (-1);
+			}
 			else
+			{
+				free(tmp->value);
 				tmp->value = NULL;
+			}
 			return(1);
 		}
 		tmp = tmp->next;

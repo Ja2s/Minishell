@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/03 13:17:00 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:48:57 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	ft_fd_heredoc(t_cmd *lst)
 {
-	int	i;
 
 	lst->fd_str_rand = open(".heredoc", O_CREAT | O_RDWR | O_TRUNC, 0777);//open du fichier avec un nom random
 	if (lst->fd_str_rand == -1) 
@@ -22,15 +21,9 @@ int	ft_fd_heredoc(t_cmd *lst)
 		perror("Erreur lors de la création du fichier");
 		return (-1);
 	}
-	i = 0;
 	if (lst->del_one == 1)
 		return (write(lst->fd_str_rand, "\0", 1), 0);
-	while (lst->heredoc_content[i])
-	{
-		write(lst->fd_str_rand, lst->heredoc_content[i], ft_strlen(lst->heredoc_content[i]));
-		i++;
-		write(lst->fd_str_rand, "\n", 1);
-	}
+	write(lst->fd_str_rand, lst->heredoc_content, ft_strlen(lst->heredoc_content));
 	close(lst->fd_str_rand);
 	return 0;
 }

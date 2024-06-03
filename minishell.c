@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 15:24:43 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:48:28 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,17 +137,18 @@ void	ft_stat_check(int check_access, t_data *data, t_cmd *lst)
 	}
 }
 
+
 int	launch_exec(t_data *data)
 {
 	int		i;
-	t_data	*begin;
+	t_cmd	*begin;
 	t_cmd	*lst;
 
 	// Check if the command is "exit" and handle it before anything else
 	if (data->cmd->args[0] && data->cmd->next == NULL && ft_strcmp(data->cmd->args[0], "exit") == 0)
 		ft_exit_prog(data);
-	begin = data;
-	lst = begin->cmd;
+	begin = data->cmd;
+	lst = begin;
 	data->var.mini_env = ft_list_to_tab(data->mini_env);
 	if (!data->var.mini_env)
 		return (-1);
@@ -200,7 +201,7 @@ int	launch_exec(t_data *data)
 	free_pipes(data->var.mini_env);
     data->var.mini_env = NULL;
 	//printf("begin->cmd = |%s|\nlst = |%p|\ndata->cmd = |%s|\nl", begin->cmd->heredoc_content[0], lst, data->cmd->heredoc_content[0]);
-	ft_free_all_heredoc(data);
+	ft_free_all_heredoc(begin);
 	if (data->exit_code != 0)
 		return (-1);
 	return (0);
@@ -272,6 +273,10 @@ int	main(int argc, char **argv, char **envp)
 						}
 					}
 				}
+			}
+			else
+			{
+				free(data.var.rl);
 			}
 		}
 		else

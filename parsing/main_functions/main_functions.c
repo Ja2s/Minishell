@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/06/03 14:38:57 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/03 17:25:19 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	prompt_customer(t_data *data)
 		"\033[31mError from [ft_strjoin]\n\033[0m"), -1);
     data->var.rl = readline(prompt);
     if (data->var.rl == NULL)
-		return (exit_status(data, 1, "exit\n"), -1);
+		return (free(prompt), free(data->var.pwd), free(data->var.rl), exit_status(data, 1, "exit\n"), -1);
 	if (g_sig)
 	{
 		exit_status(data, 130, "");
