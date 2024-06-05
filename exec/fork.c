@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/03 17:48:57 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:39:14 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	ft_fd_heredoc(t_cmd *lst)
 		return (write(lst->fd_str_rand, "\0", 1), 0);
 	write(lst->fd_str_rand, lst->heredoc_content, ft_strlen(lst->heredoc_content));
 	close(lst->fd_str_rand);
-	return 0;
+	return (0);
 }
 
 /*******************************************************************************************************/
@@ -134,21 +134,23 @@ int	ft_first_fork(t_data *data, t_cmd *lst)
 		int status;
 		waitpid(pid, &status, 0);
 
-		if (g_sig)
+		if (g_sig == 1)
 			return (exit_status(data, 130, ""), g_sig = 0, -1);
 		if (g_sig == 2)
-			return(exit_status(data, 131, "^\\Quit (core dumped)\n"), g_sig = 0, -1);
+			return(exit_status(data, 131, "Quit (core dumped)\n"), g_sig = 0, -1);
 		if (status == 0)
 			return (-1);
-		if (WIFEXITED(status)) {//execve failed
+		if (WIFEXITED(status)) //execve failed
+		{
 			printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
 			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
 			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
 			return (-1);
 		}
-		if (WIFSIGNALED(status)) {
+		if (WIFSIGNALED(status)) 
+		{
 			int signal_number = WTERMSIG(status);
-			//printf("Command terminated by signal: %d\n", signal_number);
+			printf("Command terminated by signal: %d\n", signal_number);
 			// Ici, vous pouvez ajuster votre logique en fonction du signal reçu
 		}
 	}
@@ -161,12 +163,11 @@ int	ft_middle_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
 
+	signal(SIGINT, handle_sigint_fork);
+	signal(SIGQUIT, handle_sigquit_fork);
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork middle failed :");
-		exit(EXIT_FAILURE);
-	}
+		return(perror("fork middle failed :"), -1);
 	else if (pid == 0)
 	{
 		//1. SI il y a un infile ET quil est en dernier  sil y en a un et quil est en dernier
@@ -233,17 +234,23 @@ int	ft_middle_fork(t_data *data, t_cmd *lst)
 	else
 	{
 		int status;
-    	waitpid(pid, &status, 0);
-	
+		waitpid(pid, &status, 0);
+
+		if (g_sig == 1)
+			return (exit_status(data, 130, ""), g_sig = 0, -1);
+		if (g_sig == 2)
+			return(exit_status(data, 131, "Quit (core dumped)\n"), g_sig = 0, -1);
 		if (status == 0)
 			return (-1);
-		if (WIFEXITED(status)) {//execve failed
-			printf("Command mid failed with exit status: %d\n", WIFEXITED(status));
+		if (WIFEXITED(status)) //execve failed
+		{
+			printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
 			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
 			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
 			return (-1);
 		}
-		if (WIFSIGNALED(status)) {
+		if (WIFSIGNALED(status)) 
+		{
 			int signal_number = WTERMSIG(status);
 			printf("Command terminated by signal: %d\n", signal_number);
 			// Ici, vous pouvez ajuster votre logique en fonction du signal reçu
@@ -258,11 +265,11 @@ int	ft_last_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
 
+	signal(SIGINT, handle_sigint_fork);
+	signal(SIGQUIT, handle_sigquit_fork);
 	pid = fork();
-	if (pid < 0){
-		perror("fork last failed :");	
-		exit(EXIT_FAILURE);
-	}
+	if (pid < 0)
+		return (perror("fork last failed :"), -1);
 	if (pid == 0)
 	{
 		//1. prend soit dans infile en prioriter sil y en a un
@@ -314,21 +321,27 @@ int	ft_last_fork(t_data *data, t_cmd *lst)
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		perror("execve 3 : failed ");
 		exit(EXIT_FAILURE);
-	} 
+	}
 	else if (pid > 0)
 	{
 		int status;
-    	waitpid(pid, &status, 0);
+		waitpid(pid, &status, 0);
 
-		if (status == 0)// ne pas changer exit_code soit pcq il a deja etais modif en amont avec une err soit pcq tout est good
+		if (g_sig == 1)
+			return (exit_status(data, 130, ""), g_sig = 0, -1);
+		if (g_sig == 2)
+			return(exit_status(data, 131, "Quit (core dumped)\n"), g_sig = 0, -1);
+		if (status == 0)
 			return (-1);
-		if (WIFEXITED(status)) {//execve failed
-			printf("Command last failed with exit status: %d\n", WIFEXITED(status));
+		if (WIFEXITED(status)) //execve failed
+		{
+			printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
 			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
 			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
 			return (-1);
 		}
-		if (WIFSIGNALED(status)) {
+		if (WIFSIGNALED(status)) 
+		{
 			int signal_number = WTERMSIG(status);
 			printf("Command terminated by signal: %d\n", signal_number);
 			// Ici, vous pouvez ajuster votre logique en fonction du signal reçu

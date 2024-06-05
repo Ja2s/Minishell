@@ -1,37 +1,65 @@
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
 
 --------	[211] /!\ SIGNAUX----------------------------------------- 223
 
-RAYANE--	probleme en cas de pipe avec un builtin en premiere, (exemple "env | grep TERM")
+minishell$> sleep 5 | sleep 5
 
-RAYANE--	cas des '/' qui devrait renvoyer is a directory
+PDF 399 -- 640 a faire
 
-RAYANE--	[205] ($HOME) Its a directory - attendu 
+minishell$> go 
+minishell$> echo $?
+2
 
-RAYANE--	Echo [89] a Gerer
 
-RAYANE--	[237] export | grep je crois que le builtin nentre pas dans les forks
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
 
-RAYANE--	[334] de unset PATH, ensuite ls, segfault au lieu de No such file or directory
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
 
-RAYANE--	[>382] ex: /bin/echo = command path ok au lieu dexec
 
-RAYANE--	[392] pwd -p = invalid option
-	{
-		399 > cd, a tester
-		reprise >>>> cas 640 (avant full test cd, exit ou builtin avec pipe donc a tester)
-	}
 
-RAYANE--	[679]	> ">pwd" doit creer le fichier pwd 
+--*----------------*-------->> Suprime .heredoc
 
-RAYANE--	[680]	> "< pwd" ne fait rien - resultat attendu : "bash: pwd: No such file or directory"
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
 
-RAYANE--	[692]	> ">>hola" doit creer le fichier hola 
 
-RAYANE--	[706]	> ">srcs/bonjour >srcs/hello <prout" ne fait rien - resultat attemdu : "bash: prout: No such file or directory"
 
-RAYANE--	[755]	> SEGFAULT avec cat <<hd <<hd <<hd (>1 heredeoc)
 
-RAYANE--			> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+
+
+
+
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+---------------------------------------------------------------------------------------------------------------
+
+
+
 
 JORDAN--	[296] export HOLA="'" quand je echo $HOLA -> la "'" est supprimee
 
@@ -50,7 +78,7 @@ SEGFAULT > "export lol", > "echo $lol"
 
 
 
-ls | 
+
 
 
 

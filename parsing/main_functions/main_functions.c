@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/06/03 17:25:19 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:59:49 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	minishell_starter(char **env, t_data *data)
 {
-	printf_title();
+	//printf_title();
 	data_initializer(data);
 	if (env_copyer(env, &data->mini_env) == -1)
 		return (exit_status(data, 1, \

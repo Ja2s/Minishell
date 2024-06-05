@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_access.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:24:55 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/03 13:16:09 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/05 14:01:52 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ int	ft_check_slash_point(t_cmd *lst)
 }
 
 //Cas ---> /./..///
-void	display_is_dir(t_cmd *lst)
+void	display_is_dir(char *str)
 {
 	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(lst->args[0], 2);
+	ft_putstr_fd(str, 2);
 	ft_putstr_fd(": Is a directory", 2);
 	write(2, "\n", 1);
 }
@@ -50,13 +50,13 @@ int	ft_check_access(t_data *data, t_cmd *lst)
 	if (check_slash_point == -1)
 		return (exit_status(data, 2, "minishell: .: filename argument required\n.: usage: . filename [arguments]\n"), -1);
 	if (check_slash_point == -2)
-		return (exit_status(data, 126, ""), display_is_dir(lst), -1);
+		return (exit_status(data, 126, ""), display_is_dir(lst->args[0]), -1);
 	if (ft_strchr(lst->args[0], '/'))//verif si path de args[0]
 	{
 		if (access(lst->args[0], F_OK) == -1)
 			return (exit_status(data, 127, ""), display_no_such(lst->args[0]), -1);
 		else
-			return (lst->path_cmd = lst->args[0], 0);
+			return (lst->path_cmd = ft_strdup(lst->args[0]), 0);
 	}
 	lst->slash_cmd = ft_strjoin("/\0", lst->args[0]);//ajout du slash au debut de la args[0] "/cat"
 	if (!lst->slash_cmd)
