@@ -6,23 +6,11 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:46:02 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 17:52:29 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:48:20 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void	path_cmd_free(t_cmd *lst)
-{
-	if (lst->path_cmd)
-		free(lst->path_cmd);
-}
-
-void	slash_cmd_free(t_cmd *lst)
-{
-	if (lst->slash_cmd)
-		free(lst->slash_cmd);
-}
 
 void	ft_lstdelone(t_cmd *lst)
 {

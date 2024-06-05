@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:24:55 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/03 13:16:09 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/05 13:13:03 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ int	ft_check_access(t_data *data, t_cmd *lst)
 	if (!lst->split_path)
 		return (-2);
 	lst->i = 0;
+	// if (lst->path_cmd) je tai ajouter ca pour eviter les leaks (reaffectation avec strjoin en dessous, a voir si faut le garder)
+	// 	free(lst->path_cmd);
 	lst->path_cmd = ft_strjoin(lst->split_path[lst->i], lst->slash_cmd);
 	if (!lst->path_cmd)
 		return (-2);
