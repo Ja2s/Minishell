@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/05 14:13:56 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/05 14:37:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,6 @@ int	ft_is_builtins_no_access(t_cmd *lst)
 		return (1);
 	else if (ft_strcmp(lst->args[0], "cd") == 0)
 		return (1);
-	else if (ft_strcmp(lst->args[0], "exit") == 0)
-		return (1);
 	return (0);
 }
 
@@ -114,29 +112,63 @@ int	ft_builtins_env(t_cmd *lst, t_data *data, int i)
 	return (0);
 }
 
-void	ft_exit_prog(t_data *data)
+int	ft_check_num(t_data *data)
 {
-	int exit_status = 0;
-	if (data->cmd->args[1])
-		exit_status = ft_atoi(data->cmd->args[1]); // Convert argument to exit status
-	//ft_free_data(data); // Free any allocated memory
-	exit(exit_status); // Exit the shell with the given status
+	int	i;
+	//not + ou not - ou not inverse de compris entre 0 et 9
+	if (data->cmd->args[1][0] != '+' && data->cmd->args[1][0] != '-' && \
+	(!(data->cmd->args[1][0] >= '0' && data->cmd->args[1][0] <= '9')))
+		return(-1);
+	if (data->cmd->args[1][0] == '+' \
+	&& (!(data->cmd->args[1][1] >= '0' && data->cmd->args[1][1] <= '9')))
+		return(-1);	// just +
+	else if (data->cmd->args[1][0] == '-' && \
+	(!(data->cmd->args[1][1] >= '0' && data->cmd->args[1][1] <= '9')))
+		return(-1);	// just -
+	i = 1;
+	while(data->cmd->args[1][i])
+	{
+		if ((!(data->cmd->args[1][i] >= '0' && data->cmd->args[1][i] <= '9')))
+			return(-1);
+		i++;
+	}
+	return (0);
 }
 
-void	ft_stat_check(int check_access, t_data *data, t_cmd *lst)
+int	ft_exit_prog(t_data *data)
+{
+	int exit_stat = 0;
+	printf("exit\n");
+	if (data->cmd->args[1] && ft_check_num(data) == -1)
+	{
+		printf("minishell: exit: %s: numeric argument required\n", data->cmd->args[1]);
+		exit(2);
+	}
+	if (data->cmd->nb_args > 2)
+		return(exit_status(data, 1, "minishell: exit: too many arguments\n"), -1);
+	if (data->cmd->args[1])
+		exit_stat = ft_atoi(data->cmd->args[1]) % 256; // Convert argument to exit status
+	exit(exit_stat);
+	//ft_free_data(data); // Free any allocated memory
+	return (0);
+}
+
+int	ft_stat_check(int check_access, t_data *data, t_cmd *lst)
 {
 	struct stat statbuf;
-	if (check_access == 0){
+	if (check_access == 0)
+	{
 		if (stat(lst->path_cmd, &statbuf) == -1)
-			printf("command not found ?");
+			printf("command not Found");
 		if (S_ISDIR(statbuf.st_mode))
 		{
 			exit_status(data, 126, "");
-			display_is_dir(lst);
+			display_is_dir(lst->args[0]);
+			return (-1);
 		}
 	}
+	return (0);
 }
-
 
 int	launch_exec(t_data *data)
 {
@@ -146,7 +178,7 @@ int	launch_exec(t_data *data)
 
 	// Check if the command is "exit" and handle it before anything else
 	if (data->cmd->args[0] && data->cmd->next == NULL && ft_strcmp(data->cmd->args[0], "exit") == 0)
-		ft_exit_prog(data);
+		return(ft_exit_prog(data));
 	begin = data->cmd;
 	lst = begin;
 	data->var.mini_env = ft_list_to_tab(data->mini_env);
@@ -163,19 +195,17 @@ int	launch_exec(t_data *data)
 		data->exit_code = 0;
 		i++;
 		if (lst->redirecter)	//2. redirecter check
-			ft_redirecter(data);
+			ft_redirecter(data, lst);
 		if (lst->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe
 			if (pipe(data->pipe_fd) == -1)
 				exit_status(data, 1, "pipe failed\n");
 		if (lst->args[0])
 		{
-			int check_access = ft_is_builtins_no_access(lst);
 			if (ft_builtins_env(lst, data, i) == 0)
-				if (check_access == 0)
-					ft_stat_check(ft_check_access(data, lst), data, lst);
+				if (ft_stat_check(ft_check_access(data, lst), data, lst) == -1)
+					return (-1);
 			if (i == 1)
 			{	//5. exec (cmd_first) | cmd_middle... | cmd_last
-				//printf("go exec first\n");
 				ft_first_fork(data, lst);
 				if (data->pipe_fd[1] > 3)
 					close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
@@ -183,14 +213,12 @@ int	launch_exec(t_data *data)
 			}
 			else if (i < len_lst)
 			{	//6. exec cmd_first | (cmd_middle...) | cmd_last
-				//printf("go exec mid\n");
 				ft_middle_fork(data, lst);
 				close(data->pipe_fd[1]);
 				data->save_pipe = data->pipe_fd[0];
 			}
 			else if (i == len_lst)
 			{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
-				//printf("go exec last\n");
 				ft_last_fork(data, lst);
 				close(data->pipe_fd[0]);
 			}
@@ -200,14 +228,11 @@ int	launch_exec(t_data *data)
 	}
 	free_pipes(data->var.mini_env);
     data->var.mini_env = NULL;
-	//printf("begin->cmd = |%s|\nlst = |%p|\ndata->cmd = |%s|\nl", begin->cmd->heredoc_content[0], lst, data->cmd->heredoc_content[0]);
 	ft_free_all_heredoc(begin);
 	if (data->exit_code != 0)
 		return (-1);
 	return (0);
 }
-
-
 
 void free_env(t_env *env)
 {

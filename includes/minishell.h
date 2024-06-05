@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 17:50:26 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/04 18:54:03 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ t_cmd		*ft_lstnew_minishell(void);
 t_cmd		*ft_lstlast_minishell(t_cmd *lst);
 void    	ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int			ft_lstlen(t_cmd *elem);
-int			ft_redirecter(t_data *data);
+int			ft_redirecter(t_data *data, t_cmd *lst);
 int			ft_check_access(t_data *data, t_cmd *lst);
 int			ft_first_fork(t_data *data, t_cmd *lst);
 int			ft_middle_fork(t_data *data, t_cmd *lst);
@@ -223,7 +223,7 @@ void		init_var(t_int *var);
 int			redirecter_helper(char *pipes, t_cmd **cmd, t_int *var);
 int			negative_checker_variable(t_expand **var, t_data **data);
 int			check_variable(t_env **mini_env, char *name, char *value);
-void		display_is_dir(t_cmd *lst);
+void		display_is_dir(char *str);
 int			ft_is_builtins_no_access(t_cmd *lst);
 
 

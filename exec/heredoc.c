@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 17:47:34 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/04 18:10:45 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	ft_free_all_heredoc(t_cmd *lst)
 	{
 		if (lst->heredoc_content)
 		{
-			printf("ciao %s", lst->heredoc_content);
 			free(lst->heredoc_content);
 			lst->heredoc_content = NULL;
 		}
