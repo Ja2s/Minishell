@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/05 14:37:52 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/05 15:44:55 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,11 @@ int	ft_cd(t_data *data)
 		while (data->var.mini_env[i] && ft_strncmp(data->var.mini_env[i], "OLDPWD=", 7) != 0)
 			i++;
 		if (!data->var.mini_env[i])
-			return (display_error_cmd(data->cmd), -1);
+			return (free(old_pwd), display_error_cmd(data->cmd), -1);
 		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
 		{
 			perror("chdir OLDPWD failed ");
-			return (-1);
+			return (free(old_pwd), -1);
 		}
 	}
 	else if (!data->cmd->args[1])
@@ -76,16 +76,16 @@ int	ft_cd(t_data *data)
 		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
 		{
 			perror("chdir home failed ");
-			return (-1);
+			return (free(old_pwd), -1);
 		}
 	}
 	else if (chdir(data->cmd->args[1]) == -1)
 	{
 		perror("chdir failed ");
-		return (-1);
+		return (free(old_pwd), -1);
 	}
 	check_variable(&data->mini_env, "OLDPWD", old_pwd);
-	return (0);
+	return (free(old_pwd), 0);
 }
 
 int	ft_is_builtins_no_access(t_cmd *lst)

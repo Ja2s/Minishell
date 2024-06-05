@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_rd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 14:15:55 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/04 17:59:28 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/05 15:38:20 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	final_parse(t_data *data)
 		redirecter_finisher(data);
 		redirecter_positiver(&data);
 	}
-	ft_printf_struct(tmp->cmd);
+	//ft_printf_struct(tmp->cmd);
 	if (launch_exec(tmp) == -1)
 		return (-1);
 	data->exit_code = 0;
