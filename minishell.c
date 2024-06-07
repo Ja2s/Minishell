@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 16:23:19 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/07 18:35:34 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	ft_builtins_env(t_cmd *lst, t_data *data, int i)
 	if (!lst->args[0])
 		return (0);
 	if (ft_strcmp(lst->args[0], "export") == 0 && i == 1 && !lst->next)
-			return (ft_export(data, &data->mini_env, lst), 1);
+			return (ft_eport(data, &data->mini_env, lst), 1);
 	else if (ft_strcmp(lst->args[0], "unset") == 0  && i == 1 && !lst->next)
 		return (ft_unset(&data), 1);
 	else if (ft_strcmp(lst->args[0], "env") == 0 && i == 1 && !lst->next)
