@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 12:32:20 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/07 18:11:11 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,17 @@ int	ft_cd(t_data *data)
 		return (free(old_pwd), -1);
 	}
 	check_variable(&data->mini_env, "OLDPWD", old_pwd);
+	check_variable(&data->mini_env, "PWD", getcwd(NULL, 0));
 	return (free(old_pwd), 0);
 }
 
 int	ft_is_builtins_no_access(t_cmd *lst)
 {
+	if (!lst->args[0])
+		return (1);
 	if (ft_strcmp(lst->args[0], "export") == 0)
+		return (1);
+	if (ft_strcmp(lst->args[0], "exit") == 0)
 		return (1);
 	else if (ft_strcmp(lst->args[0], "unset") == 0)
 		return (1);
@@ -144,14 +149,23 @@ int	ft_exit_prog(t_data *data)
 	if (data->cmd->args[1] && ft_check_num(data) == -1)
 	{
 		printf("minishell: exit: %s: numeric argument required\n", data->cmd->args[1]);
+		ft_lstclear(&data->cmd);
+		free_pipes(data->var.pipes);
+		free_pipes(data->var.mini_env);
+		free_env(data->mini_env);
+		rl_clear_history();
 		exit(2);
 	}
 	if (data->cmd->nb_args > 2)
 		return(exit_status(data, 1, "minishell: exit: too many arguments\n"), -1);
 	if (data->cmd->args[1])
 		exit_stat = ft_atoi(data->cmd->args[1]) % 256; // Convert argument to exit status
+	ft_lstclear(&data->cmd);
+	free_pipes(data->var.pipes);
+	free_pipes(data->var.mini_env);
+	free_env(data->mini_env);
+	rl_clear_history();
 	exit(exit_stat);
-	//ft_free_data(data); // Free any allocated memory
 	return (0);
 }
 
@@ -203,12 +217,15 @@ int	launch_exec(t_data *data)
 		if (lst->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe
 			if (pipe(data->pipe_fd) == -1)
 				exit_status(data, 1, "pipe failed\n");
-
+		if (!lst->args[0] && !lst->next)
+			return (ft_free_all_heredoc(begin), -1);
 		if (ft_builtins_env(lst, data, i) == 0)// pas de builtins
 		{
-			if (ft_stat_check(ft_check_access(data, lst), data, lst) == -1)
-				return (-1);
-				
+			if (ft_is_builtins_no_access(lst) == 0)
+			{
+				if (ft_stat_check(ft_check_access(data, lst), data, lst) == -1)
+					return (-1);
+			}
 			if (i == 1)
 			{	//5. exec (cmd_first) | cmd_middle | ... | cmd_last
 				ft_first_fork(data, lst);
@@ -227,6 +244,7 @@ int	launch_exec(t_data *data)
 				ft_last_fork(data, lst);
 				close(data->pipe_fd[0]);
 			}
+			
 		}
 		ft_close(data->cmd);
 		lst = lst->next;
@@ -234,8 +252,9 @@ int	launch_exec(t_data *data)
 	i = 0;
 	while (i < len_lst){
 		int status;
+		status = 0;
 		waitpid(-1, &status, 0);
-
+	
 		if (g_sig == 1){
 			exit_status(data, 130, "");
 			g_sig = 0;

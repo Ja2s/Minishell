@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/04 18:10:45 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/07 13:29:56 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ int ft_heredoc(t_data *data)
     lst->heredoc_content = NULL;
 
 	lst->del_one = 0;
-	rl_callback_handler_install("", NULL);
+	if (lst->heredoc)
+		rl_callback_handler_install("", NULL);
 	rl_event_hook = rl_hook_function;
 	while (lst)
 	{

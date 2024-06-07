@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 12:43:49 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/07 13:04:47 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,9 +225,7 @@ int			negative_checker_variable(t_expand **var, t_data **data);
 int			check_variable(t_env **mini_env, char *name, char *value);
 void		display_is_dir(char *str);
 int			ft_is_builtins_no_access(t_cmd *lst);
+void		free_env(t_env *env);
 void		display_perror(char *str);
-
-
-
 
 #endif
