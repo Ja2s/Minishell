@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/05 15:44:55 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/06 16:57:38 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,8 +148,12 @@ int	ft_exit_prog(t_data *data)
 		return(exit_status(data, 1, "minishell: exit: too many arguments\n"), -1);
 	if (data->cmd->args[1])
 		exit_stat = ft_atoi(data->cmd->args[1]) % 256; // Convert argument to exit status
+	ft_lstclear(&data->cmd);
+	free_pipes(data->var.pipes);
+	free_pipes(data->var.mini_env);
+	free_env(data->mini_env);
+	rl_clear_history();
 	exit(exit_stat);
-	//ft_free_data(data); // Free any allocated memory
 	return (0);
 }
 
@@ -296,6 +300,10 @@ int	main(int argc, char **argv, char **envp)
 							free_pipes(data.var.mini_env);
 							data.var.mini_env = NULL;
 						}
+					}
+					else
+					{
+						
 					}
 				}
 			}

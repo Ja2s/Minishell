@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 14:15:55 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/05 15:38:20 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/06 16:58:20 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,11 @@ int	final_parse(t_data *data)
 	data->exit_code = 0;
 	ft_lstclear(&data->cmd);
 	free_pipes(data->var.pipes);
+	free(data->var.rl);
+	if (data->var.mini_env)
+	{
+		free_pipes(data->var.mini_env);
+		data->var.mini_env = NULL;
+	}
 	return (0);
 }
