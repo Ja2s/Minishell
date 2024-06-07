@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 17:12:23 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:56:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,14 +118,17 @@ int	ft_export_display(t_env *mini_env)
 	int		i;
 	char	**tab;
 
-	i = 0;
-	tab = ft_list_to_tab_cote(mini_env);
-	if (!tab)
-		return (-1);
-	sort_env(&tab);
-	while(tab[i])
-		printf("declare -x %s\n", tab[i++]);
-	free_pipes(tab);
+	if (mini_env)
+	{
+		i = 0;
+		tab = ft_list_to_tab_cote(mini_env);
+		if (!tab)
+			return (-1);
+		sort_env(&tab);
+		while(tab[i])
+			printf("declare -x %s\n", tab[i++]);
+		free_pipes(tab);
+	}
 	return (0);
 }
 

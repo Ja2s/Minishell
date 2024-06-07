@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_expand.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:23:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/29 16:06:49 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:46:39 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,21 +89,26 @@ int	env_copyer(char **envp, t_env **mini_env)
 	t_env	*tmp;
 
 	i = 0;
-	while (envp[i])
+	if (!envp[i])
+		printf("Pas d'env\n");
+	else
 	{
-		tmp = env_new();
-		if (!tmp)
-			return (-1);
-		else
+		while (envp[i])
 		{
-			tmp->name = env_extractor(envp[i], 1);
-			if (!tmp->name)
+			tmp = env_new();
+			if (!tmp)
 				return (-1);
-			tmp->value = env_extractor(envp[i], 2);
-			if (!tmp->value)
-				return (-1);
-			ft_envadd_back(mini_env, tmp);
-			i++;
+			else
+			{
+				tmp->name = env_extractor(envp[i], 1);
+				if (!tmp->name)
+					return (-1);
+				tmp->value = env_extractor(envp[i], 2);
+				if (!tmp->value)
+					return (-1);
+				ft_envadd_back(mini_env, tmp);
+				i++;
+			}
 		}
 	}
 	return (0);

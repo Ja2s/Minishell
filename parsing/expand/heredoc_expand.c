@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:24:51 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 14:54:44 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/07 18:07:34 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	doll_heredoc(char **rl)
 			if ((*rl)[i] == '<')
 			{
 				i++;
-				while ((*rl)[i] == ' ' || (*rl)[i] == 39 || (*rl)[i] == 34)
+				while (ft_isspace((*rl)[i]) == 1 || (*rl)[i] == 39 || (*rl)[i] == 34)
 					i++;
 				while ((*rl)[i])
 					i = doll_heredoc_helper(rl, i);
@@ -58,14 +58,14 @@ void	doll_heredoc(char **rl)
 
 void	double_negativer(int i, char **rl)
 {
-	if ((*rl)[i] == ' ' || (*rl)[i] == '<' || \
+	if (ft_isspace((*rl)[i]) == 1 || (*rl)[i] == '<' || \
 	(*rl)[i] == '>' || (*rl)[i] == 39 || (*rl)[i] == '|')
 		(*rl)[i] = (*rl)[i] * -1;
 }
 
 void	simple_negativer(int i, char **rl)
 {
-	if ((*rl)[i] == ' ' || (*rl)[i] == '$' || (*rl)[i] == '<' || \
+	if (ft_isspace((*rl)[i]) == 1 || (*rl)[i] == '$' || (*rl)[i] == '<' || \
 	(*rl)[i] == '>' || (*rl)[i] == '|' || (*rl)[i] == 34)
 		(*rl)[i] = (*rl)[i] * -1;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:39:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/29 16:47:55 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:57:20 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ char	**ft_list_to_tab_cote(t_env *mini_env)
 	tab = NULL;
 	tmp = mini_env;
 	len = ft_envsize(mini_env);
-	tab = ft_calloc(len, sizeof(char *) + 1);
+	tab = ft_calloc(len + 1, sizeof(char *));
 	if (!tab)
 		return (NULL);
 	while (tmp)
