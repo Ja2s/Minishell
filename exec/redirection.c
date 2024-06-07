@@ -49,7 +49,7 @@ int	ft_redirecter(t_data *data, t_cmd *lst)
 				//check si je dois close l'ancien en cas de redirecter multiple
 				lst->fd_outfile = open(lst->redirecter[i] + j, O_CREAT | O_WRONLY | O_APPEND, 0777);
 				if (lst->fd_outfile == -1)
-					return(exit_status(data, 1, ""), display_no_such(lst->redirecter[i] + j), ft_close(lst), -1);
+					return(exit_status(data, 1, ""), display_perror(lst->redirecter[i] + j), ft_close(lst), -1);
 				break;
 			}
 			else if (lst->redirecter[i][j] == '>')// > 
@@ -64,7 +64,7 @@ int	ft_redirecter(t_data *data, t_cmd *lst)
 				if (S_ISDIR(statbuf.st_mode))
 					return (display_is_dir(lst->redirecter[i] + j) ,exit_status(data, 1, ""), -1);
 				if (lst->fd_outfile == -1)
-					return(exit_status(data, 1, ""), display_no_such(lst->redirecter[i] + j), ft_close(lst), -1);
+					return(exit_status(data, 1, ""), display_perror(lst->redirecter[i] + j), ft_close(lst), -1);
 				break;
 			}
 			else if (lst->redirecter[i][j] == '<')// <
@@ -74,7 +74,7 @@ int	ft_redirecter(t_data *data, t_cmd *lst)
 					j++;
 				lst->fd_infile = open(lst->redirecter[i] + j, O_RDONLY, 0777);
 				if (lst->fd_infile == -1)
-					return(exit_status(data, 1, ""), display_no_such(lst->redirecter[i] + j), ft_close(lst), -1);
+					return(exit_status(data, 1, ""), display_perror(lst->redirecter[i] + j), ft_close(lst), -1);
 				break;
 			}
 		}

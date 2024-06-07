@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/05 13:39:14 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/07 12:55:36 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,24 @@ int	ft_fd_heredoc(t_cmd *lst)
 
 /*******************************************************************************************************/
 
-int	ft_builtins_env_fork(t_data *data)
+int	ft_builtins_env_fork(t_data *data, t_cmd *lst)
 {
-	if (ft_strcmp(data->cmd->args[0], "export") == 0)
+	if (ft_strcmp(lst->args[0], "export") == 0)
 	{
-		ft_export(data, &data->mini_env, data->cmd);
+		ft_export(data, &data->mini_env, lst);
 		return (1);
 	}
-	else if (ft_strcmp(data->cmd->args[0], "unset") == 0)
+	else if (ft_strcmp(lst->args[0], "unset") == 0)
 	{
 		ft_unset(&data);
 		return (1);
 	}
-	else if (ft_strcmp(data->cmd->args[0], "env") == 0)
+	else if (ft_strcmp(lst->args[0], "env") == 0)
 	{
 		env_cmd(data->mini_env);
 		return (1);
 	}
-	else if (ft_strcmp(data->cmd->args[0], "cd") == 0)
+	else if (ft_strcmp(lst->args[0], "cd") == 0)
 	{
 		ft_cd(data);
 		return (1);
@@ -68,7 +68,7 @@ void	handle_sigquit_fork(int sig)
 	g_sig = 2;
 }
 
-int	ft_first_fork(t_data *data, t_cmd *lst)
+pid_t	ft_first_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
 
@@ -119,47 +119,20 @@ int	ft_first_fork(t_data *data, t_cmd *lst)
 				exit(EXIT_FAILURE);
 			}
 		}
-		if (ft_builtins(lst) != 0)
+		if (!lst->args[0] || data->exit_code == 127)
 			exit(0);
-		if (ft_builtins_env_fork(data) != 0)	
-			exit (0);
-		if (data->exit_code != 0 || ft_strcmp(data->cmd->args[0], "exit") == 0)
-			exit(EXIT_SUCCESS);
+		if (ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
+			exit(0);
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		perror("execve 1 : failed ");
 		exit(EXIT_FAILURE);//comment retourner le bon code d'erreur en fonction du cas d'erreur ? Grace a la macro de waitpid WIFEXITED
 	}
-	else if (pid > 0)
-	{
-		int status;
-		waitpid(pid, &status, 0);
-
-		if (g_sig == 1)
-			return (exit_status(data, 130, ""), g_sig = 0, -1);
-		if (g_sig == 2)
-			return(exit_status(data, 131, "Quit (core dumped)\n"), g_sig = 0, -1);
-		if (status == 0)
-			return (-1);
-		if (WIFEXITED(status)) //execve failed
-		{
-			printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
-			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
-			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
-			return (-1);
-		}
-		if (WIFSIGNALED(status)) 
-		{
-			int signal_number = WTERMSIG(status);
-			printf("Command terminated by signal: %d\n", signal_number);
-			// Ici, vous pouvez ajuster votre logique en fonction du signal reçu
-		}
-	}
-	return (0);
+	return (pid);
 }
 
 /******************************************************************************************************/
 
-int	ft_middle_fork(t_data *data, t_cmd *lst)
+pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
 
@@ -220,48 +193,23 @@ int	ft_middle_fork(t_data *data, t_cmd *lst)
 				exit(EXIT_FAILURE);
 			}
 		}
-		if (ft_builtins(lst) != 0)
+		if (!lst->args[0] || data->exit_code == 127)
 			exit(0);
-		if (ft_builtins_env_fork(data) != 0)
-			exit (0);
-		if (data->exit_code != 0 || ft_strcmp(data->cmd->args[0], "exit") == 0)
+		if (ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
+			exit(0);
+		if (data->exit_code != 0)
 			exit(EXIT_SUCCESS);
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		perror("execve 2 failed : ");
 		//free lst->path et args
 		exit(EXIT_FAILURE);
 	}
-	else
-	{
-		int status;
-		waitpid(pid, &status, 0);
-
-		if (g_sig == 1)
-			return (exit_status(data, 130, ""), g_sig = 0, -1);
-		if (g_sig == 2)
-			return(exit_status(data, 131, "Quit (core dumped)\n"), g_sig = 0, -1);
-		if (status == 0)
-			return (-1);
-		if (WIFEXITED(status)) //execve failed
-		{
-			printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
-			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
-			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
-			return (-1);
-		}
-		if (WIFSIGNALED(status)) 
-		{
-			int signal_number = WTERMSIG(status);
-			printf("Command terminated by signal: %d\n", signal_number);
-			// Ici, vous pouvez ajuster votre logique en fonction du signal reçu
-		}
-	}
-	return (0);
+	return (pid);
 }
 
 /********************************************************************************************************/
 
-int	ft_last_fork(t_data *data, t_cmd *lst)
+pid_t	ft_last_fork(t_data *data, t_cmd *lst)
 {
 	pid_t	pid;
 
@@ -312,40 +260,13 @@ int	ft_last_fork(t_data *data, t_cmd *lst)
 				exit(EXIT_FAILURE);
 			}
 		}
-		if (ft_builtins(lst) != 0)
+		if (!lst->args[0] || data->exit_code == 127)
 			exit(0);
-		if (ft_builtins_env_fork(data) != 0)
-			exit (0);
-		if (data->exit_code != 0 || ft_strcmp(data->cmd->args[0], "exit") == 0)
-			exit(EXIT_SUCCESS);
+		if (ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
+			exit(0);
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		perror("execve 3 : failed ");
 		exit(EXIT_FAILURE);
 	}
-	else if (pid > 0)
-	{
-		int status;
-		waitpid(pid, &status, 0);
-
-		if (g_sig == 1)
-			return (exit_status(data, 130, ""), g_sig = 0, -1);
-		if (g_sig == 2)
-			return(exit_status(data, 131, "Quit (core dumped)\n"), g_sig = 0, -1);
-		if (status == 0)
-			return (-1);
-		if (WIFEXITED(status)) //execve failed
-		{
-			printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
-			// Ici, vous pouvez ajuster votre logique en fonction de exit_status
-			exit_status(data, WIFEXITED(status), "");//Pourquoi une fois echo $? apres cmd not perm il affiche pas exit_stat qui semble etre bien a 1, cest pcq je fait pas return -1`
-			return (-1);
-		}
-		if (WIFSIGNALED(status)) 
-		{
-			int signal_number = WTERMSIG(status);
-			printf("Command terminated by signal: %d\n", signal_number);
-			// Ici, vous pouvez ajuster votre logique en fonction du signal reçu
-		}
-	}
-	return (0);
+	return (pid);
 }
