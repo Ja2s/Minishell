@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/07 14:16:42 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/07 18:44:39 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,15 +119,8 @@ pid_t	ft_first_fork(t_data *data, t_cmd *lst)
 				exit(EXIT_FAILURE);
 			}
 		}
-		if (!lst->args[0] || data->exit_code == 127)
-		{
-			ft_lstclear(&data->cmd);
-			free_env(data->mini_env);
-			free_pipes(data->var.mini_env);
-			free_pipes(data->var.pipes);
-			exit(0);
-		}
-		if (ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
+		if (!lst->args[0] || data->exit_code != 0 || \
+		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);
@@ -138,7 +131,7 @@ pid_t	ft_first_fork(t_data *data, t_cmd *lst)
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		
 		perror("execve 1 : failed ");
-		exit(EXIT_FAILURE);//comment retourner le bon code d'erreur en fonction du cas d'erreur ? Grace a la macro de waitpid WIFEXITED
+		exit(EXIT_FAILURE);
 	}
 	return (pid);
 }
@@ -207,7 +200,8 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 			}
 		}
 		
-		if (!lst->args[0] || data->exit_code == 127)
+		if (!lst->args[0] || data->exit_code != 0 || \
+		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);
@@ -215,16 +209,6 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 			free_pipes(data->var.pipes);
 			exit(0);
 		}
-		if (ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
-		{
-			ft_lstclear(&data->cmd);
-			free_env(data->mini_env);
-			free_pipes(data->var.mini_env);
-			free_pipes(data->var.pipes);
-			exit(0);
-		}
-		if (data->exit_code != 0)
-			exit(EXIT_SUCCESS);
 		execve(lst->path_cmd, lst->args, data->var.mini_env);
 		
 		perror("execve 2 failed : ");
@@ -288,15 +272,8 @@ pid_t	ft_last_fork(t_data *data, t_cmd *lst)
 			}
 		}
 		
-		if (!lst->args[0] || data->exit_code == 127)
-		{
-			ft_lstclear(&data->cmd);
-			free_env(data->mini_env);
-			free_pipes(data->var.mini_env);
-			free_pipes(data->var.pipes);
-			exit(0);
-		}
-		if (ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
+		if (!lst->args[0] || data->exit_code != 0 || \
+		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);

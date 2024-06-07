@@ -32,6 +32,15 @@ minishell$> sleep 5 | sleep 5
 
 minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
 ~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
 --------	[211] /!\ SIGNAUX----------------------------------------- 223
 
 
@@ -52,45 +61,6 @@ check si tous les malloc sont proteger
 
 
 
---*----------------*-------->> Suprime .heredoc
 
-
-
-
-
-
-
-
-~/Documents/minishell$ < file1 | ls  ne print pas ls
-
-
-rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
-print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
 
 ---------------------------------------------------------------------------------------------------------------
-
-
-
-
-JORDAN--	[296] export HOLA="'" quand je echo $HOLA -> la "'" est supprimee
-
-
-																	SI DOUTES, CONFIRMER AVEC LE VRAI BASH |||||||||||||||||||||||||||||
-
->>>>>>>>>>>>>>>>>>>>>>			NORMINETTE			<<<<<<<<<<<<<<<<<<<<<<<<
- parsing/ : NORMED
-
-
-
-SEGFAULT > "export lol", > "echo $lol" 
-
-1 byte leak si juste "ENTREE"
- chaine de characteres + ctrl C lance la chaine de characteres
-
-ctrl C exit code 130
-
-(chaine de characteres)ctrl C exitcode 127, ATTENDU 130
-
-pipes avec builtins ne fonctionnent pas 
-
-cas 239

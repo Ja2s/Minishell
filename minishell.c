@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 18:35:34 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/07 18:47:04 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,14 @@ int	ft_cd(t_data *data)
 		return (free(old_pwd), -1);
 	}
 	check_variable(&data->mini_env, "OLDPWD", old_pwd);
+	check_variable(&data->mini_env, "PWD", getcwd(NULL, 0));
 	return (free(old_pwd), 0);
 }
 
 int	ft_is_builtins_no_access(t_cmd *lst)
 {
+	if (!lst->args[0])
+		return (1);
 	if (ft_strcmp(lst->args[0], "export") == 0)
 		return (1);
 	if (ft_strcmp(lst->args[0], "exit") == 0)
@@ -106,7 +109,7 @@ int	ft_builtins_env(t_cmd *lst, t_data *data, int i)
 	if (!lst->args[0])
 		return (0);
 	if (ft_strcmp(lst->args[0], "export") == 0 && i == 1 && !lst->next)
-			return (ft_eport(data, &data->mini_env, lst), 1);
+			return (ft_export(data, &data->mini_env, lst), 1);
 	else if (ft_strcmp(lst->args[0], "unset") == 0  && i == 1 && !lst->next)
 		return (ft_unset(&data), 1);
 	else if (ft_strcmp(lst->args[0], "env") == 0 && i == 1 && !lst->next)
@@ -146,6 +149,11 @@ int	ft_exit_prog(t_data *data)
 	if (data->cmd->args[1] && ft_check_num(data) == -1)
 	{
 		printf("minishell: exit: %s: numeric argument required\n", data->cmd->args[1]);
+		ft_lstclear(&data->cmd);
+		free_pipes(data->var.pipes);
+		free_pipes(data->var.mini_env);
+		free_env(data->mini_env);
+		rl_clear_history();
 		exit(2);
 	}
 	if (data->cmd->nb_args > 2)
@@ -217,26 +225,26 @@ int	launch_exec(t_data *data)
 			{
 				if (ft_stat_check(ft_check_access(data, lst), data, lst) == -1)
 					return (-1);
-					
-				if (i == 1)
-				{	//5. exec (cmd_first) | cmd_middle | ... | cmd_last
-					ft_first_fork(data, lst);
-					if (data->pipe_fd[1] > 3)
-						close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
-					data->save_pipe = data->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
-				}
-				else if (i < len_lst)
-				{	//6. exec cmd_first | (cmd_middle | ...) | cmd_last
-					ft_middle_fork(data, lst);
-					close(data->pipe_fd[1]);
-					data->save_pipe = data->pipe_fd[0];
-				}
-				else if (i == len_lst)
-				{	//7. exec cmd_first | cmd_middle | ... | (cmd_last)
-					ft_last_fork(data, lst);
-					close(data->pipe_fd[0]);
-				}
 			}
+			if (i == 1)
+			{	//5. exec (cmd_first) | cmd_middle | ... | cmd_last
+				ft_first_fork(data, lst);
+				if (data->pipe_fd[1] > 3)
+					close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
+				data->save_pipe = data->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
+			}
+			else if (i < len_lst)
+			{	//6. exec cmd_first | (cmd_middle | ...) | cmd_last
+				ft_middle_fork(data, lst);
+				close(data->pipe_fd[1]);
+				data->save_pipe = data->pipe_fd[0];
+			}
+			else if (i == len_lst)
+			{	//7. exec cmd_first | cmd_middle | ... | (cmd_last)
+				ft_last_fork(data, lst);
+				close(data->pipe_fd[0]);
+			}
+			
 		}
 		ft_close(data->cmd);
 		lst = lst->next;
@@ -246,7 +254,7 @@ int	launch_exec(t_data *data)
 		int status;
 		status = 0;
 		waitpid(-1, &status, 0);
-
+	
 		if (g_sig == 1){
 			exit_status(data, 130, "");
 			g_sig = 0;
