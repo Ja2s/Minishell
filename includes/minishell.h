@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/04 18:54:03 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/07 12:43:49 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,9 +120,9 @@ void    	ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new);
 int			ft_lstlen(t_cmd *elem);
 int			ft_redirecter(t_data *data, t_cmd *lst);
 int			ft_check_access(t_data *data, t_cmd *lst);
-int			ft_first_fork(t_data *data, t_cmd *lst);
-int			ft_middle_fork(t_data *data, t_cmd *lst);
-int			ft_last_fork(t_data *data, t_cmd *lst);
+pid_t		ft_first_fork(t_data *data, t_cmd *lst);
+pid_t		ft_middle_fork(t_data *data, t_cmd *lst);
+pid_t		ft_last_fork(t_data *data, t_cmd *lst);
 void    	display_error_cmd(t_cmd *elem);
 void    	display_no_such(char *str);
 void    	ft_free_access(t_cmd *elem);
@@ -225,6 +225,8 @@ int			negative_checker_variable(t_expand **var, t_data **data);
 int			check_variable(t_env **mini_env, char *name, char *value);
 void		display_is_dir(char *str);
 int			ft_is_builtins_no_access(t_cmd *lst);
+void		display_perror(char *str);
+
 
 
 

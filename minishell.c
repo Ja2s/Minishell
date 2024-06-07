@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/05 15:44:55 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/07 12:32:20 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ int	ft_is_builtins_no_access(t_cmd *lst)
 
 int	ft_builtins_env(t_cmd *lst, t_data *data, int i)
 {
+	if (!lst->args[0])
+		return (0);
 	if (ft_strcmp(lst->args[0], "export") == 0 && i == 1 && !lst->next)
 			return (ft_export(data, &data->mini_env, lst), 1);
 	else if (ft_strcmp(lst->args[0], "unset") == 0  && i == 1 && !lst->next)
@@ -156,6 +158,8 @@ int	ft_exit_prog(t_data *data)
 int	ft_stat_check(int check_access, t_data *data, t_cmd *lst)
 {
 	struct stat statbuf;
+	if (!lst->args[0])
+		return (0);
 	if (check_access == 0)
 	{
 		if (stat(lst->path_cmd, &statbuf) == -1)
@@ -199,32 +203,55 @@ int	launch_exec(t_data *data)
 		if (lst->next != NULL)		//3. Pipe check ne peut etre fait si 3 ou plus de cmd car il va refaire un pipe et erase lancien alors aue pour 2 cmd il fait qun pipe
 			if (pipe(data->pipe_fd) == -1)
 				exit_status(data, 1, "pipe failed\n");
-		if (lst->args[0])
+
+		if (ft_builtins_env(lst, data, i) == 0)// pas de builtins
 		{
-			if (ft_builtins_env(lst, data, i) == 0)
-				if (ft_stat_check(ft_check_access(data, lst), data, lst) == -1)
-					return (-1);
+			if (ft_stat_check(ft_check_access(data, lst), data, lst) == -1)
+				return (-1);
+				
 			if (i == 1)
-			{	//5. exec (cmd_first) | cmd_middle... | cmd_last
+			{	//5. exec (cmd_first) | cmd_middle | ... | cmd_last
 				ft_first_fork(data, lst);
 				if (data->pipe_fd[1] > 3)
 					close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
 				data->save_pipe = data->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
 			}
 			else if (i < len_lst)
-			{	//6. exec cmd_first | (cmd_middle...) | cmd_last
+			{	//6. exec cmd_first | (cmd_middle | ...) | cmd_last
 				ft_middle_fork(data, lst);
 				close(data->pipe_fd[1]);
 				data->save_pipe = data->pipe_fd[0];
 			}
 			else if (i == len_lst)
-			{	//7. exec  exec cmd_first | cmd_middle... | (cmd_last)
+			{	//7. exec cmd_first | cmd_middle | ... | (cmd_last)
 				ft_last_fork(data, lst);
 				close(data->pipe_fd[0]);
 			}
 		}
 		ft_close(data->cmd);
 		lst = lst->next;
+	}
+	i = 0;
+	while (i < len_lst){
+		int status;
+		waitpid(-1, &status, 0);
+
+		if (g_sig == 1){
+			exit_status(data, 130, "");
+			g_sig = 0;
+		}
+		if (g_sig == 2){
+			exit_status(data, 131, "Quit (core dumped)\n");
+			g_sig = 0;
+		}
+		if (WIFEXITED(status) && status != 0) //execve failed
+		{
+			//printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
+			exit_status(data, WIFEXITED(status), "");
+		}
+		/*if (WIFSIGNALED(status)) 
+			printf("Command teRRRminated by signal: %d\n", WTERMSIG(status));*/
+		i++;
 	}
 	free_pipes(data->var.mini_env);
     data->var.mini_env = NULL;

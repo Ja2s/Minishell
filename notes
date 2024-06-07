@@ -1,3 +1,11 @@
+AAAAAAAAAAAAAAAAAAAAAA
+AA
+AAA
+
+
+
+AAAAAAAAAAAAAAAAAAAAAAA
+
 -----------------------RESOLVED----------------------------------------- 223
 
 [EXIT] -------> 473 voir ceux non resolved
@@ -20,9 +28,12 @@ fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
 minishell$> exit not exit passe par arg[2] != NULL ?
 minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
 
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
 --------	[211] /!\ SIGNAUX----------------------------------------- 223
 
-minishell$> sleep 5 | sleep 5
 
 PDF 399 -- 640 a faire
 
@@ -43,7 +54,6 @@ check si tous les malloc sont proteger
 
 --*----------------*-------->> Suprime .heredoc
 
-minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
 
 
 
@@ -51,6 +61,7 @@ minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
 
 
 
+~/Documents/minishell$ < file1 | ls  ne print pas ls
 
 
 rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat

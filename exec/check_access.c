@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_access.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:24:55 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/05 14:39:59 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/07 12:45:04 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int	ft_check_access(t_data *data, t_cmd *lst)
 {
     int check_slash_point;
 
+	if (!lst->args[0])
+		return (0);
 	check_slash_point = ft_check_slash_point(lst);
 	if (check_slash_point == -1)
 		return (exit_status(data, 2, "minishell: .: filename argument required\n.: usage: . filename [arguments]\n"), -1);
@@ -66,7 +68,7 @@ int	ft_check_access(t_data *data, t_cmd *lst)
 	while (data->var.mini_env[lst->i] && ft_strncmp(data->var.mini_env[lst->i], "PATH=", 5))
 		lst->i++;
 	if (data->var.mini_env[lst->i] == NULL)
-		return (exit_status(data, 126, ""), display_no_such(lst->args[0]), -1);
+		return (exit_status(data, 127, ""), display_no_such(lst->args[0]), -1);
 	lst->split_path = ft_split(data->var.mini_env[lst->i], ':');
 	if (!lst->split_path)
 		return (-2);
