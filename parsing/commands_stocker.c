@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_stocker.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 12:51:59 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/27 22:30:18 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/10 16:55:00 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,11 @@ int	memory_alloc(char **input, t_cmd **cmd)
 	return (0);
 }
 
-int	stock_input(char **input, t_cmd **cmd)
+int	stock_input(t_data *data, char **input, t_cmd **cmd)
 {
 	if (memory_alloc(input, cmd) == -1)
-		return (-1);
+		return (exit_status(data, 1, \
+		"\033[38;5;214mMalloc error from [Stock_input]\n\033[0m"), (-1));
 	command_stocker(input, cmd);
 	free_pipes(input);
 	return (0);

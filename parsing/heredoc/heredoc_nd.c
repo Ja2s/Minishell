@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:51:56 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/03 15:01:32 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 13:15:07 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,12 +88,14 @@ int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
 
 	init_var(&var);
 	heredoc_copyer_init(cmd, &var, i);
-	while (pipes[var.p] && pipes[var.p] == ' ')
+	while (pipes[var.p] && ft_isspace(pipes[var.p]) == 1)
 		var.p++;
 	var.start = var.p;
-	while (pipes[var.p] && pipes[var.p] != ' ' && pipes[var.p] != '<')
+	while (pipes[var.p] && ft_isspace(pipes[var.p]) == 0 && pipes[var.p] != '<')
 		var.p++;
 	(*cmd)->delimiter[del] = ft_substr(pipes, var.start, var.p - var.start);
+	if ((*cmd)->delimiter[del] == NULL)
+		return (-1);
 	while ((*cmd)->delimiter[del][var.x])
 	{
 		if ((*cmd)->delimiter[del][var.x] == 34 || \

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 18:08:17 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 18:20:26 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 14:24:10 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int	redirecter_helper_nd(char *pipes, t_cmd **cmd, t_int *var)
 		(*var).i++;
 		(*var).len++;
 	}
-	while (pipes[(*var).i] && pipes[(*var).i] == ' ')
+	while (pipes[(*var).i] && ft_isspace(pipes[(*var).i]) == 1)
 	{
 		(*var).i++;
 		(*var).len++;
 	}
-	while (pipes[(*var).i] && pipes[(*var).i] != ' ' && \
+	while (pipes[(*var).i] && ft_isspace(pipes[(*var).i]) == 0 && \
 	pipes[(*var).i] != '<' && pipes[(*var).i] != '>')
 	{
 		(*var).i++;
@@ -46,14 +46,15 @@ int	redirecter_helper(char *pipes, t_cmd **cmd, t_int *var)
 	if (pipes[(*var).i] == '<' && pipes[(*var).i + 1] == '<')
 	{
 		(*var).i += 2;
-		while (pipes[(*var).i] && pipes[(*var).i] == ' ')
+		while (pipes[(*var).i] && ft_isspace(pipes[(*var).i]) == 1)
 			(*var).i++;
-		while (pipes[(*var).i] && pipes[(*var).i] != ' ' && \
+		while (pipes[(*var).i] && ft_isspace(pipes[(*var).i]) == 0 && \
 		pipes[(*var).i] != '<' && pipes[(*var).i] != '>')
 			(*var).i++;
 	}
 	else
-		redirecter_helper_nd(pipes, cmd, var);
+		if (redirecter_helper_nd(pipes, cmd, var) == -1)
+			return (-1);
 	return (0);
 }
 

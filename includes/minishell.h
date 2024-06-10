@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 13:04:47 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 13:59:46 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ int			ft_lstlen(t_cmd *elem);
 void		command_stocker(char **input, t_cmd **cmd);
 int			args_memory_alloc(char **input, t_cmd **cmd);
 int			memory_alloc(char **input, t_cmd **cmd);
-int			stock_input(char **input, t_cmd **cmd);
+int			stock_input(t_data *data, char **input, t_cmd **cmd);
 void		negative_checker(char *rl);
 int			expand_initializer(t_expand **var);
 char		*dolls_expander(char *rl, t_data *data);
@@ -157,7 +157,7 @@ char		*redirect_deleter(char	*pipes);
 int			ft_printf_struct(t_cmd *cmd);
 void		printf_title();
 int			pipes_counter(char *rl);
-int			env_copyer(char **envp, t_env **mini_env);
+int			env_copyer(t_data **data, char **envp, t_env **mini_env);
 int			heredoc_counter(char *pipes);
 int			heredoc_memory_allocer(char *pipes, t_cmd **cmd);
 int			heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del);

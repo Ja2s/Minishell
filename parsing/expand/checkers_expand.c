@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 17:32:55 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 16:56:28 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ int	negative_checker_variable(t_expand **var, t_data **data)
 		(*var)->value_len = ft_strlen((*var)->value);
 	while ((*var)->value[i])
 	{
-		if ((*var)->value[i] == 34 || ((*var)->value[i]) == 39 || ((*var)->value[i]) == '|' || \
+		if ((*var)->value[i] == 34 || ((*var)->value[i]) == 39 || \
+		((*var)->value[i]) == '|' || \
 		((*var)->value[i]) == '<' || ((*var)->value[i]) == '>')
 			(*var)->value[i] = ((*var)->value[i]) * -1;
 		i++;

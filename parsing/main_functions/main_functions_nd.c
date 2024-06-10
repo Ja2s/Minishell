@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_functions_nd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:22:23 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/28 21:23:46 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/10 14:34:54 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	**input_copyer(char **input, char **input_copy)
 		i++;
 	input_copy = ft_calloc(i + 1, sizeof (char *));
 	if (!input_copy)
-		return (NULL);
+		return (free_pipes(input), NULL);
 	i = 0;
 	while (input[i])
 	{
@@ -87,6 +87,8 @@ int	redirecter_finisher(t_data *data)
 	i = 0;
 	data->cmd->red_copy = \
 	input_copyer(data->cmd->redirecter, data->cmd->red_copy);
+	if (data->cmd->red_copy == NULL)
+		return (-1);
 	data->cmd->redirecter = data->cmd->red_copy;
 	data->cmd->red_copy = NULL;
 	return (0);

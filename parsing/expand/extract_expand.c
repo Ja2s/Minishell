@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:23:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 17:46:39 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 17:06:48 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,28 +83,38 @@ char	*env_extractor(char	*env, int choice)
 	return (str);
 }
 
-int	env_copyer(char **envp, t_env **mini_env)
+int	env_copyer_nd(t_data **data, char **envp, t_env *tmp, int i)
+{
+	tmp->name = env_extractor(envp[i], 1);
+	if (!tmp->name)
+		return (free_env(tmp), exit_status((*data), 1, \
+		"\033[38;5;214mMalloc error from [env_extractor]\n\033[0m"), -1);
+	tmp->value = env_extractor(envp[i], 2);
+	if (!tmp->value)
+		return (free_env(tmp), exit_status((*data), 1, \
+		"\033[38;5;214mMalloc error from [env_extractor]\n\033[0m"), -1);
+	return (0);
+}
+
+int	env_copyer(t_data **data, char **envp, t_env **mini_env)
 {
 	int		i;
 	t_env	*tmp;
 
 	i = 0;
 	if (!envp[i])
-		printf("Pas d'env\n");
+		printf("Info : Minishell has no environment\n");
 	else
 	{
 		while (envp[i])
 		{
 			tmp = env_new();
 			if (!tmp)
-				return (-1);
+				return (exit_status((*data), 1, \
+				"\033[38;5;214mMalloc error from [env_copyer]\n\033[0m"), -1);
 			else
 			{
-				tmp->name = env_extractor(envp[i], 1);
-				if (!tmp->name)
-					return (-1);
-				tmp->value = env_extractor(envp[i], 2);
-				if (!tmp->value)
+				if (env_copyer_nd(data, envp, tmp, i) == -1)
 					return (-1);
 				ft_envadd_back(mini_env, tmp);
 				i++;

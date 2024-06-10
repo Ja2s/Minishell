@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:27:51 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/24 18:20:44 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 14:25:32 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	redirect_counter(char *pipes)
 
 static int	skip_spaces(char *pipes, int i)
 {
-	while (pipes[i] && pipes[i] == ' ')
+	while (pipes[i] && ft_isspace(pipes[i]) == 1)
 		i++;
 	return (i);
 }
@@ -93,9 +93,9 @@ int	len_calculator(char	*pipes)
 			i++;
 			if (pipes[i] == '<' || pipes[i] == '>')
 				i++;
-			while (pipes[i] && pipes[i] == ' ')
+			while (pipes[i] && ft_isspace(pipes[i]) == 1)
 				i++;
-			while (pipes[i] && pipes[i] != ' ' && \
+			while (pipes[i] && ft_isspace(pipes[i]) == 0 && \
 			pipes[i] != '<' && pipes[i] != '>')
 				i++;
 		}

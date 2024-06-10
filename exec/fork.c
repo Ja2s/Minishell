@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/07 18:44:39 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 16:14:41 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ pid_t	ft_first_fork(t_data *data, t_cmd *lst)
 		if (!lst->args[0] || data->exit_code != 0 || \
 		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
+			rl_clear_history();
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);
 			free_pipes(data->var.mini_env);
@@ -203,6 +204,7 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 		if (!lst->args[0] || data->exit_code != 0 || \
 		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
+			rl_clear_history();
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);
 			free_pipes(data->var.mini_env);
@@ -275,6 +277,7 @@ pid_t	ft_last_fork(t_data *data, t_cmd *lst)
 		if (!lst->args[0] || data->exit_code != 0 || \
 		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
+			rl_clear_history();
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);
 			free_pipes(data->var.mini_env);

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:38:52 by gavairon          #+#    #+#             */
-/*   Updated: 2024/05/24 17:02:22 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 11:04:14 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	rafters_checker(char *rl)
 			i++;
 			if (rl[i] == '<' || rl[i] == '>')
 				i++;
-			while (rl[i] == ' ')
+			while (ft_isspace(rl[i]) == 1)
 				i++;
 			if (rl[i] == '\0' || rl[i] == '<' || rl[i] == '>' || rl[i] == '|')
 				return (-1);

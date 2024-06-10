@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 18:47:04 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 15:57:54 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,8 @@ int	launch_exec(t_data *data)
 	lst = begin;
 	data->var.mini_env = ft_list_to_tab(data->mini_env);
 	if (!data->var.mini_env)
-		return (-1);
+		return (exit_status(data, 1, \
+		"\033[38;5;214mMalloc error from [list_to_tab]\n\033[0m"), -1);
 	data->save_pipe = 0;
 	i = 0;
 	int len_lst = ft_lstlen(lst);
@@ -322,7 +323,7 @@ int	main(int argc, char **argv, char **envp)
 	i = 0;
 	data.exit_code = 0;
 	if (minishell_starter(envp, &data) == -1)
-		return (printf("Malloc error\n"), -1);
+		return (-1);
 	while (1)
 	{
 		signal(SIGINT, handle_sigint_main);
@@ -345,7 +346,6 @@ int	main(int argc, char **argv, char **envp)
 					}
 					else
 					{
-						
 					}
 				}
 			}

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:39:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 17:57:20 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 14:45:46 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,14 @@ char	**ft_list_to_tab(t_env *mini_env)
 	len = ft_envsize(tmp);
 	tmp = mini_env;
 	tab = ft_calloc(len + 1, sizeof(char *));
-	//verif malloc
 	if (!tab)
 		return (NULL);
 	while (tmp)
 	{
-		tab[i++] = line_extractor(tmp);
-		//verif malloc
+		tab[i] = line_extractor(tmp);
+		if (tab[i] == NULL)
+			return (free_pipes(tab), NULL);
+		i++;
 		tmp = tmp->next;
 	}
 	tab[i] = NULL;

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:17:49 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 17:28:38 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 16:58:01 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,29 +75,29 @@ int	basic_expander_helper(t_expand **var, t_data *data, char **rl)
 	return (0);
 }
 
-int basic_expander(char *rl, t_expand **var, t_data *data)
+int	basic_expander(char *rl, t_expand **var, t_data *data)
 {
-    char *new_rl;
-    
+	char	*new_rl;
+
 	new_rl = rl;
 	if (basic_expander_helper(var, data, &new_rl) == -1)
-    {
-        free(new_rl);
-        return (-1);
-    }
-    if (new_rl)
-    {
-        free((*var)->output);
-        (*var)->output = ft_strdup(new_rl);
-        free(new_rl);
-    }
-    if ((*var)->value && rl[0])
-        command_positiver((*var)->value);
-    if ((*var)->value_len > 0)
-        (*var)->i = ((*var)->pos_doll + (*var)->value_len - 1);
-    else
-        (*var)->i = ((*var)->pos_doll + (*var)->value_len);
-    return (0);
+	{
+		free(new_rl);
+		return (-1);
+	}
+	if (new_rl)
+	{
+		free((*var)->output);
+		(*var)->output = ft_strdup(new_rl);
+		free(new_rl);
+	}
+	if ((*var)->value && rl[0])
+		command_positiver((*var)->value);
+	if ((*var)->value_len > 0)
+		(*var)->i = ((*var)->pos_doll + (*var)->value_len - 1);
+	else
+		(*var)->i = ((*var)->pos_doll + (*var)->value_len);
+	return (0);
 }
 
 void	free_expand_opt(t_expand *var)
@@ -137,7 +137,7 @@ char	*dolls_expander(char *rl, t_data *data)
 {
 	t_expand	*var;
 	char		*result;
-	
+
 	if (expand_initializer(&var) == -1)
 		return (NULL);
 	if (rl)
