@@ -1,0 +1,5641 @@
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}coucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}coucouccoucoucNAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucouccoucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}coucouccoucoucNAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucoucNAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}coucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}RELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+	if (data->save_pipe != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+
+void	ft_close_pipe(t_data *data)
+{
+	close(data->pipe_fd[0]);
+	data->pipe_fd[0] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+
+	close(data->pipe_fd[1]);
+	data->pipe_fd[1] = -1;
+	
+}
+void	 ft_close(t_cmd *lst)
+{
+	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
+}NAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucoucNAME        = minishell
+
+CC          = cc
+
+CFLAGS      = -g3 -Wextra -Werror
+
+SRC         =	$(EXEC_SRC)dislpay_err.c \
+				$(EXEC_SRC)check_access.c \
+            	$(EXEC_SRC)redirection.c \
+				$(EXEC_SRC)fork.c minishell.c \
+        		$(OTHER_SRC)other.c \
+				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)lst_add.c \
+        		$(EXEC_SRC)heredoc.c \
+				$(OTHER_SRC)env.c \
+            	$(PARSING_SRC)syntaxe_errors.c \
+				$(PARSING_SRC)utilities.c \
+            	$(PARSING_SRC)utilities_nd.c \
+				$(PARSING_SRC)commands_stocker.c \
+            	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/checkers_expand.c \
+				$(PARSING_SRC)expand/exitcode_expand.c \
+				$(PARSING_SRC)expand/extract_expand.c \
+				$(PARSING_SRC)expand/helper_expand.c \
+				$(PARSING_SRC)expand/heredoc_expand.c \
+				$(PARSING_SRC)expand/utils_expand.c \
+				$(PARSING_SRC)expand/utils_expand_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions.c \
+            	$(PARSING_SRC)/main_functions/main_functions_nd.c \
+				$(PARSING_SRC)/main_functions/main_functions_rd.c \
+				$(PARSING_SRC)/heredoc/heredoc.c \
+				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+            	$(PARSING_SRC)/redirecter/redirecter.c \
+				$(PARSING_SRC)/redirecter/redirecter_nd.c \
+				$(PARSING_SRC)syntaxe_errors_nd.c 
+
+PARSING_SRC = parsing/
+
+EXEC_SRC    = exec/
+
+OTHER_SRC   = other/
+
+OBJ         = $(SRC:.c=.o)
+
+all : $(NAME)
+
+%.o : %.c includes/minishell.h
+	@$(CC) $(CFLAGS) -c $< -o $@
+	printf "\033[1A\033[KCompiling $<\r"
+
+$(NAME): $(OBJ)
+	@make -sC libft && $(CC) $(OBJ) -L libft -l ft -lreadline -o $(NAME)
+	printf "\033[38;5;220m\033[1A\033[KExecutable $(NAME) created\n\033[0m"
+
+clean :
+	@rm -rf  $(OBJ) 
+	@make -sC libft clean
+	printf "\033[38;5;220m\033[1A\033[KCleaning objects\n\033[0m"
+
+fclean : clean
+	@rm -f $(NAME)
+	@make -sC libft fclean
+	printf "\033[38;5;220m\033[1A\033[KRemoving $(NAME) and libraries\n\033[0m"
+
+re : fclean all
+
+.PHONY : all clean fclean re
+
+
+coucouccoucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+coucoucRELINK MAKEFILE OK ?
+
+-----------------------RESOLVED----------------------------------------- 223
+
+[EXIT] -------> 473 voir ceux non resolved
+
+ls | <f1 cat printf ls au lieu de f1
+
+ctrl \ children QUit core + 131 errno
+
+cat > $HOME minishell: f1: No such file or directory au lieu de ---> bash: /home/rasamad: Is a directory
+
+minishell$> $HOME
+--------------=Command name=--------------
+	Commande -> |/home/rasamad|
+----------------=Arguments=---------------
+-------------=End of command=-------------
+minishell: /home/rasamad: Is a directory
+malloc_consolidate(): invalid chunk size
+fish: Job 1, './minishell' terminated by signal SIGABRT (Abort)
+
+minishell$> exit not exit passe par arg[2] != NULL ?
+minishell$> exit 66 66 passe par arg[2] != NULL mais ne met pas 1 exit_status() ?
+
+minishell$> sleep 5 | sleep 5
+
+minishell$> echo coucou >f1|cat f1 >f2|cat f2 ne met rien dans f2
+~/Documents/minishell$  ls | < dsd | cat print le ls
+
+~/Documents/minishell$ < file1 | ls  ne print pas ls
+
+rasamad@z1r4p5:~/Documents/minishell$ ls / | grep home | wc -l | < file1 > file2 | cat
+print 1 du wc -l au lieu de sarreter a lerreur du < file 1 inexistant
+
+
+--*----------------*-------->> Suprime .heredoc
+
+--------	[211] /!\ SIGNAUX----------------------------------------- 223
+
+
+PDF 399 -- 640 a faire
+
+minishell$> go 
+minishell$> echo $?
+2
+
+
+if (stat(lst->redirecter[i] + j, &statbuf) == -1) <------------ obligatoire ? a quoi sa sert ?
+						;
+if (S_ISDIR(statbuf.st_mode))
+	display_is_dir(lst->args[0])
+
+malloc error que faire ? (free et renvoi un prompt)
+check si tous les malloc sont proteger
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+coucouc

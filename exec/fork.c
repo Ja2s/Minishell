@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/10 16:14:41 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 15:50:04 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,18 +85,27 @@ pid_t	ft_first_fork(t_data *data, t_cmd *lst)
 			if (dup2(lst->fd_infile, STDIN_FILENO) == -1)
 			{
 				perror("dup2 first fd_infile failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 		}
 		//2. SINON SI il y a un heredoc et quil est en dernier 
-		if (lst->nb_del > 0 && lst->end_heredoc == 1)			// << eof
+		else if (lst->nb_del > 0 && lst->end_heredoc == 1)			// << eof
 		{//appelle ft qui cp heredoc_content dans un fichier temporaire
 			if (ft_fd_heredoc(lst) == -1)
+			{
+				perror("dup2 middle fd_heredoc failed :");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
+			}
 			lst->fd_str_rand = open(".heredoc", O_RDONLY);
 			if (dup2(lst->fd_str_rand, STDIN_FILENO) == -1)	//puis dup ce fd,  sinon dans stdin
 			{
 				perror("dup2 first fd_str_rand failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 			close(lst->fd_str_rand); // Fermer le descripteur de fichier heredoc
@@ -107,6 +116,8 @@ pid_t	ft_first_fork(t_data *data, t_cmd *lst)
 			if (dup2(lst->fd_outfile, STDOUT_FILENO) == -1)
 			{
 				perror("dup2 first fd_outfile failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -116,12 +127,18 @@ pid_t	ft_first_fork(t_data *data, t_cmd *lst)
 			if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
 				perror("dup2 first pipe[1] failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
+			ft_close_pipe(data);
 		}
+		ft_close(lst);
+		ft_close_pipe(data);
 		if (!lst->args[0] || data->exit_code != 0 || \
 		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
+			ft_free_all_heredoc(data->cmd);
 			rl_clear_history();
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);
@@ -156,6 +173,8 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 			if (dup2(lst->fd_infile, STDIN_FILENO) == -1)
 			{
 				perror("dup2 middle fd_indile failed :");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -163,12 +182,19 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 		else if (lst->heredoc_content && lst->end_heredoc == 1)// << eof
 		{//appelle ft qui cp heredoc_content dans un fichier temporaire
 			if (ft_fd_heredoc(lst) == -1)
+			{
+				perror("dup2 middle fd_heredoc failed :");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
+			}
 			lst->fd_str_rand = open(".heredoc", O_RDONLY);
 			//puis recupere les donne du fd .heredoc au lieu de lentree standard
 			if (dup2(lst->fd_str_rand, STDIN_FILENO) == -1)	//puis dup ce fd,  sinon dans stdin
 			{
 				perror("dup2 first fd_str_rand failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 			close(lst->fd_str_rand);
@@ -188,6 +214,8 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 			if (dup2(lst->fd_outfile, STDOUT_FILENO) == -1)
 			{
 				perror("dup2 middle fd_outfile failed :");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -197,13 +225,17 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 			if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
 			{
 				perror("dup2 middle pipe[1] failed :");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 		}
-		
+		ft_close(lst);
+		//ft_close_pipe(data);
 		if (!lst->args[0] || data->exit_code != 0 || \
 		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
+			ft_free_all_heredoc(data->cmd);
 			rl_clear_history();
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);
@@ -239,18 +271,27 @@ pid_t	ft_last_fork(t_data *data, t_cmd *lst)
 			if (dup2(lst->fd_infile, STDIN_FILENO) == -1)
 			{
 				perror("dup2 last fd_infile failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 		}
 		//2. SINON SI HEREDOC  
 		else if (lst->heredoc_content && lst->end_heredoc == 1)// << eof
 		{
-			if (ft_fd_heredoc(lst) == -1)	//apelle ft qui va open un fd et cp le heredoc dedans
+			if (ft_fd_heredoc(lst) == -1)
+			{
+				perror("dup2 middle fd_heredoc failed :");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
+			}
 			lst->fd_str_rand = open(".heredoc", O_RDONLY);
 			if (dup2(lst->fd_str_rand, STDIN_FILENO) == -1)	//puis dup ce fd,  sinon dans stdin
 			{
 				perror("dup2 first fd_str_rand failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 			close(lst->fd_str_rand);
@@ -270,13 +311,17 @@ pid_t	ft_last_fork(t_data *data, t_cmd *lst)
 			if (dup2(lst->fd_outfile, STDOUT_FILENO) == -1)
 			{
 				perror("dup2 last fd_outfile failed : ");
+				ft_close_pipe(data);
+				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
 		}
-		
+		ft_close(lst);
+		ft_close_pipe(data);
 		if (!lst->args[0] || data->exit_code != 0 || \
 		ft_strcmp(lst->args[0], "exit") == 0 || ft_builtins(lst) != 0 || ft_builtins_env_fork(data, lst) != 0)
 		{
+			ft_free_all_heredoc(data->cmd);
 			rl_clear_history();
 			ft_lstclear(&data->cmd);
 			free_env(data->mini_env);

@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:49:33 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/07 13:29:56 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/11 11:24:16 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,25 +63,20 @@ int ft_heredoc(t_data *data)
     lst->heredoc_content = NULL;
 
 	lst->del_one = 0;
-	if (lst->heredoc)
-		rl_callback_handler_install("", NULL);
-	rl_event_hook = rl_hook_function;
+	rl_event_hook = rl_hook_function;//CRi
 	while (lst)
 	{
 		while (i < lst->nb_del && lst->heredoc == true) 
 		{
 			line = readline(">");
-			if (g_sig) {
-				exit_status(data, 130, "");
-				free(line);
-				rl_callback_handler_remove(); // Retirer le gestionnaire de readline
-				//signal(SIGINT, handle_sigint_main); // Restaure le gestionnaire de signal SIGINT principal
-				return -1; // Quitter la fonction si un signal SIGINT a été reçu
-			}
+			if (g_sig)
+						return (exit_status(data, 130, ""), free(line), -1); // Quitter la fonction si un signal SIGINT a été reçu
 			if (line == NULL)
 			{
 				printf("bash: warning: here-document delimited by end-of-file (wanted `%s')\n", lst->delimiter[i]);
 				line = ft_strdup(lst->delimiter[i]);
+				if (!line)
+					return (exit_status(data, 1, "malloc error from [ft_strdup] heredoc.c\n"), -1);
 			}
 			if (ft_strcmp(line, lst->delimiter[i]) == 0)
 			{
@@ -98,28 +93,26 @@ int ft_heredoc(t_data *data)
 					if (lst->expand_heredoc == 1)
 						line = dolls_expander(line, data);
 					tmp = ft_strjoin(lst->heredoc_content, line);
+					free(line);  // Libère la mémoire allouée par readline
+					if (!tmp)
+						return (exit_status(data, 1, "malloc error from [ft_strjoin] heredoc.c\n"), -1);
 					free(lst->heredoc_content);
 					lst->heredoc_content = tmp;
 					tmp = ft_strjoin(lst->heredoc_content, "\n");
+					if (!tmp)
+						return (exit_status(data, 1, "malloc error from [ft_strjoin 2] heredoc.c\n"), -1);
 					free(lst->heredoc_content);
 					lst->heredoc_content = tmp;
-					free(line);  // Libère la mémoire allouée par readline
-					if (!lst->heredoc_content)
-						return(exit_status(data, 1, "Malloc error from [ft_heredoc]\n"), -1);
 					line = readline(">");
 					if (line == NULL)
 					{
 						printf("bash: warning: here-document delimited by end-of-file (wanted `%s')\n", lst->delimiter[i]);
 						line = ft_strdup(lst->delimiter[i]);
+						if (!line)
+							return (exit_status(data, 1, "malloc error from [ft_strdup 2] heredoc.c\n"), -1);
 					}
 					if (g_sig)
-					{
-						exit_status(data, 130, "");
-						free(line);
-						rl_callback_handler_remove(); // Retirer le gestionnaire de readline
-						//signal(SIGINT, handle_sigint_main); // Restaure le gestionnaire de signal SIGINT principal
-						return (-1); // Quitter la fonction si un signal SIGINT a été reçu
-					}
+						return (exit_status(data, 130, ""), free(line), -1); // Quitter la fonction si un signal SIGINT a été reçu
 				}
 				free(line);  // Libère la mémoire allouée par readline	
 			}
@@ -131,22 +124,5 @@ int ft_heredoc(t_data *data)
 		lst = lst->next;
 	}
 	rl_callback_handler_remove(); // Retirer le gestionnaire de readline
-	//signal(SIGINT, handle_sigint_main); // Restaure le gestionnaire de signal SIGINT principal
 	return (0);
-}
-
-void	ft_display_heredoc(t_cmd *lst)
-{
-	int i;
-	int j;
-
-	i = 1;
-	j = 0;
-	while (lst != NULL)
-	{
-		printf("\nheredoc %d :\n", i);
-		i++;
-		printf("|%s|\n", lst->heredoc_content);
-		lst = lst->next;
-	}
 }

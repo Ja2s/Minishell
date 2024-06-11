@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/10 13:59:46 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/10 19:34:31 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,5 +227,6 @@ void		display_is_dir(char *str);
 int			ft_is_builtins_no_access(t_cmd *lst);
 void		free_env(t_env *env);
 void		display_perror(char *str);
+void		ft_close_pipe(t_data *data);
 
 #endif

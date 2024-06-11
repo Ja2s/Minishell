@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/10 15:57:54 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 15:48:56 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int	ft_cd(t_data *data)
 
 	i = 0;
 	old_pwd = getcwd(NULL, 0);
+	if (!old_pwd)
+		return(exit_status(data, 1, "malloc from error [getcwd] ft_cd()"), -1);
 	if (data->cmd->args[1] && ft_strcmp(data->cmd->args[1], "-") == 0)
 	{
 		while (data->var.mini_env[i] && ft_strncmp(data->var.mini_env[i], "OLDPWD=", 7) != 0)
@@ -62,28 +64,19 @@ int	ft_cd(t_data *data)
 		if (!data->var.mini_env[i])
 			return (free(old_pwd), display_error_cmd(data->cmd), -1);
 		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
-		{
-			perror("chdir OLDPWD failed ");
-			return (free(old_pwd), -1);
-		}
+			return (perror("chdir OLDPWD failed "), free(old_pwd), -1);
 	}
 	else if (!data->cmd->args[1])
 	{
 		while (data->var.mini_env[i] && ft_strncmp(data->var.mini_env[i], "HOME=", 5) != 0)
 			i++;
 		if (!data->var.mini_env[i])
-			return (display_error_cmd(data->cmd), -1);
+			return (free(old_pwd), display_error_cmd(data->cmd), -1);
 		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
-		{
-			perror("chdir home failed ");
-			return (free(old_pwd), -1);
-		}
+			return (perror("chdir home failed "), free(old_pwd), -1);
 	}
 	else if (chdir(data->cmd->args[1]) == -1)
-	{
-		perror("chdir failed ");
-		return (free(old_pwd), -1);
-	}
+		return (perror("chdir failed "), free(old_pwd), -1);
 	check_variable(&data->mini_env, "OLDPWD", old_pwd);
 	check_variable(&data->mini_env, "PWD", getcwd(NULL, 0));
 	return (free(old_pwd), 0);
@@ -172,6 +165,8 @@ int	ft_exit_prog(t_data *data)
 int	ft_stat_check(int check_access, t_data *data, t_cmd *lst)
 {
 	struct stat statbuf;
+	if (check_access == -2)
+		return (-1);
 	if (!lst->args[0])
 		return (0);
 	if (check_access == 0)
@@ -188,27 +183,50 @@ int	ft_stat_check(int check_access, t_data *data, t_cmd *lst)
 	return (0);
 }
 
+void	ft_close_pipe(t_data *data)
+{
+	if (data->pipe_fd[0] != -1)
+	{
+		close(data->pipe_fd[0]);
+		data->pipe_fd[0] = -1;
+	}
+	if (data->pipe_fd[1] != -1)
+	{
+		close(data->pipe_fd[1]);
+		data->pipe_fd[1] = -1;
+	}
+}
+
+int is_fd_open2(int fd)
+{
+    int flags;
+
+    // Try to get the file descriptor flags
+    flags = fcntl(fd, F_GETFD);
+
+    // If fcntl returns -1 and errno is EBADF, the file descriptor is closed
+    if (flags == -1 && errno == EBADF)
+        return 0; // File descriptor is closed
+    return 1; // File descriptor is open
+}
+
 int	launch_exec(t_data *data)
 {
 	int		i;
-	t_cmd	*begin;
 	t_cmd	*lst;
 
 	// Check if the command is "exit" and handle it before anything else
 	if (data->cmd->args[0] && data->cmd->next == NULL && ft_strcmp(data->cmd->args[0], "exit") == 0)
 		return(ft_exit_prog(data));
-	begin = data->cmd;
-	lst = begin;
+	lst = data->cmd;
 	data->var.mini_env = ft_list_to_tab(data->mini_env);
 	if (!data->var.mini_env)
-		return (exit_status(data, 1, \
-		"\033[38;5;214mMalloc error from [list_to_tab]\n\033[0m"), -1);
+		return (exit_status(data, 1, "malloc error from [list_to_tab]\n"), -1);
 	data->save_pipe = 0;
 	i = 0;
 	int len_lst = ft_lstlen(lst);
 	if (ft_heredoc(data) == -1)
-		return (ft_free_all_heredoc(begin), -1);
-	//ft_display_heredoc(data->cmd);
+		return (ft_free_all_heredoc(data->cmd), -1);
 	while (lst)
 	{
 		data->exit_code = 0;
@@ -219,20 +237,18 @@ int	launch_exec(t_data *data)
 			if (pipe(data->pipe_fd) == -1)
 				exit_status(data, 1, "pipe failed\n");
 		if (!lst->args[0] && !lst->next)
-			return (ft_free_all_heredoc(begin), -1);
+			return (ft_close_pipe(data), ft_free_all_heredoc(data->cmd), -1);
 		if (ft_builtins_env(lst, data, i) == 0)// pas de builtins
 		{
 			if (ft_is_builtins_no_access(lst) == 0)
-			{
 				if (ft_stat_check(ft_check_access(data, lst), data, lst) == -1)
-					return (-1);
-			}
+					return(ft_free_all_heredoc(data->cmd), ft_close_pipe(data), -1);
 			if (i == 1)
 			{	//5. exec (cmd_first) | cmd_middle | ... | cmd_last
 				ft_first_fork(data, lst);
 				if (data->pipe_fd[1] > 3)
-					close(data->pipe_fd[1]);// je close lecriture pour pas que la lecture attende indefinement.
-				data->save_pipe = data->pipe_fd[0]; //je save la lecture pour le next car je vais re pipe pour avoir un nouveau canal 
+					close(data->pipe_fd[1]);//close evite boucle infini
+				data->save_pipe = data->pipe_fd[0];
 			}
 			else if (i < len_lst)
 			{	//6. exec cmd_first | (cmd_middle | ...) | cmd_last
@@ -243,13 +259,13 @@ int	launch_exec(t_data *data)
 			else if (i == len_lst)
 			{	//7. exec cmd_first | cmd_middle | ... | (cmd_last)
 				ft_last_fork(data, lst);
-				close(data->pipe_fd[0]);
+				close(data->pipe_fd[1]);
 			}
-			
 		}
-		ft_close(data->cmd);
+		ft_close(lst);
 		lst = lst->next;
 	}
+	ft_close_pipe(data);
 	i = 0;
 	while (i < len_lst){
 		int status;
@@ -265,17 +281,12 @@ int	launch_exec(t_data *data)
 			g_sig = 0;
 		}
 		if (WIFEXITED(status) && status != 0) //execve failed
-		{
-			//printf("Command 1st failed with exit status: %d\n", WIFEXITED(status));
 			exit_status(data, WIFEXITED(status), "");
-		}
-		/*if (WIFSIGNALED(status)) 
-			printf("Command teRRRminated by signal: %d\n", WTERMSIG(status));*/
 		i++;
 	}
 	free_pipes(data->var.mini_env);
     data->var.mini_env = NULL;
-	ft_free_all_heredoc(begin);
+	ft_free_all_heredoc(data->cmd);
 	if (data->exit_code != 0)
 		return (-1);
 	return (0);
@@ -317,20 +328,25 @@ int	main(int argc, char **argv, char **envp)
 {
 	int		i;
 	t_data	data;
-	
+
 	(void)argc;
 	(void)argv;
 	i = 0;
 	data.exit_code = 0;
 	if (minishell_starter(envp, &data) == -1)
-		return (-1);
+		return (printf("malloc error from [main]\n"), -1);
 	while (1)
 	{
 		signal(SIGINT, handle_sigint_main);
 		signal(SIGQUIT, SIG_IGN); // Ignorer le signal SIGQUIT
 		if (prompt_customer(&data) == 0)
 		{
-			if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
+			if (g_sig)
+			{
+				exit_status(&data, 130, "");
+				g_sig = 0;		
+			}
+			else if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
 			{
 				if (parser(&data) == 0)
 				{
@@ -344,15 +360,10 @@ int	main(int argc, char **argv, char **envp)
 							data.var.mini_env = NULL;
 						}
 					}
-					else
-					{
-					}
 				}
 			}
 			else
-			{
 				free(data.var.rl);
-			}
 		}
 		else
 			//free()
@@ -361,3 +372,4 @@ int	main(int argc, char **argv, char **envp)
 	free_env(data.mini_env);
 	rl_clear_history();
 }
+

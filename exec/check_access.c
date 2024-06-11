@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:24:55 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/07 12:45:04 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/10 19:27:17 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	display_is_dir(char *str)
 	write(2, "\n", 1);
 }
 
+
 //Fonction	: Verifie si la args[0] est good
 //Renvoi	: -2 --> malloc crash / -1 --> echec / 0 --> success 
 int	ft_check_access(t_data *data, t_cmd *lst)
@@ -71,11 +72,11 @@ int	ft_check_access(t_data *data, t_cmd *lst)
 		return (exit_status(data, 127, ""), display_no_such(lst->args[0]), -1);
 	lst->split_path = ft_split(data->var.mini_env[lst->i], ':');
 	if (!lst->split_path)
-		return (-2);
+		return (exit_status(data, 1, "malloc error from [split_path]\n"), -2);
 	lst->i = 0;
 	lst->path_cmd = ft_strjoin(lst->split_path[lst->i], lst->slash_cmd);
 	if (!lst->path_cmd)
-		return (-2);
+		return (exit_status(data, 1, "malloc error from [path_cmd]\n"), -2);
 	while (access(lst->path_cmd, F_OK) == -1)
 	{
 		if (lst->split_path[lst->i] == NULL)
@@ -83,8 +84,7 @@ int	ft_check_access(t_data *data, t_cmd *lst)
 		free(lst->path_cmd);
 		lst->path_cmd = ft_strjoin(lst->split_path[lst->i++], lst->slash_cmd);
 		if (!lst->path_cmd)
-			return (-2);
+			return (exit_status(data, 1, "malloc error from [path_cmd]\n"), -2);
 	}
-	//printf("command |%s| ok\n", lst->args[0])
 	return (0);
 }

@@ -12,18 +12,28 @@
 
 #include "../includes/minishell.h"
 
-void	 ft_close(t_cmd *lst)
+void	ft_close_infile(t_cmd *lst)
 {
 	if (lst->redirecter && lst->fd_infile != -1)//s'il n'y a pas de redirecter les lst->fd ne sont pas initaliser
 	{
 		close(lst->fd_infile);
 		lst->fd_infile = -1;
 	}
+}
+
+void	ft_close_outfile(t_cmd *lst)
+{
 	if (lst->redirecter && lst->fd_outfile != -1)
 	{
 		close(lst->fd_outfile);
 		lst->fd_outfile = -1;
 	}
+}
+
+void	 ft_close(t_cmd *lst)
+{
+	ft_close_infile(lst);
+	ft_close_outfile(lst);
 }
 
 int	ft_redirecter(t_data *data, t_cmd *lst)
@@ -32,9 +42,8 @@ int	ft_redirecter(t_data *data, t_cmd *lst)
 	int	j;
 	struct stat statbuf;
 
-	
 	lst->fd_infile = -1;
-	lst->fd_outfile = -1;	
+	lst->fd_outfile = -1;
 	i = 0;
 	while (lst->redirecter[i])
 	{
@@ -43,6 +52,7 @@ int	ft_redirecter(t_data *data, t_cmd *lst)
 		{
 			if (lst->redirecter[i][j] == '>' && lst->redirecter[i][j + 1] == '>') // >> 
 			{
+				ft_close_outfile(lst);
 				j += 2;
 				while (lst->redirecter[i][j] == ' ')//skip space
 					j++;
@@ -54,6 +64,7 @@ int	ft_redirecter(t_data *data, t_cmd *lst)
 			}
 			else if (lst->redirecter[i][j] == '>')// > 
 			{
+				ft_close_outfile(lst);
 				j++;
 				while (lst->redirecter[i][j] == ' ')
 					j++;
@@ -69,6 +80,7 @@ int	ft_redirecter(t_data *data, t_cmd *lst)
 			}
 			else if (lst->redirecter[i][j] == '<')// <
 			{
+				ft_close_infile(lst);
 				j++;
 				while (lst->redirecter[i][j] == ' ')
 					j++;
