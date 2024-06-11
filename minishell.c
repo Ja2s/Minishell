@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/11 17:07:55 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/11 17:51:52 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,50 +183,43 @@ int	launch_exec(t_data *data)
 	return (0);
 }
 
-int	main(int argc, char **argv, char **envp)
+void	ft_minishell_closer(t_data *data)
 {
-	int		i;
-	t_data	data;
+	free_env((*data).mini_env);
+	rl_clear_history();
+}
 
+void	ft_voider(int *argc, char ***argv)
+{
 	(void)argc;
 	(void)argv;
-	i = 0;
-	data.exit_code = 0;
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_data	data;
+	
+	ft_voider(&argc, &argv);
 	if (minishell_starter(envp, &data) == -1)
-		return (printf("malloc error from [main]\n"), -1);
+		return (exit_status(&data, 1, "malloc error from [main]\n"), -1);
 	while (1)
 	{
-		ft_signal();
+		ft_signal(&data, 1);
 		if (prompt_customer(&data) == 0)
 		{
 			if (g_sig)
-			{
-				exit_status(&data, 130, "");
-				g_sig = 0;		
-			}
+				ft_signal(&data, 2);
 			else if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
-			{
+			{	
 				if (parser(&data) == 0)
-				{
 					if (final_parse(&data) == -1)
-					{
-						ft_lstclear(&data.cmd);
-						free_pipes(data.var.pipes);
-						if (data.var.mini_env)
-						{
-							free_pipes(data.var.mini_env);
-							data.var.mini_env = NULL;
-						}
-					}
-				}
+						cleanup(&data);
 			}
 			else
 				free(data.var.rl);
 		}
 		else
-			//free()
 			break ;
 	}
-	free_env(data.mini_env);
-	rl_clear_history();
+	return(ft_minishell_closer(&data), 0);
 }

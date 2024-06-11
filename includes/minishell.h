@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:07:18 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/11 16:01:15 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 17:40:44 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,9 +237,10 @@ int			stock_variable(t_data **data, int i);
 int			ft_export_display(t_env *mini_env);
 void		sort_env(char ***tab);
 int			ft_builtins_env(t_cmd *lst, t_data *data, int i);
-void		ft_signal(void);
+void		ft_signal(t_data *data, int choice);
 int			run_minishell(t_data *data);
 int			process_command(t_data *data);
 void		ft_close_pipe(t_data *data);
+void		cleanup(t_data *data);
 
 #endif

@@ -1,3 +1,0 @@
-/home/jgavairo/Documents/minishell[33m$> [37mecho lol
-lol
-/home/jgavairo/Documents/minishell[33m$> [37m
