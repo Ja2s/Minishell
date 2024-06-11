@@ -6,7 +6,7 @@
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/11 15:50:04 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/11 17:07:39 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 		return(perror("fork middle failed :"), -1);
 	else if (pid == 0)
 	{
+		close(data->pipe_fd[0]);
 		//1. SI il y a un infile ET quil est en dernier  sil y en a un et quil est en dernier
 		if (lst->redirecter && lst->fd_infile > 0 && lst->end_heredoc == 0)// < f1
 		{//recupere les donner dans fd_infile au lieu de lentree standard
@@ -207,6 +208,7 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 				perror("dup2 middle pipe_fd[0] failed :");
 				exit(EXIT_FAILURE);
 			}
+			close(data->save_pipe);
 		}
 		//1. SI redirecteur != NULL et que fd_outfile a de la data
 		if (lst->redirecter && lst->fd_outfile > 0)
@@ -229,6 +231,7 @@ pid_t	ft_middle_fork(t_data *data, t_cmd *lst)
 				ft_close(lst);
 				exit(EXIT_FAILURE);
 			}
+			close(data->pipe_fd[1]);
 		}
 		ft_close(lst);
 		//ft_close_pipe(data);

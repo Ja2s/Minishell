@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_helper.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 11:47:52 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/11 14:45:52 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 17:11:55 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,10 @@ int	ft_is_builtins_no_access(t_cmd *lst)
 	else if (ft_strcmp(lst->args[0], "unset") == 0)
 		return (1);
 	else if (ft_strcmp(lst->args[0], "cd") == 0)
+		return (1);
+	if (ft_strcmp(lst->args[0], "echo") == 0)
+		return (1);
+	if (ft_strcmp(lst->args[0], "pwd") == 0)
 		return (1);
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/11 16:00:21 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 17:07:55 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,20 +136,21 @@ int	launch_exec(t_data *data)
 			if (i == 1)
 			{	//5. exec (cmd_first) | cmd_middle | ... | cmd_last
 				ft_first_fork(data, lst);
-				if (data->pipe_fd[1] > 3)
-					close(data->pipe_fd[1]);//close evite boucle infini
+				close(data->pipe_fd[1]);//close evite boucle infini
 				data->save_pipe = data->pipe_fd[0];
 			}
 			else if (i < len_lst)
 			{	//6. exec cmd_first | (cmd_middle | ...) | cmd_last
 				ft_middle_fork(data, lst);
 				close(data->pipe_fd[1]);
+				close(data->save_pipe);
 				data->save_pipe = data->pipe_fd[0];
 			}
 			else if (i == len_lst)
 			{	//7. exec cmd_first | cmd_middle | ... | (cmd_last)
 				ft_last_fork(data, lst);
-				close(data->pipe_fd[1]);
+				close(data->save_pipe);
+				//close(data->pipe_fd[1]);
 			}
 		}
 		ft_close(lst);
@@ -184,19 +185,48 @@ int	launch_exec(t_data *data)
 
 int	main(int argc, char **argv, char **envp)
 {
+	int		i;
 	t_data	data;
 
 	(void)argc;
 	(void)argv;
+	i = 0;
+	data.exit_code = 0;
 	if (minishell_starter(envp, &data) == -1)
-		return (-1);
-	if (run_minishell(&data) == -1)
+		return (printf("malloc error from [main]\n"), -1);
+	while (1)
 	{
-		free_env(data.mini_env);
-		rl_clear_history();
-		return (-1);
+		ft_signal();
+		if (prompt_customer(&data) == 0)
+		{
+			if (g_sig)
+			{
+				exit_status(&data, 130, "");
+				g_sig = 0;		
+			}
+			else if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
+			{
+				if (parser(&data) == 0)
+				{
+					if (final_parse(&data) == -1)
+					{
+						ft_lstclear(&data.cmd);
+						free_pipes(data.var.pipes);
+						if (data.var.mini_env)
+						{
+							free_pipes(data.var.mini_env);
+							data.var.mini_env = NULL;
+						}
+					}
+				}
+			}
+			else
+				free(data.var.rl);
+		}
+		else
+			//free()
+			break ;
 	}
 	free_env(data.mini_env);
 	rl_clear_history();
-	return (0);
 }
