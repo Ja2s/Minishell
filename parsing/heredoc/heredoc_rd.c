@@ -1,43 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lst_add.c                                          :+:      :+:    :+:   */
+/*   heredoc_rd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/25 16:43:26 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/11 11:32:31 by jgavairo         ###   ########.fr       */
+/*   Created: 2024/06/11 11:12:41 by jgavairo          #+#    #+#             */
+/*   Updated: 2024/06/11 11:14:50 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-t_cmd	*ft_lstlast_minishell(t_cmd *lst)
+char	*heredoc_w_cote(char *src)
 {
-	t_cmd	*tmp;
+	char	*dest;
+	char	*tmp;
+	int		i;
+	int		p;
 
-	if (!lst)
+	tmp = NULL;
+	dest = NULL;
+	p = 0;
+	i = 0;
+	dest = ft_calloc((ft_strlen(src) - 1), sizeof (char));
+	if (!dest)
 		return (NULL);
-	tmp = lst;
-	while (tmp->next)
-		tmp = tmp->next;
-	return (tmp);
-}
-
-void	ft_lstadd_back_minishell(t_cmd **lst, t_cmd *new)
-{
-	if (*lst)
-		ft_lstlast_minishell(*lst)->next = new;
-	else
-		*lst = new;
-}
-
-t_cmd	*ft_lstnew_minishell(void)
-{
-	t_cmd	*new_elem;
-
-	new_elem = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
-	if (!new_elem)
+	tmp = ft_strdup(src);
+	if (!tmp)
 		return (NULL);
-	return (new_elem);
+	while (tmp[i])
+	{
+		if (tmp[i] == 34 || tmp[i] == 39)
+			i++;
+		else
+			dest[p++] = tmp[i++];
+	}
+	free(tmp);
+	free(src);
+	return (dest);
 }

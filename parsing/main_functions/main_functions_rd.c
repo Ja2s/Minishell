@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 14:15:55 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/10 17:14:36 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 10:54:54 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,24 @@ void	redirecter_positiver(t_data **data)
 		command_positiver((*data)->cmd->redirecter[i++]);
 }
 
+void	go_free(t_data *data)
+{
+	ft_lstclear(&data->cmd);
+	free_pipes(data->var.pipes);
+	free(data->var.rl);
+	if (data->var.mini_env)
+	{
+		free_pipes(data->var.mini_env);
+		data->var.mini_env = NULL;
+	}
+	free(data->var.rl);
+	if (data->var.mini_env)
+	{
+		free_pipes(data->var.mini_env);
+		data->var.mini_env = NULL;
+	}
+}
+
 int	final_parse(t_data *data)
 {
 	t_data	*tmp;
@@ -60,19 +78,6 @@ int	final_parse(t_data *data)
 	data->exit_code = 0;
 	if (data->cmd->nb_del > 0)
 		unlink(".heredoc");
-	ft_lstclear(&data->cmd);
-	free_pipes(data->var.pipes);
-	free(data->var.rl);
-	if (data->var.mini_env)
-	{
-		free_pipes(data->var.mini_env);
-		data->var.mini_env = NULL;
-	}
-	free(data->var.rl);
-	if (data->var.mini_env)
-	{
-		free_pipes(data->var.mini_env);
-		data->var.mini_env = NULL;
-	}
+	go_free(data);
 	return (0);
 }

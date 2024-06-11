@@ -3,66 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   other.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gavairon <gavairon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:35:20 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/05/28 21:18:56 by gavairon         ###   ########.fr       */
+/*   Updated: 2024/06/11 11:32:06 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_printf_struct(t_cmd *cmd)
-{
-	int	i;
-	
-	i = 0;
-	while (cmd)
-	{
-		printf("\n\n\n\033[33m--------------=Command name=--------------\033[0m\n");
-		printf("	Commande -> |%s|\n", cmd->args[i]);
-		i++;
-		printf("\033[33m----------------=Arguments=---------------\033[0m\n");
-		while (i < cmd->nb_args)
-			{
-				printf("	Arg[%d] -> |%s|\n", i, cmd->args[i]);
-				i++;
-			}
-		i = 0;
-		if (cmd->nb_red > 0)
-		{
-			printf("\033[33m-------------=Redirections=-------------\033[0m\n");
-			while(i < cmd->nb_red)
-			{
-				printf("		Redirecter -> |%s|\n", cmd->redirecter[i]);
-				i++;
-			}
-		}
-		i = 0;
-		if (cmd->heredoc == true)
-		{
-			printf("\033[35m-------------=Heredoc (true)=-------------\033[0m\n");
-			while (i < cmd->nb_del)
-			{
-				printf("		  delimiter -> |%s|\n", cmd->delimiter[i]);
-				i++;
-			}
-		}
-		i = 0;
-		
-
-		printf("\033[35m-------------=End of command=-------------\033[0m\n\n\n");
-		if (cmd->next)
-			cmd = cmd->next;
-		else
-			return (-1);
-	}
-	return (0);
-}
-
 int	ft_isspace(char c)
 {
-	if (c == '\f' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == ' ')
+	if (c == '\f' || c == '\t' || c == '\n' || \
+	c == '\r' || c == '\v' || c == ' ')
 		return (1);
 	return (0);
 }

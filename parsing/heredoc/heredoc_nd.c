@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:51:56 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/10 13:15:07 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 11:13:55 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,39 +47,17 @@ int	heredoc_memory_allocer(char *pipes, t_cmd **cmd)
 	return (0);
 }
 
-char	*heredoc_w_cote(char *src)
-{
-	char	*dest;
-	char	*tmp;
-	int		i;
-	int		p;
-
-	tmp = NULL;
-	dest = NULL;
-	p = 0;
-	i = 0;
-	dest = ft_calloc((ft_strlen(src) - 1), sizeof (char));
-	if (!dest)
-		return (NULL);
-	tmp = ft_strdup(src);
-	if (!tmp)
-		return (NULL);
-	while (tmp[i])
-	{
-		if (tmp[i] == 34 || tmp[i] == 39)
-			i++;
-		else
-			dest[p++] = tmp[i++];
-	}
-	free(tmp);
-	free(src);
-	return (dest);
-}
-
 void	heredoc_copyer_init(t_cmd **cmd, t_int *var, int i)
 {
 	(*cmd)->heredoc = true;
 	(*var).p = i + 1;
+}
+
+int	skip_space(t_int *var, char *pipes)
+{
+	while (pipes[(*var).p] && ft_isspace(pipes[(*var).p]) == 1)
+		(*var).p++;
+	return ((*var).p);
 }
 
 int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
@@ -88,9 +66,7 @@ int	heredoc_copyer(char *pipes, t_cmd **cmd, int i, int del)
 
 	init_var(&var);
 	heredoc_copyer_init(cmd, &var, i);
-	while (pipes[var.p] && ft_isspace(pipes[var.p]) == 1)
-		var.p++;
-	var.start = var.p;
+	var.start = skip_space(&var, pipes);
 	while (pipes[var.p] && ft_isspace(pipes[var.p]) == 0 && pipes[var.p] != '<')
 		var.p++;
 	(*cmd)->delimiter[del] = ft_substr(pipes, var.start, var.p - var.start);

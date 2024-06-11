@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 11:02:31 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/11 15:48:56 by rasamad          ###   ########.fr       */
+/*   Updated: 2024/06/11 16:00:21 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,103 +14,6 @@
 
 // Définition de la variable globale
 volatile sig_atomic_t g_sig = 0;
-
-void	ft_unset(t_data **data)
-{
-	t_env	*tmp;
-	t_env	*swap;
-	int		i;
-
-	i = 1;
-	tmp = (*data)->mini_env;
-	while ((*data)->cmd->args[i])
-	{
-		if (spec_export((*data)->cmd->args[i]) == 0)
-		{
-			while (tmp->next && ft_strcmp(tmp->next->name, (*data)->cmd->args[i]) != 0)
-				tmp = tmp->next;
-			if (tmp && tmp->next && ft_strcmp(tmp->next->name, (*data)->cmd->args[i]) == 0)
-			{
-				swap = tmp->next;
-				tmp->next = tmp->next->next;
-				free(swap->name);
-				free(swap->value);
-				free(swap);
-			}
-		}
-		else
-		{
-			exit_status_n_free((*data), 1, "unset: not a valid identifier: ");
-			write(2, (*data)->cmd->args[i], ft_strlen((*data)->cmd->args[i]));
-			write(2,"\n", 1);
-		}
-		i++;
-	}
-}
-
-int	ft_cd(t_data *data)
-{
-	char	*old_pwd;
-	int		i;
-
-	i = 0;
-	old_pwd = getcwd(NULL, 0);
-	if (!old_pwd)
-		return(exit_status(data, 1, "malloc from error [getcwd] ft_cd()"), -1);
-	if (data->cmd->args[1] && ft_strcmp(data->cmd->args[1], "-") == 0)
-	{
-		while (data->var.mini_env[i] && ft_strncmp(data->var.mini_env[i], "OLDPWD=", 7) != 0)
-			i++;
-		if (!data->var.mini_env[i])
-			return (free(old_pwd), display_error_cmd(data->cmd), -1);
-		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
-			return (perror("chdir OLDPWD failed "), free(old_pwd), -1);
-	}
-	else if (!data->cmd->args[1])
-	{
-		while (data->var.mini_env[i] && ft_strncmp(data->var.mini_env[i], "HOME=", 5) != 0)
-			i++;
-		if (!data->var.mini_env[i])
-			return (free(old_pwd), display_error_cmd(data->cmd), -1);
-		if (chdir(ft_strchr(data->var.mini_env[i], '/')) == -1)
-			return (perror("chdir home failed "), free(old_pwd), -1);
-	}
-	else if (chdir(data->cmd->args[1]) == -1)
-		return (perror("chdir failed "), free(old_pwd), -1);
-	check_variable(&data->mini_env, "OLDPWD", old_pwd);
-	check_variable(&data->mini_env, "PWD", getcwd(NULL, 0));
-	return (free(old_pwd), 0);
-}
-
-int	ft_is_builtins_no_access(t_cmd *lst)
-{
-	if (!lst->args[0])
-		return (1);
-	if (ft_strcmp(lst->args[0], "export") == 0)
-		return (1);
-	if (ft_strcmp(lst->args[0], "exit") == 0)
-		return (1);
-	else if (ft_strcmp(lst->args[0], "unset") == 0)
-		return (1);
-	else if (ft_strcmp(lst->args[0], "cd") == 0)
-		return (1);
-	return (0);
-}
-
-int	ft_builtins_env(t_cmd *lst, t_data *data, int i)
-{
-	if (!lst->args[0])
-		return (0);
-	if (ft_strcmp(lst->args[0], "export") == 0 && i == 1 && !lst->next)
-			return (ft_export(data, &data->mini_env, lst), 1);
-	else if (ft_strcmp(lst->args[0], "unset") == 0  && i == 1 && !lst->next)
-		return (ft_unset(&data), 1);
-	else if (ft_strcmp(lst->args[0], "env") == 0 && i == 1 && !lst->next)
-		return (env_cmd(data->mini_env), 1);
-	else if (ft_strcmp(lst->args[0], "cd") == 0 && i == 1 && !lst->next)
-		return (ft_cd(data), 1);
-	return (0);
-}
 
 int	ft_check_num(t_data *data)
 {
@@ -197,19 +100,6 @@ void	ft_close_pipe(t_data *data)
 	}
 }
 
-int is_fd_open2(int fd)
-{
-    int flags;
-
-    // Try to get the file descriptor flags
-    flags = fcntl(fd, F_GETFD);
-
-    // If fcntl returns -1 and errno is EBADF, the file descriptor is closed
-    if (flags == -1 && errno == EBADF)
-        return 0; // File descriptor is closed
-    return 1; // File descriptor is open
-}
-
 int	launch_exec(t_data *data)
 {
 	int		i;
@@ -292,84 +182,21 @@ int	launch_exec(t_data *data)
 	return (0);
 }
 
-void free_env(t_env *env)
-{
-    t_env *tmp;
-
-    while (env)
-    {
-        tmp = env->next;
-        if (env->name)
-        {
-            free(env->name);
-            env->name = NULL;
-        }
-        if (env->value)
-        {
-            free(env->value);
-            env->value = NULL;
-        }
-        free(env);
-        env = tmp;
-    }
-}
-
-void handle_sigint_main(int sig) 
-{
-	(void)sig;              // Pour éviter les avertissements de variable non utilisée
-	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0); // Effacer la ligne actuelle
-	rl_on_new_line();       // Repositionner le curseur sur une nouvelle ligne
-	rl_redisplay();         // Redisplay le prompt
-	g_sig = 1;
-}
-
 int	main(int argc, char **argv, char **envp)
 {
-	int		i;
 	t_data	data;
 
 	(void)argc;
 	(void)argv;
-	i = 0;
-	data.exit_code = 0;
 	if (minishell_starter(envp, &data) == -1)
-		return (printf("malloc error from [main]\n"), -1);
-	while (1)
+		return (-1);
+	if (run_minishell(&data) == -1)
 	{
-		signal(SIGINT, handle_sigint_main);
-		signal(SIGQUIT, SIG_IGN); // Ignorer le signal SIGQUIT
-		if (prompt_customer(&data) == 0)
-		{
-			if (g_sig)
-			{
-				exit_status(&data, 130, "");
-				g_sig = 0;		
-			}
-			else if (data.var.rl[0] != '\0' && syntaxe_error(&data, data.var.rl) == 0)
-			{
-				if (parser(&data) == 0)
-				{
-					if (final_parse(&data) == -1)
-					{
-						ft_lstclear(&data.cmd);
-						free_pipes(data.var.pipes);
-						if (data.var.mini_env)
-						{
-							free_pipes(data.var.mini_env);
-							data.var.mini_env = NULL;
-						}
-					}
-				}
-			}
-			else
-				free(data.var.rl);
-		}
-		else
-			//free()
-			break ;
+		free_env(data.mini_env);
+		rl_clear_history();
+		return (-1);
 	}
 	free_env(data.mini_env);
 	rl_clear_history();
+	return (0);
 }
-

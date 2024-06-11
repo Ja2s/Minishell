@@ -6,32 +6,11 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 15:39:44 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/10 14:45:46 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 11:33:49 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	check_len(t_env *mini_env, int choice)
-{
-	int	len;
-	if (choice == 1)
-	{
-		//printf("name : |%s|\n Value : |%s|\n", mini_env->name, mini_env->value);
-		if (mini_env->name && mini_env->value)
-			len = (ft_strlen(mini_env->name) + ft_strlen(mini_env->value) + 2);
-		else
-			len = (ft_strlen(mini_env->name) + 2);
-	}
-	if (choice == 2)
-	{
-		if (mini_env->name && mini_env->value)
-			len = (ft_strlen(mini_env->name) + ft_strlen(mini_env->value) + 4);
-		else
-			len = (ft_strlen(mini_env->name) + 4);
-	}
-	return (len);
-}
 
 char	*line_extractor(t_env *mini_env)
 {

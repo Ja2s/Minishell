@@ -4,20 +4,27 @@ CC          = cc
 
 CFLAGS      = -g3 -Wextra -Werror
 
-SRC         =	$(EXEC_SRC)dislpay_err.c \
+SRC         =	minishell.c \
+				main_helper.c \
+				$(EXEC_SRC)dislpay_err.c \
 				$(EXEC_SRC)check_access.c \
             	$(EXEC_SRC)redirection.c \
-				$(EXEC_SRC)fork.c minishell.c \
+				$(EXEC_SRC)fork.c \
+        		$(EXEC_SRC)heredoc.c \
         		$(OTHER_SRC)other.c \
 				$(OTHER_SRC)builtins.c \
+				$(OTHER_SRC)builtins_helper.c \
+				$(OTHER_SRC)builtins_nd.c \
+				$(OTHER_SRC)builtins_rd.c \
 				$(OTHER_SRC)lst_add.c \
-        		$(EXEC_SRC)heredoc.c \
 				$(OTHER_SRC)env.c \
+				$(OTHER_SRC)env_helper.c \
             	$(PARSING_SRC)syntaxe_errors.c \
 				$(PARSING_SRC)utilities.c \
             	$(PARSING_SRC)utilities_nd.c \
 				$(PARSING_SRC)commands_stocker.c \
             	$(PARSING_SRC)expand/expand.c \
+				$(PARSING_SRC)expand/expand_helper.c \
 				$(PARSING_SRC)expand/checkers_expand.c \
 				$(PARSING_SRC)expand/exitcode_expand.c \
 				$(PARSING_SRC)expand/extract_expand.c \
@@ -30,6 +37,7 @@ SRC         =	$(EXEC_SRC)dislpay_err.c \
 				$(PARSING_SRC)/main_functions/main_functions_rd.c \
 				$(PARSING_SRC)/heredoc/heredoc.c \
 				$(PARSING_SRC)/heredoc/heredoc_nd.c \
+				$(PARSING_SRC)/heredoc/heredoc_rd.c \
             	$(PARSING_SRC)/redirecter/redirecter.c \
 				$(PARSING_SRC)/redirecter/redirecter_nd.c \
 				$(PARSING_SRC)syntaxe_errors_nd.c 

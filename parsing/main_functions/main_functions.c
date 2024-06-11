@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/06/10 17:12:41 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 16:10:48 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	minishell_starter(char **env, t_data *data)
 {
 	//printf_title();
 	data_initializer(data);
+	data->exit_code = 0;
 	if (env_copyer(&data, env, &data->mini_env) == -1)
 		return (free_env(data->mini_env), -1);
 	return (0);
@@ -37,11 +38,6 @@ int	prompt_customer(t_data *data)
 	if (data->var.rl == NULL)
 		return (free(prompt), free(data->var.pwd), \
 		free(data->var.rl), exit_status(data, 1, "exit\n"), -1);
-	if (g_sig)
-	{
-		exit_status(data, 130, "");
-		g_sig = 0;
-	}
 	free(prompt);
 	free(data->var.pwd);
 	if (data->var.rl[0])
