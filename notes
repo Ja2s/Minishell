@@ -1,5 +1,45 @@
 launch_exec, 3fork, ft_check_access
 
+
+time sleep 4 | sleep 4
+
+cat | cat | ls
+
+< f1 cat > f2
+
+cat f1 | cat << eof << a | cat -e | ls > f1
+
+cat f1 | cat f1 | cat f1
+
+ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls | ls 
+
+
+
+
+
+
+
+
+
+
+heredoc ctrl c puis cmd nest pas lancer
+
+
+exit_status_n_free inutile ?
+
+
+rl_event_hook = rl_hook_function; ??
+
+
+
+
+
+
+
+
+
+
+
 -----------------------RESOLVED----------------------------------------- 223
 
 [EXIT] -------> 473 voir ceux non resolved

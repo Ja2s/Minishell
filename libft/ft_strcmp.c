@@ -6,16 +6,16 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:49:00 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/11 18:01:33 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/05/02 15:49:13 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_strcmp(const char *str1, const char *str2)
+int ft_strcmp(const char *str1, const char *str2) 
 {
-	while (*str1 && *str2 && *str1 == *str2)
+    while (*str1 && *str2 && *str1 == *str2) 
 	{
-		str1++;
-		str2++;
-	}
-	return (*str1 - *str2);
+        str1++;
+        str2++;
+    }
+    return *str1 - *str2;
 }

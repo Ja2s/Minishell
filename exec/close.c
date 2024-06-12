@@ -1,40 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fork.c                                             :+:      :+:    :+:   */
+/*   close.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/29 15:12:43 by rasamad           #+#    #+#             */
-/*   Updated: 2024/06/12 13:08:49 by rasamad          ###   ########.fr       */
+/*   Created: 2024/06/12 13:56:31 by rasamad           #+#    #+#             */
+/*   Updated: 2024/06/12 14:06:16 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	handle_sigint_fork(int sig)
+void	ft_close_infile(t_cmd *lst)
 {
-	(void)sig;
-	printf("\n");
-	g_sig = 1;
+	if (lst->redirecter && lst->fd_infile != -1)
+	{
+		close(lst->fd_infile);
+		lst->fd_infile = -1;
+	}
 }
 
-void	handle_sigquit_fork(int sig)
+void	ft_close_outfile(t_cmd *lst)
 {
-	(void)sig;
-	g_sig = 2;
+	if (lst->redirecter && lst->fd_outfile != -1)
+	{
+		close(lst->fd_outfile);
+		lst->fd_outfile = -1;
+	}
 }
 
-void	handle_sigint_heredoc(int sig)
+void	ft_close(t_cmd *lst)
 {
-	(void)sig;
-	g_sig = 1;
-	printf("^C");
-	rl_done = 1;
-}
-
-int	rl_hook_function(void)
-{
-	signal(SIGINT, handle_sigint_heredoc);
-	return (0);
+	ft_close_infile(lst);
+	ft_close_outfile(lst);
 }

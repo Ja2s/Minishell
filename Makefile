@@ -2,15 +2,21 @@ NAME        = minishell
 
 CC          = cc
 
-CFLAGS      = -g3 -Wextra -Werror
+CFLAGS      = -g3 -Wall -Wextra -Werror
 
 SRC         =	minishell.c \
 				main_helper.c \
 				$(EXEC_SRC)dislpay_err.c \
 				$(EXEC_SRC)check_access.c \
             	$(EXEC_SRC)redirection.c \
+            	$(EXEC_SRC)close.c \
 				$(EXEC_SRC)fork.c \
+				$(EXEC_SRC)first_fork.c \
+				$(EXEC_SRC)middle_fork.c \
+				$(EXEC_SRC)last_fork.c \
+				$(EXEC_SRC)launch_exec.c \
         		$(EXEC_SRC)heredoc.c \
+        		$(EXEC_SRC)free_heredoc.c \
         		$(OTHER_SRC)other.c \
 				$(OTHER_SRC)builtins.c \
 				$(OTHER_SRC)builtins_helper.c \

@@ -6,7 +6,7 @@
 /*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 12:31:40 by gavairon          #+#    #+#             */
-/*   Updated: 2024/06/11 17:36:15 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 16:10:48 by jgavairo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	minishell_starter(char **env, t_data *data)
 {
-	printf_title();
+	//printf_title();
 	data_initializer(data);
 	data->exit_code = 0;
 	if (env_copyer(&data, env, &data->mini_env) == -1)

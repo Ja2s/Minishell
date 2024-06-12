@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirecter.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 13:27:51 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/10 14:25:32 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 19:01:33 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,6 @@ int	redirect_counter(char *pipes)
 			i++;
 	}
 	return (len);
-}
-
-static int	skip_spaces(char *pipes, int i)
-{
-	while (pipes[i] && ft_isspace(pipes[i]) == 1)
-		i++;
-	return (i);
 }
 
 int	redirecter(char *pipes, t_cmd **cmd)

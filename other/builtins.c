@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgavairo <jgavairo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rasamad <rasamad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:32:01 by jgavairo          #+#    #+#             */
-/*   Updated: 2024/06/11 11:43:16 by jgavairo         ###   ########.fr       */
+/*   Updated: 2024/06/11 19:00:22 by rasamad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	exit_export(t_data *data, int i)
 int	ft_export(t_data *data, t_env **mini_env, t_cmd *cmd)
 {
 	int		i;
-	int		x;
 
 	if (!cmd->args[1])
 		ft_export_display(*mini_env);
